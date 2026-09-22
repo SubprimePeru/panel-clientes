@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Reporte de Clientes - Matías Luna Terán</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        custom: { black: '#141414', dark: '#004A6B', main: '#00638E', light: '#8CB9CC', accent: '#FFE200' },
+                        finance: { up: '#059669', upBg: '#D1FAE5', down: '#DC2626', downBg: '#FEE2E2' }
+                    },
+                    boxShadow: {
+                        'neon': '0 0 15px rgba(255, 226, 0, 0.4)',
+                        'panel': '0 10px 40px -10px rgba(0, 74, 107, 0.1)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        html, body { overscroll-behavior-y: none; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .bg-motion {
+            background: linear-gradient(120deg, #ffffff, #f4f9fb, #eef5f8, #ffffff);
+            background-size: 300% 300%;
+            animation: gradientMotion 15s ease infinite;
+        }
+        @keyframes gradientMotion { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .wave-emoji { display: inline-block; animation: wave 2.5s infinite; transform-origin: 70% 70%; }
+        @keyframes wave {
+            0% { transform: rotate(0deg); } 10% { transform: rotate(14deg); } 20% { transform: rotate(-8deg); }
+            30% { transform: rotate(14deg); } 40% { transform: rotate(-4deg); } 50% { transform: rotate(10deg); }
+            60%, 100% { transform: rotate(0deg); }
+        }
+
+        .numpad-btn {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+            color: white; font-size: 1.5rem; font-weight: 600; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center; height: 64px; transition: all 0.15s; cursor: pointer;
+        }
+        .numpad-btn:active { background: var(--custom-accent); color: black; transform: scale(0.92); border-color: transparent; }
+        .pin-dot { width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.15); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .premium-input { background: rgba(0,0,0,0.2); border: 1px solid rgba(140, 185, 204, 0.2); color: white; transition: all 0.2s; }
+        .premium-input:focus { border-color: #FFE200; outline: none; box-shadow: 0 0 15px rgba(255, 226, 0, 0.15); background: rgba(0,0,0,0.4); }
+
+        .service-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .service-card.locked { filter: grayscale(1); opacity: 0.6; cursor: pointer; }
+        .service-card.locked:hover { filter: grayscale(0); opacity: 1; transform: translateY(-3px); box-shadow: var(--tw-shadow-neon); border-color: var(--custom-accent); }
+
+        .pulse-glow { animation: softGlow 2s infinite; }
+        @keyframes softGlow {
+            0% { box-shadow: 0 0 0 0 rgba(255, 226, 0, 0.4); background-color: #f3f4f6; }
+            50% { box-shadow: 0 0 12px 5px rgba(255, 226, 0, 0.3); background-color: #fffbeb; border-color: #fde68a; color: #b45309; }
+            100% { box-shadow: 0 0 0 0 rgba(255, 226, 0, 0); background-color: #f3f4f6; }
+        }
+
+        @keyframes fillBar { 0% { width: 0%; } 100% { width: 100%; } }
+        .animate-fill-bar { animation: fillBar 1.5s ease-in-out forwards; }
+
+        .toast-enter { animation: toastSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .toast-leave { animation: toastSlideOut 0.4s ease-in forwards; }
+        @keyframes toastSlideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes toastSlideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+        
+        .wp-float {
+            position: fixed; bottom: 24px; right: 24px; z-index: 90;
+            background-color: #25d366; color: white; border-radius: 50%;
+            width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;
+            font-size: 30px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
+            transition: transform 0.3s;
+        }
+        .wp-float:hover { transform: scale(1.1); }
+    </style>
+</head>
+<body class="antialiased overflow-hidden h-screen w-screen bg-custom-black text-white flex flex-col">
+
+    <script>
+        window.showToast = (title, message, icon = 'fa-check-circle', color = 'text-finance-up') => {
+            const container = document.getElementById('toastContainer');
+            if(!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'bg-white p-4 rounded-2xl shadow-2xl border border-gray-100 flex items-start gap-3 w-80 toast-enter pointer-events-auto';
+            toast.innerHTML = `<div class="${color} text-xl mt-0.5"><i class="fa-solid ${icon}"></i></div><div><h4 class="font-extrabold text-gray-900 text-sm">${title}</h4><p class="text-xs text-gray-500 font-medium mt-1">${message}</p></div>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.replace('toast-enter', 'toast-leave'); setTimeout(() => toast.remove(), 400); }, 4500);
+        };
+    </script>
+
+    <div id="toastContainer" class="fixed top-5 right-5 z-[200] flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- LOADING SCREEN -->
+    <div id="loadingScreen" class="fixed inset-0 z-[300] hidden flex-col items-center justify-center" style="background: radial-gradient(circle at center, #00638E, #141414 80%);">
+        <div class="w-24 h-24 rounded-full bg-white/10 flex items-center justify-center mb-6 border-2 border-custom-accent/50 shadow-neon backdrop-blur-md">
+            <i class="fa-solid fa-chess-knight text-5xl text-custom-accent animate-pulse"></i>
+        </div>
+        <h2 class="text-white font-extrabold text-xl mb-4 tracking-wide text-center" id="loadingText">Preparando el entorno<br>estratégico...</h2>
+        <div class="w-64 h-1.5 bg-black/40 rounded-full overflow-hidden">
+            <div id="loadingBarProgress" class="h-full bg-custom-accent"></div>
+        </div>
+    </div>
+
+    <!-- AUTH SCREEN -->
+    <div id="authContainer" class="absolute inset-0 z-50 flex flex-col h-full bg-custom-black" style="background: radial-gradient(circle at top right, #004A6B, #141414 75%);">
+        <div class="p-4 md:p-6 flex justify-between items-center mt-4 px-6 md:px-12">
+            <div class="text-xl md:text-2xl font-extrabold tracking-tight flex items-center">
+                <i class="fa-solid fa-chart-simple text-custom-accent mr-2"></i> Reporte de Clientes <span class="text-custom-light ml-2 text-sm md:text-base font-medium opacity-80 border-l border-white/20 pl-2">Matías Luna Terán</span>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto flex flex-col items-center px-5 pb-10 justify-center">
+            
+            <div id="auth-login" class="w-full max-w-sm flex flex-col fade-in my-auto">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold mb-2">Bienvenido</h1>
+                    <p class="text-custom-light text-sm">Ingresa el nombre de tu negocio o titular</p>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <input type="text" id="loginBusiness" class="w-full p-4 premium-input rounded-2xl text-lg font-bold text-center" placeholder="Ej. Karate Imperio, Norvin...">
+                    </div>
+                    <button onclick="showLoginPin()" class="w-full py-4 bg-custom-accent text-custom-black font-extrabold rounded-2xl shadow-neon transition-transform hover:scale-105 active:scale-95 text-lg">
+                        Siguiente
+                    </button>
+                </div>
+            </div>
+
+            <div id="auth-login-pin" class="w-full max-w-sm flex flex-col fade-in hidden my-auto">
+                <div class="text-center mb-8 relative">
+                    <button onclick="switchAuthView('login')" class="absolute left-0 top-1 text-custom-light p-2 hover:text-white transition-colors"><i class="fa-solid fa-arrow-left text-lg"></i></button>
+                    <h2 class="text-2xl font-bold text-white" id="displayLoginBusiness">Negocio</h2>
+                    <p class="text-custom-light text-sm mt-1">Ingresa tu PIN (puedes usar el teclado)</p>
+                </div>
+                <div class="flex justify-center gap-4 mb-10" id="loginPinDots">
+                    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+                    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+                </div>
+                <div class="grid grid-cols-3 gap-4" id="numpadLogin"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="appContainer" class="hidden h-full w-full bg-motion text-gray-900 flex flex-col relative overflow-hidden">
+        
+        <header class="bg-white/80 backdrop-blur-md border-b border-custom-light/20 px-4 md:px-8 py-3 flex items-center justify-between sticky top-0 z-40">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-custom-dark flex items-center justify-center shadow-lg shadow-custom-dark/30">
+                    <i class="fa-solid fa-chart-simple text-custom-accent"></i>
+                </div>
+                <div class="hidden md:block">
+                    <h2 class="font-extrabold text-lg leading-tight text-gray-900" id="dashBusinessName">Mi Negocio</h2>
+                    <p class="text-xs text-custom-main font-bold">Panel de Crecimiento</p>
+                </div>
+            </div>
+
+            <div class="flex bg-gray-100/80 p-1 rounded-full border border-gray-200 overflow-x-auto hide-scrollbar">
+                <button onclick="switchDashboardTab('resumen')" class="dash-tab active px-4 md:px-6 py-2 text-xs md:text-sm font-bold rounded-full transition-all bg-white shadow-sm text-custom-main" data-tab="resumen">Resumen</button>
+                <button onclick="switchDashboardTab('anuncios')" id="tabBtnAnuncios" class="dash-tab px-4 md:px-6 py-2 text-xs md:text-sm font-bold rounded-full transition-all text-gray-500 hover:text-gray-900" data-tab="anuncios">Anuncios</button>
+                <button id="adminTabBtn" onclick="switchDashboardTab('admin')" class="hidden dash-tab px-4 md:px-6 py-2 text-xs md:text-sm font-bold rounded-full transition-all text-purple-600 hover:bg-purple-50" data-tab="admin"><i class="fa-solid fa-crown mr-1"></i> Admin</button>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span id="adminIndicator" class="hidden bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded-md border border-purple-200">Admin</span>
+                <button onclick="logout()" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors shadow-sm" title="Salir">
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto px-4 md:px-8 py-6 pb-24">
+            
+            <!-- ADMIN TAB: Clientes -->
+            <div id="tab-admin" class="dash-section hidden fade-in flex-col gap-6 max-w-7xl mx-auto">
+                <div class="bg-white p-4 md:p-6 rounded-[24px] shadow-panel border border-gray-100">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900 mb-1">Directorio de Clientes</h2>
+                            <p class="text-gray-500 text-sm font-medium">Gestiona accesos, servicios y perfiles.</p>
+                        </div>
+                        <button onclick="seedMockUsers()" class="px-4 py-2 bg-purple-100 text-purple-700 font-bold rounded-xl hover:bg-purple-200 transition-colors text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-rotate"></i> Restablecer Datos Base
+                        </button>
+                    </div>
+                    
+                    <div class="overflow-x-auto w-full">
+                        <table class="w-full text-left border-collapse min-w-[750px]">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider font-bold border-b border-gray-100">
+                                    <th class="px-4 py-4">Negocio</th>
+                                    <th class="px-4 py-4">Titular</th>
+                                    <th class="px-4 py-4">Usuario</th>
+                                    <th class="px-4 py-4">PIN</th>
+                                    <th class="px-4 py-4">Servicios Activos</th>
+                                    <th class="px-4 py-4 text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUserTable" class="text-sm divide-y divide-gray-100 font-medium"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESUMEN TAB -->
+            <div id="tab-resumen" class="dash-section fade-in flex flex-col gap-6 max-w-7xl mx-auto">
+                
+                <!-- Hero Section -->
+                <div class="flex flex-col lg:flex-row gap-6 items-stretch">
+                    <div class="flex-1 bg-white rounded-[32px] p-6 md:p-10 shadow-panel border border-gray-100 flex flex-col justify-center relative overflow-hidden">
+                        <div class="absolute -right-20 -top-20 w-64 h-64 bg-custom-light/10 rounded-full blur-3xl pointer-events-none"></div>
+                        
+                        <h1 class="text-3xl md:text-5xl font-extrabold text-custom-dark mb-3 tracking-tight">Hola, <span id="dashUserName" class="text-custom-main">Emprendedor</span> <span class="wave-emoji">👋</span></h1>
+                        <p class="text-gray-600 font-medium max-w-md leading-relaxed mt-2 text-sm md:text-base">Aquí tienes el resumen en tiempo real del progreso de tu estrategia comercial, campañas y proyectos.</p>
+                        
+                        <div class="mt-8">
+                            <a href="https://matiaslunateran.com" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-bold rounded-full shadow-lg hover:bg-gray-800 transition-transform hover:scale-105 active:scale-95 text-sm">
+                                ¿Quieres ver más de lo que hago? <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Video Ad Space -->
+                    <div class="w-full lg:w-72 bg-custom-black rounded-[32px] p-1 shadow-panel relative overflow-hidden flex flex-col items-center justify-center group border-4 border-white shrink-0 aspect-[4/5] mx-auto">
+                        <div id="heroMediaContainer" class="absolute inset-0 w-full h-full"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10 pointer-events-none"></div>
+                        
+                        <img id="clientHeroLogo" src="" class="absolute top-5 left-5 h-10 w-auto object-contain hidden z-20 bg-white/20 p-1.5 rounded-lg backdrop-blur-sm">
+                        
+                        <div class="absolute bottom-5 left-5 right-5 z-20 text-left">
+                            <h3 class="text-white font-bold text-base md:text-lg leading-tight flex items-center gap-2"><i class="fa-solid fa-bolt text-custom-accent"></i> Estrategia Activa</h3>
+                            <p class="text-custom-light text-xs font-semibold mt-1">Implementación en curso</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADS SECTION -->
+                <div id="adsMetricsSection" class="flex-col gap-5 mt-2">
+                    <div class="flex items-center justify-between pl-2">
+                        <h3 class="text-xl font-extrabold text-gray-900"><i class="fa-solid fa-bullhorn text-custom-main mr-2"></i> Rendimiento de Campañas</h3>
+                    </div>
+
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="ad-card bg-white rounded-[24px] p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-36">
+                            <div class="flex items-center justify-between text-custom-main font-bold text-sm">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600"><i class="fa-solid fa-wallet"></i></div>
+                                    Ppto. Mes
+                                </div>
+                                <button id="btnEditBudget" onclick="openBudgetModal()" class="hidden w-7 h-7 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 items-center justify-center transition-colors shadow-sm" title="Editar Presupuesto"><i class="fa-solid fa-pen text-xs"></i></button>
+                            </div>
+                            <div>
+                                <div class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-budget">S/ 0</div>
+                                <div class="text-[9px] font-semibold text-gray-400 mt-1 uppercase tracking-wider">*No incluye fee</div>
+                            </div>
+                        </div>
+
+                        <div class="ad-card bg-white rounded-[24px] p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-36">
+                            <div class="flex items-center gap-2 text-gray-600 font-bold text-sm">
+                                <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                                Inversión
+                            </div>
+                            <div>
+                                <div class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-spent">S/ 0</div>
+                                <div class="mt-2 flex items-center">
+                                    <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                        <div class="bg-custom-main h-full rounded-full transition-all duration-1000" id="budget-progress" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ad-card bg-white rounded-[24px] p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-36">
+                            <div class="flex items-center gap-2 text-custom-dark font-bold text-sm">
+                                <div class="w-8 h-8 rounded-lg bg-custom-dark/10 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
+                                Contactos
+                            </div>
+                            <div>
+                                <div class="text-3xl md:text-4xl font-extrabold text-gray-900" id="kpi-leads">0</div>
+                                <div class="text-[10px] font-bold text-finance-up mt-1 flex items-center gap-1 uppercase">
+                                    <i class="fa-solid fa-arrow-trend-up"></i> Leads
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ad-card bg-white rounded-[24px] p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-36">
+                            <div class="flex items-center gap-2 text-gray-600 font-bold text-sm">
+                                <div class="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500"><i class="fa-solid fa-bullseye"></i></div>
+                                Costo x Cto.
+                            </div>
+                            <div class="flex items-end justify-between">
+                                <div class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-cpl">S/ 0</div>
+                                <div id="cpl-indicator" class="bg-gray-100 text-gray-500 px-2 py-1 rounded text-[11px] font-bold mb-1 shadow-sm">--</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CHART -->
+                    <div class="bg-white rounded-[32px] p-4 md:p-6 shadow-panel border border-gray-100 mt-2">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                            <div>
+                                <h3 class="text-xl font-extrabold text-gray-900">Evolución de Contactos</h3>
+                                <p class="text-xs text-gray-500 font-medium mt-1">Historial mensual de leads obtenidos.</p>
+                            </div>
+                            <button id="btnEditChart" onclick="openChartModal()" class="hidden admin-only px-4 py-2 bg-blue-50 text-blue-700 font-bold rounded-xl hover:bg-blue-100 transition-colors text-xs items-center gap-1.5">
+                                <i class="fa-solid fa-pen"></i> Editar Gráfico
+                            </button>
+                        </div>
+                        <div class="w-full h-72 relative">
+                            <canvas id="leadsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WEB DEV SECTION -->
+                <div id="webDevTrackerSection" class="flex-col gap-5 mt-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pl-2">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-gray-900"><i class="fa-solid fa-laptop-code text-purple-600 mr-2"></i> Desarrollo Página Web</h3>
+                            <p class="text-xs text-gray-500 mt-1 font-medium">Seguimiento ágil de la creación de tu ecosistema digital.</p>
+                        </div>
+                        <button id="btnManageWeb" onclick="openWebModal()" class="hidden admin-only px-4 py-2 bg-purple-100 text-purple-700 font-bold rounded-xl hover:bg-purple-200 transition-colors text-xs items-center gap-1.5">
+                            <i class="fa-solid fa-pen"></i> Actualizar Estado
+                        </button>
+                    </div>
+                    <!-- Horizontal scroll on mobile -->
+                    <div class="flex overflow-x-auto snap-x gap-4 hide-scrollbar pb-4" id="agileColumnsContainer"></div>
+                </div>
+
+                <!-- CONSULTING GROWTH SECTION -->
+                <div id="consultingTrackerSection" class="flex-col gap-5 mt-4 hidden relative">
+                    <div class="absolute inset-0 bg-custom-black rounded-[32px] -z-10 shadow-2xl"></div>
+                    <div class="p-6 md:p-8 flex flex-col gap-6">
+                        
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+                            <div>
+                                <h3 class="text-2xl font-extrabold text-white tracking-tight flex items-center">
+                                    <i class="fa-solid fa-chess-knight text-custom-accent mr-3"></i> Consultoría Growth & Comercial
+                                </h3>
+                                <p class="text-sm text-gray-400 mt-1">Estrategia gerencial de alto impacto para escalabilidad de negocio.</p>
+                            </div>
+                            <button id="btnManageConsulting" onclick="openConsultingModal()" class="hidden admin-only px-4 py-2 bg-white/10 text-white hover:text-custom-accent font-bold rounded-xl border border-white/20 transition-colors text-xs items-center gap-1.5 backdrop-blur-md">
+                                <i class="fa-solid fa-pen"></i> Editar Pipeline
+                            </button>
+                        </div>
+
+                        <!-- Timeline Pipeline (Fixed overlap) -->
+                        <div class="relative w-full mt-4 mb-10">
+                            <!-- Background track line -->
+                            <div class="absolute top-[8px] left-[12%] right-[12%] h-1 bg-white/15 rounded-full z-0"></div>
+                            <!-- Active Progress line -->
+                            <div class="absolute top-[8px] left-[12%] h-1 bg-custom-accent rounded-full transition-all duration-700 z-0" id="consultingProgressBar" style="width: 0%;"></div>
+                            
+                            <!-- Dots and Labels -->
+                            <div class="relative flex justify-between w-full z-10" id="consultingPipelineSteps">
+                                <!-- Dynamically injected via JS -->
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                            <div class="bg-white/5 border border-white/10 p-6 rounded-[24px] md:col-span-2">
+                                <h4 class="text-[11px] uppercase tracking-widest text-custom-accent font-bold mb-4">Objetivos Estratégicos (OKR)</h4>
+                                <ul class="space-y-4" id="consultingOkrsList"></ul>
+                            </div>
+                            <div class="bg-white/5 border border-white/10 p-6 rounded-[24px] flex flex-col justify-center items-center text-center">
+                                <h4 class="text-[11px] uppercase tracking-widest text-gray-400 font-bold mb-3">Foco Actual</h4>
+                                <div class="w-20 h-20 rounded-full border-4 border-custom-accent flex items-center justify-center text-2xl font-extrabold text-white mb-3 shadow-neon">
+                                    <i class="fa-solid fa-rocket"></i>
+                                </div>
+                                <p class="text-xs text-gray-300 font-medium" id="consultingFocusText">Análisis de cuellos de botella y definición de KPIs estructurales.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SERVICES SECTION -->
+                <div class="mt-8 mb-4 border-t border-gray-100 pt-8 relative">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-motion px-4 text-xs font-bold text-gray-400 tracking-widest uppercase">Escala tu negocio</div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-extrabold text-gray-900">Tus Servicios y Soluciones</h3>
+                        <p class="text-custom-main text-sm font-bold mt-1">Explora herramientas para llevar tu negocio al siguiente nivel.</p>
+                    </div>
+
+                    <div id="servicesCategoriesContainer" class="flex flex-col gap-8">
+                        <div>
+                            <h4 class="text-xs font-extrabold text-gray-400 mb-4 tracking-widest uppercase"><i class="fa-solid fa-bullhorn mr-1"></i> Marketing Digital</h4>
+                            <!-- Grid for Desktop, flex/snap for Mobile -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="servicesGridMkt"></div>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-extrabold text-gray-400 mb-4 tracking-widest uppercase"><i class="fa-solid fa-gears mr-1"></i> Productividad y Negocio</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="servicesGridProd"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ANUNCIOS TAB -->
+            <div id="tab-anuncios" class="dash-section hidden fade-in flex-col gap-6 max-w-7xl mx-auto">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-6 md:p-8 rounded-[32px] shadow-panel border border-gray-100 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-gray-900">Gestión de Anuncios</h2>
+                        <p class="text-gray-500 text-sm font-medium mt-1">Seguimiento detallado por campaña y plataforma.</p>
+                    </div>
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <label class="hidden admin-only cursor-pointer px-4 py-3 bg-blue-50 text-blue-700 font-extrabold rounded-xl hover:bg-blue-100 transition-colors text-xs items-center gap-2 border border-blue-200">
+                            <i class="fa-solid fa-file-csv"></i> Subir CSV Meta
+                            <input type="file" id="csvFileInput" accept=".csv" class="hidden">
+                        </label>
+                        <button id="btnAddAd" onclick="openFormModal()" class="hidden admin-only px-5 py-3 bg-custom-accent text-custom-black font-extrabold rounded-xl shadow-neon transition-transform hover:scale-105 active:scale-95 whitespace-nowrap items-center gap-2 text-sm">
+                            <i class="fa-solid fa-plus"></i> Manual
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[24px] shadow-panel border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[900px]">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-500 text-[11px] uppercase tracking-wider font-extrabold border-b border-gray-100">
+                                    <th class="px-5 py-4">Campaña / Plataforma</th>
+                                    <th class="px-5 py-4">Alcance / Impres.</th>
+                                    <th class="px-5 py-4 text-right">Inversión</th>
+                                    <th class="px-5 py-4 text-center">Contactos</th>
+                                    <th class="px-5 py-4 text-right">Costo x Contacto</th>
+                                    <th class="px-5 py-4 text-center admin-only hidden">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataTableBody" class="text-sm divide-y divide-gray-100 font-medium"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODALS -->
+    
+    <!-- Modal Edit Client (Admin) -->
+    <div id="clientModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
+        <div class="bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50">
+                <h3 class="text-xl font-extrabold text-custom-dark">Editar Cliente</h3>
+                <button onclick="closeClientModal()" class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="p-6 space-y-4 overflow-y-auto max-h-[70vh]">
+                <input type="hidden" id="editClientUid">
+                <input type="hidden" id="editClientOriginalUserKey">
+                
+                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Negocio</label><input type="text" id="editClientBiz" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Titular</label><input type="text" id="editClientName" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Usuario (Para Login)</label><input type="text" id="editClientUserKey" class="w-full p-3 bg-gray-50 text-purple-700 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">RUC</label><input type="text" id="editClientRuc" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Teléfono</label><input type="text" id="editClientPhone" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                </div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">PIN Acceso</label><input type="text" id="editClientPin" class="w-full p-3 bg-gray-50 text-purple-700 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">URL Video / GIF Hero</label><input type="text" id="editClientVideo" class="w-full p-3 bg-gray-50 text-blue-700 border border-gray-200 rounded-xl text-xs font-mono" placeholder="https://..."></div>
+                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">URL Logo Transparente</label><input type="text" id="editClientLogo" class="w-full p-3 bg-gray-50 text-blue-700 border border-gray-200 rounded-xl text-xs font-mono" placeholder="https://..."></div>
+                
+                <button onclick="saveClientEdit()" class="w-full mt-4 py-3.5 bg-purple-600 text-white font-extrabold rounded-xl text-sm hover:bg-purple-700 active:scale-95 transition-all">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Form Ad / Edit Ad (Admin) -->
+    <div id="formModal" class="fixed inset-0 z-[100] hidden flex items-end md:items-center justify-center p-0 md:p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
+        <div class="bg-white w-full md:max-w-md rounded-t-[32px] md:rounded-[32px] shadow-2xl overflow-hidden slide-in-right flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50">
+                <h3 id="modalTitle" class="text-xl font-extrabold text-custom-dark">Registrar Campaña</h3>
+                <button onclick="closeFormModal()" class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <form id="dataForm" class="p-6 space-y-4 overflow-y-auto">
+                <input type="hidden" id="formId">
+                <input type="hidden" id="formCreatedAt">
+                <input type="hidden" id="formEndAt">
+                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre de Campaña</label><input type="text" id="formName" required class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium text-sm"></div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Plataforma</label>
+                    <select id="formPlatform" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold">
+                        <option value="Meta Ads">Facebook / Instagram</option><option value="TikTok Ads">TikTok</option>
+                        <option value="Google Ads">Google / YouTube</option><option value="LinkedIn Ads">LinkedIn</option><option value="Pinterest Ads">Pinterest</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Inversión (S/)</label><input type="number" id="formSpend" required min="0" step="0.01" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold text-sm"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Total Contactos</label><input type="number" id="formLeads" required min="0" step="1" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold text-sm"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Alcance</label><input type="number" id="formReach" min="0" step="1" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium text-sm" value="0"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Impresiones</label><input type="number" id="formImp" min="0" step="1" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium text-sm" value="0"></div>
+                </div>
+                <button type="submit" id="saveBtn" class="w-full py-3.5 bg-custom-main hover:bg-custom-dark text-white font-extrabold rounded-xl mt-4 shadow-lg active:scale-95 transition-all text-sm">Guardar Datos</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Manual Chart Edit (Admin) -->
+    <div id="chartDataModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
+        <div class="bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
+                <h3 class="text-lg font-extrabold text-blue-700">Editar Leads por Mes</h3>
+                <button onclick="closeChartModal()" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="p-5 flex flex-col gap-4 bg-white overflow-y-auto">
+                <p class="text-xs text-gray-500 font-medium">Sobrescribe los leads de un mes. El gráfico priorizará estos datos.</p>
+                
+                <div class="flex gap-2 items-center">
+                    <input type="hidden" id="editChartIdx" value="">
+                    <!-- Native Month Picker -->
+                    <input type="month" id="chartInputMonth" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-sm font-bold" required>
+                    <input type="number" id="chartInputLeads" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-sm" placeholder="Cant. Leads" required min="0">
+                    <button onclick="addChartRow()" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700"><i class="fa-solid fa-check"></i></button>
+                </div>
+                
+                <div class="border-t border-gray-100 pt-3">
+                    <ul id="adminChartList" class="space-y-2 max-h-48 overflow-y-auto"></ul>
+                </div>
+                <button onclick="saveChartData()" class="w-full py-3.5 bg-blue-600 text-white font-extrabold rounded-xl text-sm shadow-md mt-2">Aplicar al Gráfico</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Web Tasks -->
+    <div id="webModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
+        <div class="bg-white w-full md:max-w-lg rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
+                <h3 class="text-lg font-extrabold text-purple-700">Actualizar Estado Web</h3>
+                <button onclick="closeWebModal()" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="p-5 flex flex-col gap-4 bg-white overflow-y-auto">
+                <div class="grid grid-cols-4 gap-1.5 bg-gray-100 p-1 rounded-xl" id="webTaskColumnSelector">
+                    <button onclick="selectWebColumn('req')" class="col-btn active py-2 rounded-lg bg-white shadow-sm text-purple-700 font-bold text-[10px] md:text-xs text-center" data-val="req">Req.</button>
+                    <button onclick="selectWebColumn('dev')" class="col-btn py-2 rounded-lg text-gray-500 hover:text-gray-900 font-bold text-[10px] md:text-xs text-center" data-val="dev">Desarrollo</button>
+                    <button onclick="selectWebColumn('qa')" class="col-btn py-2 rounded-lg text-gray-500 hover:text-gray-900 font-bold text-[10px] md:text-xs text-center" data-val="qa">QA</button>
+                    <button onclick="selectWebColumn('launch')" class="col-btn py-2 rounded-lg text-gray-500 hover:text-gray-900 font-bold text-[10px] md:text-xs text-center" data-val="launch">Lanzam.</button>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="webTaskInput" class="flex-1 p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-medium focus:border-purple-400 outline-none" placeholder="Nueva tarea...">
+                    <button onclick="addWebTask()" class="px-5 py-3 bg-purple-600 text-white font-extrabold rounded-xl text-sm hover:bg-purple-700 shadow-md">+</button>
+                </div>
+                <div class="border-t border-gray-100 pt-3">
+                    <div id="adminTaskList" class="space-y-2 max-h-48 overflow-y-auto"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Consulting Pipeline -->
+    <div id="consultingModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
+        <div class="bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
+                <h3 class="text-lg font-extrabold text-custom-dark">Progreso Consultoría</h3>
+                <button onclick="closeConsultingModal()" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="p-5 flex flex-col gap-4 bg-white overflow-y-auto">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Fase Actual</label>
+                    <select id="consultingStageSelect" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold">
+                        <option value="0">1. Sesión de diagnóstico</option>
+                        <option value="1">2. Plan de acción</option>
+                        <option value="2">3. Implementación (acompañamiento)</option>
+                        <option value="3">4. Resultados y Escala</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Foco Actual</label>
+                    <input type="text" id="consultingFocusInput" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-medium focus:border-custom-accent outline-none">
+                </div>
+                <div class="border-t border-gray-100 pt-3">
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Objetivos (OKRs)</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="consultingOkrTitle" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-xs" placeholder="Título ej. Embudo">
+                        <input type="text" id="consultingOkrDesc" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-xs" placeholder="Desc. ej. Scripts de cierre">
+                        <button onclick="addOkr()" class="px-3 bg-gray-900 text-white rounded-lg">+</button>
+                    </div>
+                    <ul id="adminOkrList" class="space-y-1 max-h-32 overflow-y-auto text-xs"></ul>
+                </div>
+                <button onclick="saveConsultingState()" class="w-full py-3.5 bg-custom-accent text-custom-black font-extrabold rounded-xl mt-2 text-sm shadow-md">Guardar Progreso</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Budget Edit -->
+    <div id="budgetModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
+        <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50">
+                <h3 class="text-xl font-extrabold text-custom-dark">Presupuesto Mensual</h3>
+                <button onclick="closeBudgetModal()" class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="p-6">
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wide">Monto Asignado (S/)</label>
+                <input type="number" id="budgetInput" min="0" step="1" class="w-full p-4 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-xl font-extrabold outline-none focus:border-blue-400 focus:bg-white text-center">
+                <button onclick="saveBudget()" class="w-full mt-6 py-4 bg-blue-600 text-white font-extrabold rounded-xl text-lg hover:bg-blue-700 shadow-md">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.link/umhrbw" target="_blank" class="wp-float" title="Contactar por WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- Supabase Logic -->
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+        // CONFIGURE SUPABASE HERE
+        const SUPABASE_URL = 'https://fqyyirtlkrlhdmbbspou.supabase.co'; 
+        const SUPABASE_KEY = 'sb_publishable_yTkDWVdCW0T9DFgdZrIyXw_8mTNpKpd'; 
+        
+        let supabase = null;
+        try {
+            if(SUPABASE_URL && SUPABASE_KEY) {
+                supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+            }
+        } catch (e) {
+            console.error("Error de credenciales en Supabase. Usando modo de memoria local para prevención de fallos.", e);
+        }
+
+        let campaignsData = [];
+        let chartInstance = null;
+        
+        let currentUserId = null; 
+        let currentUserData = null;
+        let isSuperAdmin = false;
+        let viewedUserId = null;
+        let pulseInterval = null;
+
+        // --- Mock Data Setup ---
+        const karateRealCSV = [
+            { id:'mock_k1', name: 'Mensajes Karate', platform: 'Meta Ads', spend: 1542.37, leads: 1004, reach: 127704, imp: 311711, status: 'Activo', createdAt: new Date('2026-01-01').getTime(), endAt: new Date('2026-09-22').getTime() }
+        ];
+
+        window.seedMockUsers = () => {
+            const users = {
+                'admin': { originalName: 'Admin', ownerName: 'Matías Luna', pin: '123456', uid: 'admin_master', isAdmin: true, activeServices: [] },
+                'karate imperio': { 
+                    originalName: 'Karate Imperio', ownerName: 'Norvin Gutierrez', pin: '111111', uid: 'user_karate', isAdmin: false, 
+                    activeServices: ['meta_ads'], monthlyBudget: 300, 
+                    videoUrl: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=600&auto=format&fit=crop',
+                    logoUrl: 'https://cdn-icons-png.flaticon.com/512/1042/1042296.png',
+                    campaigns: karateRealCSV, manualChart: []
+                },
+                'bushido': { originalName: 'Bushido Martialshop', ownerName: 'Jairo Teran', pin: '222222', uid: 'user_bushido', isAdmin: false, activeServices: ['meta_ads', 'web_dev'], monthlyBudget: 500, manualChart: [] },
+                'vetra': { originalName: 'Vetra Relojes', ownerName: 'Jairo Teran', pin: '333333', uid: 'user_vetra', isAdmin: false, activeServices: ['meta_ads', 'tiktok_ads'], monthlyBudget: 800, manualChart: [] },
+                'viaja ligero': { originalName: 'Viaja Ligero', ownerName: 'Jairo Teran', pin: '444444', uid: 'user_viaja', isAdmin: false, activeServices: ['meta_ads', 'consulting'], monthlyBudget: 400, manualChart: [] }
+            };
+            localStorage.setItem('mlt_users_sb', JSON.stringify(users));
+            if(window.showToast) window.showToast('Datos Inicializados', 'Perfiles simulados restaurados.', 'fa-database', 'text-purple-600');
+            if(isSuperAdmin) renderAdminUserList();
+        };
+
+        if(!localStorage.getItem('mlt_users_sb')) window.seedMockUsers();
+
+        // --- Database Sync (Supabase vs LocalStorage) ---
+        async function fetchUsersFromDB() {
+            if(supabase) {
+                const { data, error } = await supabase.from('profiles').select('*');
+                if(!error && data.length > 0) {
+                    let uMap = {};
+                    data.forEach(d => { uMap[d.login_key] = d.payload; });
+                    return uMap;
+                }
+            }
+            return JSON.parse(localStorage.getItem('mlt_users_sb') || '{}');
+        }
+
+        async function syncUserToDB(userObj, loginKey) {
+            if(supabase) {
+                const key = loginKey || Object.keys(JSON.parse(localStorage.getItem('mlt_users_sb') || '{}')).find(k => JSON.parse(localStorage.getItem('mlt_users_sb') || '{}')[k].uid === userObj.uid);
+                await supabase.from('profiles').upsert({ id: userObj.uid, login_key: key, payload: userObj });
+            } else {
+                const users = JSON.parse(localStorage.getItem('mlt_users_sb') || '{}');
+                const oldKey = Object.keys(users).find(k => users[k].uid === userObj.uid);
+                if(oldKey && oldKey !== loginKey) delete users[oldKey];
+                users[loginKey || oldKey] = userObj;
+                localStorage.setItem('mlt_users_sb', JSON.stringify(users));
+            }
+        }
+        
+        async function fetchCampaignsFromDB(uid) {
+            if(supabase) {
+                const { data, error } = await supabase.from('campaigns').select('*').eq('uid', uid);
+                if(!error) return data.map(d => d.payload);
+            }
+            return currentUserData.campaigns || [];
+        }
+
+        async function syncCampaignToDB(campaignObj) {
+            if(supabase) {
+                await supabase.from('campaigns').upsert({ id: campaignObj.id, uid: viewedUserId, payload: campaignObj });
+            } else {
+                if(!currentUserData.campaigns) currentUserData.campaigns = [];
+                const idx = currentUserData.campaigns.findIndex(c => c.id === campaignObj.id);
+                if(idx !== -1) currentUserData.campaigns[idx] = campaignObj;
+                else currentUserData.campaigns.push(campaignObj);
+                await syncUserToDB(currentUserData);
+            }
+        }
+        
+        async function deleteCampaignFromDB(campId) {
+            if(supabase) {
+                await supabase.from('campaigns').delete().eq('id', campId);
+            } else {
+                currentUserData.campaigns = currentUserData.campaigns.filter(c => c.id !== campId);
+                await syncUserToDB(currentUserData);
+            }
+        }
+
+        // --- Authentication ---
+        let pinBuffer = '';
+
+        document.getElementById('loginBusiness').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); showLoginPin(); }
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (!document.getElementById('auth-login-pin').classList.contains('hidden')) {
+                if (e.key >= '0' && e.key <= '9') handlePinInput(e.key);
+                if (e.key === 'Backspace') handlePinInput('<');
+            }
+        });
+
+        window.switchAuthView = (view) => {
+            document.querySelectorAll('#authContainer > div.flex-1 > div').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`auth-${view}`).classList.remove('hidden');
+            if(view === 'login') pinBuffer = '';
+        };
+
+        window.showLoginPin = async () => {
+            let biz = document.getElementById('loginBusiness').value.trim().toLowerCase();
+            if(!biz) { window.showToast('Atención', 'Ingresa el nombre del negocio o titular.', 'fa-exclamation-triangle', 'text-red-500'); return; }
+            
+            const users = await fetchUsersFromDB();
+            
+            const foundKey = Object.keys(users).find(k => 
+                k.toLowerCase() === biz ||
+                users[k].originalName.toLowerCase() === biz || 
+                users[k].ownerName.toLowerCase() === biz
+            );
+            
+            if(!foundKey) { window.showToast('Error', 'Usuario no encontrado.', 'fa-circle-xmark', 'text-red-500'); return; }
+            
+            document.getElementById('displayLoginBusiness').innerText = users[foundKey].originalName;
+            document.getElementById('displayLoginBusiness').dataset.bizKey = foundKey;
+            pinBuffer = ''; updatePinDots('loginPinDots', 0);
+            switchAuthView('login-pin');
+        };
+
+        function createNumpad(containerId) {
+            const container = document.getElementById(containerId); container.innerHTML = '';
+            [1,2,3,4,5,6,7,8,9,'',0,'<'].forEach(d => {
+                const btn = document.createElement('button');
+                btn.className = 'numpad-btn ' + (d === '' ? 'invisible pointer-events-none' : '');
+                btn.innerHTML = d === '<' ? '<i class="fa-solid fa-delete-left"></i>' : d;
+                if(d !== '') btn.onclick = () => handlePinInput(d);
+                container.appendChild(btn);
+            });
+        }
+        createNumpad('numpadLogin');
+
+        function handlePinInput(val) {
+            if (val === '<') pinBuffer = pinBuffer.slice(0, -1);
+            else if (pinBuffer.length < 6) pinBuffer += val;
+            updatePinDots('loginPinDots', pinBuffer.length);
+            if (pinBuffer.length === 6) setTimeout(() => processPinComplete(), 150);
+        }
+
+        function updatePinDots(containerId, count) {
+            const dots = document.getElementById(containerId).children;
+            for(let i=0; i<6; i++) {
+                if(i < count) Object.assign(dots[i].style, { background: '#FFE200', boxShadow: '0 0 12px rgba(255, 226, 0, 0.6)', transform: 'scale(1.2)' });
+                else Object.assign(dots[i].style, { background: 'rgba(255,255,255,0.15)', boxShadow: 'none', transform: 'scale(1)' });
+            }
+        }
+
+        async function processPinComplete() {
+            const bizKey = document.getElementById('displayLoginBusiness').dataset.bizKey;
+            const users = await fetchUsersFromDB();
+            
+            if(users[bizKey].pin === pinBuffer) {
+                document.getElementById('authContainer').classList.add('hidden');
+                const loader = document.getElementById('loadingScreen');
+                const bar = document.getElementById('loadingBarProgress');
+                loader.classList.remove('hidden'); loader.classList.add('flex');
+                bar.classList.add('animate-fill-bar');
+                
+                setTimeout(async () => {
+                    await performLogin(users[bizKey]);
+                    loader.classList.add('hidden'); loader.classList.remove('flex');
+                    bar.classList.remove('animate-fill-bar');
+                }, 1600); 
+
+            } else {
+                window.showToast('Error', 'PIN incorrecto.', 'fa-lock', 'text-red-500');
+                pinBuffer = ''; updatePinDots('loginPinDots', 0);
+            }
+        }
+
+        async function performLogin(userData) {
+            currentUserId = userData.uid; currentUserData = userData;
+            isSuperAdmin = userData.isAdmin || false; viewedUserId = currentUserId; 
+            
+            await setupDashboardUI();
+            document.getElementById('appContainer').classList.remove('hidden');
+            document.getElementById('appContainer').classList.add('flex');
+            
+            window.showToast('👋 ¡Sesión Iniciada!', `Hola ${userData.ownerName}.`, 'fa-bolt', 'text-custom-main');
+
+            if(isSuperAdmin) { await renderAdminUserList(); switchDashboardTab('admin'); } 
+            else { switchDashboardTab('resumen'); }
+        }
+
+        async function setupDashboardUI() {
+            document.getElementById('dashBusinessName').innerText = currentUserData.originalName;
+            document.getElementById('dashUserName').innerText = currentUserData.ownerName;
+            
+            const mediaContainer = document.getElementById('heroMediaContainer');
+            const mediaUrl = currentUserData.videoUrl || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop';
+            const isVideo = mediaUrl.match(/\.(mp4|webm|ogg)$/i);
+            mediaContainer.innerHTML = isVideo 
+                ? `<video src="${mediaUrl}" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500"></video>` 
+                : `<img src="${mediaUrl}" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500">`;
+            
+            const logoImg = document.getElementById('clientHeroLogo');
+            if(currentUserData.logoUrl) { logoImg.src = currentUserData.logoUrl; logoImg.classList.remove('hidden'); }
+            else { logoImg.classList.add('hidden'); }
+
+            const srv = currentUserData.activeServices || [];
+            
+            if(srv.some(s => s.includes('_ads'))) {
+                document.getElementById('adsMetricsSection').classList.remove('hidden'); document.getElementById('adsMetricsSection').classList.add('flex');
+                document.getElementById('tabBtnAnuncios').classList.remove('hidden');
+            } else {
+                document.getElementById('adsMetricsSection').classList.add('hidden'); document.getElementById('adsMetricsSection').classList.remove('flex');
+                document.getElementById('tabBtnAnuncios').classList.add('hidden');
+            }
+
+            if(srv.includes('web_dev')) {
+                document.getElementById('webDevTrackerSection').classList.remove('hidden'); document.getElementById('webDevTrackerSection').classList.add('flex');
+                renderAgileTasks();
+            } else {
+                document.getElementById('webDevTrackerSection').classList.add('hidden'); document.getElementById('webDevTrackerSection').classList.remove('flex');
+            }
+
+            if(srv.includes('consulting')) {
+                document.getElementById('consultingTrackerSection').classList.remove('hidden'); document.getElementById('consultingTrackerSection').classList.add('flex');
+                renderConsultingSection();
+            } else {
+                document.getElementById('consultingTrackerSection').classList.add('hidden'); document.getElementById('consultingTrackerSection').classList.remove('flex');
+            }
+
+            if(isSuperAdmin) {
+                document.getElementById('adminTabBtn').classList.remove('hidden'); document.getElementById('adminIndicator').classList.remove('hidden');
+                document.querySelectorAll('.admin-only').forEach(el => { el.classList.remove('hidden'); if(el.tagName!=='TH'&&el.tagName!=='TD') el.classList.add('flex'); });
+                const b = document.getElementById('btnEditBudget'); if(b) {b.classList.remove('hidden'); b.classList.add('flex');}
+                const mw = document.getElementById('btnManageWeb'); if(mw) {mw.classList.remove('hidden'); mw.classList.add('flex');}
+            } else {
+                document.getElementById('adminTabBtn').classList.add('hidden'); document.getElementById('adminIndicator').classList.add('hidden');
+                document.querySelectorAll('.admin-only').forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
+                const b = document.getElementById('btnEditBudget'); if(b) {b.classList.add('hidden'); b.classList.remove('flex');}
+                const mw = document.getElementById('btnManageWeb'); if(mw) {mw.classList.add('hidden'); mw.classList.remove('flex');}
+            }
+
+            renderServicesGrid();
+            
+            if(srv.some(s => s.includes('_ads'))) {
+                campaignsData = await fetchCampaignsFromDB(viewedUserId);
+                updateDashboardKPIs(); renderTable();
+            }
+        }
+
+        // --- ADMIN FUNCTIONS ---
+        window.adminViewClient = async (uid) => {
+            if(!isSuperAdmin) return;
+            const users = await fetchUsersFromDB();
+            const target = Object.values(users).find(u => u.uid === uid);
+            if(!target) return;
+            viewedUserId = uid; currentUserData = target;
+            await setupDashboardUI(); switchDashboardTab('resumen');
+        };
+
+        window.openClientModal = async (uid) => {
+            if(!isSuperAdmin) return;
+            const users = await fetchUsersFromDB();
+            const userKey = Object.keys(users).find(k => users[k].uid === uid);
+            const target = users[userKey];
+            if(!target) return;
+            
+            document.getElementById('editClientUid').value = target.uid;
+            document.getElementById('editClientOriginalUserKey').value = userKey;
+            document.getElementById('editClientBiz').value = target.originalName;
+            document.getElementById('editClientName').value = target.ownerName;
+            document.getElementById('editClientUserKey').value = userKey;
+            document.getElementById('editClientRuc').value = target.ruc || '';
+            document.getElementById('editClientPhone').value = target.phone || '';
+            document.getElementById('editClientPin').value = target.pin;
+            document.getElementById('editClientVideo').value = target.videoUrl || '';
+            document.getElementById('editClientLogo').value = target.logoUrl || '';
+            
+            document.getElementById('clientModal').classList.remove('hidden');
+        };
+
+        window.closeClientModal = () => document.getElementById('clientModal').classList.add('hidden');
+
+        window.saveClientEdit = async () => {
+            const uid = document.getElementById('editClientUid').value;
+            const oldKey = document.getElementById('editClientOriginalUserKey').value;
+            const newKey = document.getElementById('editClientUserKey').value.trim().toLowerCase();
+            
+            const users = await fetchUsersFromDB();
+            let userData = users[oldKey];
+            if(!userData) return;
+
+            userData.originalName = document.getElementById('editClientBiz').value;
+            userData.ownerName = document.getElementById('editClientName').value;
+            userData.ruc = document.getElementById('editClientRuc').value;
+            userData.phone = document.getElementById('editClientPhone').value;
+            userData.pin = document.getElementById('editClientPin').value;
+            userData.videoUrl = document.getElementById('editClientVideo').value;
+            userData.logoUrl = document.getElementById('editClientLogo').value;
+            
+            await syncUserToDB(userData, newKey);
+            
+            await renderAdminUserList(); 
+            closeClientModal();
+            window.showToast('Actualizado', 'Datos modificados correctamente.', 'fa-user-pen', 'text-blue-600');
+        };
+
+        window.toggleClientService = async (uid, serviceId) => {
+            if(!isSuperAdmin) return;
+            const users = await fetchUsersFromDB();
+            const k = Object.keys(users).find(k => users[k].uid === uid);
+            let s = users[k].activeServices || [];
+            if(s.includes(serviceId)) s = s.filter(x => x !== serviceId); else s.push(serviceId);
+            users[k].activeServices = s;
+            
+            await syncUserToDB(users[k], k);
+            
+            if(viewedUserId === uid) { currentUserData = users[k]; await setupDashboardUI(); }
+            await renderAdminUserList();
+        };
+
+        async function renderAdminUserList() {
+            const tbody = document.getElementById('adminUserTable'); tbody.innerHTML = '';
+            const users = await fetchUsersFromDB();
+            const sLabels = { 'meta_ads':'Meta', 'tiktok_ads':'TikTok', 'google_ads':'Google', 'pinterest_ads':'Pinterest', 'web_dev':'Web', 'consulting':'Growth', 'tech_tools': 'Tools', 'ai_automations':'IA', 'brandbook':'Brand' };
+
+            Object.keys(users).forEach(key => {
+                const u = users[key];
+                if(u.isAdmin) return;
+                let badges = '';
+                Object.keys(sLabels).forEach(sk => {
+                    const active = (u.activeServices||[]).includes(sk);
+                    badges += `<button onclick="toggleClientService('${u.uid}','${sk}')" class="px-2 py-0.5 rounded text-[10px] border transition-colors ${active?'bg-purple-100 text-purple-700 border-purple-200 font-bold':'bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-200'}">${sLabels[sk]}</button>`;
+                });
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 font-extrabold text-gray-900">${u.originalName}</td>
+                        <td class="px-4 py-3 text-gray-600 font-bold">${u.ownerName}</td>
+                        <td class="px-4 py-3 text-purple-600 font-mono font-bold">${key}</td>
+                        <td class="px-4 py-3 text-purple-700 font-mono font-bold">${u.pin}</td>
+                        <td class="px-4 py-3"><div class="flex flex-wrap gap-1 w-56">${badges}</div></td>
+                        <td class="px-4 py-3 text-center flex flex-col gap-1">
+                            <button onclick="adminViewClient('${u.uid}')" class="w-full px-3 py-1.5 bg-gray-100 text-gray-700 font-bold rounded-lg hover:bg-gray-200 text-xs">Ver Panel</button>
+                            <button onclick="openClientModal('${u.uid}')" class="w-full px-3 py-1.5 bg-blue-50 text-blue-700 font-bold rounded-lg hover:bg-blue-100 text-xs">Editar</button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        // --- CONSULTING GROWTH UI (Fixed overlap) ---
+        function renderConsultingSection() {
+            const data = currentUserData.consulting || { stage: 0, focus: 'Diagnóstico del modelo de negocio.', okrs: [] };
+            
+            const stages = ['Sesión de diagnóstico', 'Plan de acción', 'Implementación (acompañamiento)', 'Resultados'];
+            const w = data.stage === 0 ? 0 : (data.stage / (stages.length - 1)) * 100;
+            document.getElementById('consultingProgressBar').style.width = `${w}%`;
+            
+            const stepsContainer = document.getElementById('consultingPipelineSteps'); stepsContainer.innerHTML = '';
+            stages.forEach((st, i) => {
+                const isActive = i <= data.stage;
+                const dotClr = isActive ? 'bg-custom-accent shadow-neon z-10 relative' : 'bg-gray-700 z-10 relative';
+                const txtClr = isActive ? 'text-white' : 'text-gray-500';
+                stepsContainer.innerHTML += `
+                    <div class="flex flex-col items-center w-1/4 relative">
+                        <div class="w-4 h-4 rounded-full ${dotClr}"></div>
+                        <p class="mt-3 text-[10px] md:text-xs font-bold ${txtClr} text-center leading-tight absolute top-4 w-24">${st}</p>
+                    </div>`;
+            });
+
+            document.getElementById('consultingFocusText').innerText = data.focus;
+            
+            const okrList = document.getElementById('consultingOkrsList'); okrList.innerHTML = '';
+            (data.okrs||[]).forEach(okr => {
+                okrList.innerHTML += `<li class="flex items-start gap-3"><i class="fa-solid fa-play text-custom-accent text-xs mt-1 shadow-neon"></i><div><p class="font-bold text-sm text-white">${okr.title}</p><p class="text-xs text-gray-400 mt-1">${okr.desc}</p></div></li>`;
+            });
+        }
+
+        window.openConsultingModal = () => {
+            if(!isSuperAdmin) return;
+            const data = currentUserData.consulting || { stage: 0, focus: '', okrs: [] };
+            document.getElementById('consultingStageSelect').value = data.stage;
+            document.getElementById('consultingFocusInput').value = data.focus;
+            renderAdminOkrsList();
+            document.getElementById('consultingModal').classList.remove('hidden');
+        };
+        window.closeConsultingModal = () => document.getElementById('consultingModal').classList.add('hidden');
+        
+        function renderAdminOkrsList() {
+            const list = document.getElementById('adminOkrList'); list.innerHTML = '';
+            const okrs = (currentUserData.consulting?.okrs || []);
+            okrs.forEach((o, i) => {
+                list.innerHTML += `<li class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 text-gray-900"><div><span class="font-bold">${o.title}</span> - <span class="text-gray-500">${o.desc}</span></div><button onclick="delOkr(${i})" class="text-red-500"><i class="fa-solid fa-trash"></i></button></li>`;
+            });
+        }
+        window.addOkr = async () => {
+            const t = document.getElementById('consultingOkrTitle').value; const d = document.getElementById('consultingOkrDesc').value;
+            if(!t) return;
+            if(!currentUserData.consulting) currentUserData.consulting = { stage: 0, focus: '', okrs: [] };
+            if(!currentUserData.consulting.okrs) currentUserData.consulting.okrs = [];
+            currentUserData.consulting.okrs.push({title: t, desc: d});
+            document.getElementById('consultingOkrTitle').value = ''; document.getElementById('consultingOkrDesc').value = '';
+            renderAdminOkrsList(); await syncUserToDB(currentUserData);
+        };
+        window.delOkr = async (idx) => { currentUserData.consulting.okrs.splice(idx,1); await syncUserToDB(currentUserData); renderAdminOkrsList(); };
+        window.saveConsultingState = async () => {
+            if(!currentUserData.consulting) currentUserData.consulting = { stage: 0, focus: '', okrs: [] };
+            currentUserData.consulting.stage = parseInt(document.getElementById('consultingStageSelect').value);
+            currentUserData.consulting.focus = document.getElementById('consultingFocusInput').value;
+            await syncUserToDB(currentUserData); renderConsultingSection(); closeConsultingModal();
+        };
+
+        // --- WEB DEV AGILE ---
+        window.openWebModal = () => { if(!isSuperAdmin) return; renderAdminTaskList(); selectWebColumn('req'); document.getElementById('webTaskInput').value = ''; document.getElementById('webModal').classList.remove('hidden'); };
+        window.closeWebModal = () => document.getElementById('webModal').classList.add('hidden');
+        window.selectWebColumn = (val) => {
+            document.querySelectorAll('.col-btn').forEach(b => {
+                if(b.dataset.val === val) { b.classList.add('active','bg-white','shadow-sm','text-purple-700'); b.classList.remove('text-gray-500'); } 
+                else { b.classList.remove('active','bg-white','shadow-sm','text-purple-700'); b.classList.add('text-gray-500'); }
+            });
+        };
+        function renderAdminTaskList() {
+            const lc = document.getElementById('adminTaskList'); lc.innerHTML = '';
+            const t = currentUserData.webTasks || { req: [], dev: [], qa: [], launch: [] };
+            const n = { req: 'Req.', dev: 'Des.', qa: 'QA', launch: 'Lanz.' };
+            Object.keys(t).forEach(k => {
+                (t[k] || []).forEach((task, i) => {
+                    lc.innerHTML += `<div class="flex items-center justify-between bg-gray-50 p-2.5 rounded-lg border border-gray-100 text-xs mb-1.5"><div class="flex items-center gap-2"><span class="px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded font-bold">${n[k]}</span><span class="font-medium text-gray-800">${task.text}</span></div><button onclick="deleteWebTask('${k}',${i})" class="text-gray-400 hover:text-red-500 p-1"><i class="fa-solid fa-trash"></i></button></div>`;
+                });
+            });
+        }
+        window.addWebTask = async () => {
+            const text = document.getElementById('webTaskInput').value.trim(); if(!text) return;
+            const col = document.querySelector('.col-btn.active').dataset.val;
+            if(!currentUserData.webTasks) currentUserData.webTasks = { req: [], dev: [], qa: [], launch: [] };
+            currentUserData.webTasks[col].push({ text, done: false });
+            await syncUserToDB(currentUserData); document.getElementById('webTaskInput').value = ''; renderAdminTaskList(); renderAgileTasks();
+        };
+        window.deleteWebTask = async (k, i) => { currentUserData.webTasks[k].splice(i,1); await syncUserToDB(currentUserData); renderAdminTaskList(); renderAgileTasks(); };
+
+        function renderAgileTasks() {
+            const tasks = currentUserData.webTasks || { req: [], dev: [], qa: [], launch: [] };
+            const c = document.getElementById('agileColumnsContainer'); c.innerHTML = '';
+            const n = { req: 'Requerimientos', dev: 'En Desarrollo', qa: 'Pruebas QA', launch: 'Lanzamiento' };
+            const clr = { req: 'blue', dev: 'amber', qa: 'gray', launch: 'purple' };
+            
+            Object.keys(n).forEach(k => {
+                let lis = '';
+                if((tasks[k]||[]).length===0) lis = '<li class="text-gray-400 text-[11px] py-1 italic">Sin asignar</li>';
+                else (tasks[k]||[]).forEach(t => { lis += `<li class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex items-center gap-2 text-xs font-medium text-gray-700 min-w-[200px]"><i class="fa-solid fa-code text-${clr[k]}-500"></i> ${t.text}</li>`; });
+                c.innerHTML += `<div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm min-w-[240px] flex-shrink-0"><div class="flex items-center justify-between mb-3"><h4 class="font-extrabold text-gray-900 text-sm">${n[k]}</h4></div><ul class="space-y-2">${lis}</ul></div>`;
+            });
+        }
+
+
+        window.logout = () => { location.reload(); };
+
+        const fmtCurr = (v) => new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(v);
+        const fmtNum = (v) => new Intl.NumberFormat('en-US').format(v);
+
+        function updateDashboardKPIs() {
+            let tSpend = 0, tLeads = 0;
+            campaignsData.forEach(c => { tSpend += parseFloat(c.spend)||0; tLeads += parseInt(c.leads)||0; });
+            const currentBudget = currentUserData.monthlyBudget || 300;
+            const cpl = tLeads > 0 ? tSpend / tLeads : 0;
+            const pctBudget = Math.min((tSpend / currentBudget) * 100, 100);
+
+            document.getElementById('kpi-budget').innerText = fmtCurr(currentBudget);
+            document.getElementById('kpi-spent').innerText = fmtCurr(tSpend);
+            document.getElementById('budget-progress').style.width = pctBudget + '%';
+            document.getElementById('kpi-leads').innerText = fmtNum(tLeads);
+            document.getElementById('kpi-cpl').innerText = fmtCurr(cpl);
+
+            const cplInd = document.getElementById('cpl-indicator');
+            if(cpl === 0) cplInd.innerHTML = "--";
+            else if(cpl < 15) { cplInd.className = "bg-finance-upBg text-finance-up px-2 py-1 rounded text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-down mr-0.5"></i> Óptimo'; }
+            else { cplInd.className = "bg-finance-downBg text-finance-down px-2 py-1 rounded text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-up mr-0.5"></i> Alto'; }
+            
+            updateMonthlyChart();
+        }
+
+        // --- MANUAL CHART EDITING ---
+        window.openChartModal = () => {
+            if(!isSuperAdmin) return;
+            document.getElementById('editChartIdx').value = '';
+            document.getElementById('chartInputMonth').value = '';
+            document.getElementById('chartInputLeads').value = '';
+            renderAdminChartList();
+            document.getElementById('chartDataModal').classList.remove('hidden');
+        };
+        window.closeChartModal = () => document.getElementById('chartDataModal').classList.add('hidden');
+        
+        const formatMonthInput = (yyyyMm) => { // format "2026-05" -> "May 26"
+            if(!yyyyMm) return '';
+            const [y, m] = yyyMm.split('-');
+            const monthNames = { '01':'Ene', '02':'Feb', '03':'Mar', '04':'Abr', '05':'May', '06':'Jun', '07':'Jul', '08':'Ago', '09':'Sep', '10':'Oct', '11':'Nov', '12':'Dic' };
+            return `${monthNames[m]} ${y.slice(2)}`;
+        };
+
+        function renderAdminChartList() {
+            const list = document.getElementById('adminChartList'); list.innerHTML = '';
+            const mChart = currentUserData.manualChart || [];
+            mChart.sort((a,b) => a.month.localeCompare(b.month)).forEach((d, i) => {
+                list.innerHTML += `<li class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 text-gray-900 text-xs">
+                    <div><span class="font-bold text-gray-800">${formatMonthInput(d.month)}</span> | Leads: <span class="text-custom-main font-bold">${d.leads}</span></div>
+                    <div>
+                        <button onclick="editChartRow(${i})" class="text-blue-500 mr-3 hover:text-blue-700 transition-colors"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="delChartRow(${i})" class="text-red-500 hover:text-red-700 transition-colors"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </li>`;
+            });
+        }
+
+        window.editChartRow = (idx) => {
+            const mChart = currentUserData.manualChart || [];
+            if(mChart[idx]) {
+                document.getElementById('editChartIdx').value = idx; // store index
+                document.getElementById('chartInputMonth').value = mChart[idx].month; // yyyy-mm format matches native input
+                document.getElementById('chartInputLeads').value = mChart[idx].leads;
+            }
+        };
+
+        window.addChartRow = () => {
+            const m = document.getElementById('chartInputMonth').value; // format: "2026-05"
+            const l = parseInt(document.getElementById('chartInputLeads').value) || 0;
+            if(!m) { window.showToast('Atención', 'Selecciona un mes y año válido', 'fa-exclamation-triangle', 'text-orange-500'); return; }
+            
+            if(!currentUserData.manualChart) currentUserData.manualChart = [];
+            
+            const idx = document.getElementById('editChartIdx').value;
+            if (idx !== '') {
+                currentUserData.manualChart[idx] = { month: m, leads: l };
+                document.getElementById('editChartIdx').value = '';
+            } else {
+                const existingIdx = currentUserData.manualChart.findIndex(x => x.month === m);
+                if(existingIdx !== -1) currentUserData.manualChart[existingIdx].leads = l;
+                else currentUserData.manualChart.push({ month: m, leads: l });
+            }
+            
+            document.getElementById('chartInputMonth').value = '';
+            document.getElementById('chartInputLeads').value = '';
+            renderAdminChartList();
+        };
+        
+        window.delChartRow = (idx) => { currentUserData.manualChart.splice(idx,1); renderAdminChartList(); };
+        window.saveChartData = async () => { await syncUserToDB(currentUserData); updateMonthlyChart(); closeChartModal(); window.showToast('Actualizado', 'Datos manuales aplicados al gráfico.', 'fa-chart-line', 'text-blue-600'); };
+
+        function updateMonthlyChart() {
+            let dist = {};
+
+            if (currentUserData.manualChart && currentUserData.manualChart.length > 0) {
+                // Use strict manual overrides if present
+                currentUserData.manualChart.forEach(d => {
+                    dist[d.month] = parseInt(d.leads) || 0;
+                });
+            } else {
+                // Calculate natively from CSV start/end dates
+                campaignsData.forEach(c => {
+                    if(!c.createdAt || !c.endAt || c.leads <= 0) return;
+                    let s = new Date(c.createdAt), e = new Date(c.endAt);
+                    let days = (e-s)/(1000*60*60*24); if(days<1) days=1;
+                    let lpd = c.leads / days;
+                    
+                    for(let d=new Date(s); d<=e; d.setDate(d.getDate()+1)) {
+                        let key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+                        dist[key] = (dist[key] || 0) + lpd;
+                    }
+                });
+            }
+
+            let keys = Object.keys(dist).sort();
+            if(keys.length === 0) { keys = ['2026-01','2026-02']; dist = {'2026-01':0,'2026-02':0}; }
+            
+            const labels = keys.map(k => formatMonthInput(k));
+            const dataLeads = keys.map(k => Math.round(dist[k]));
+
+            renderChart(labels, dataLeads);
+        }
+
+        function renderChart(labels, dataLeads) {
+            const ctx = document.getElementById('leadsChart').getContext('2d');
+            let gradLeads = ctx.createLinearGradient(0, 0, 0, 300); gradLeads.addColorStop(0, '#00638E'); gradLeads.addColorStop(1, '#8CB9CC'); 
+            
+            if(chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: { 
+                    labels, 
+                    datasets: [
+                        { type: 'bar', label: 'Contactos (Leads)', data: dataLeads, backgroundColor: gradLeads, borderRadius: 6, maxBarThickness: 45 }
+                    ] 
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } }, 
+                    scales: { 
+                        y: { beginAtZero: true, grid: { borderDash: [4,4] }, border: { display: false } }, 
+                        x: { grid: { display: false }, border: { display: false } } 
+                    } 
+                }
+            });
+        }
+
+        // --- SERVICES GRID ---
+        function renderServicesGrid() {
+            const mktContainer = document.getElementById('servicesGridMkt'); mktContainer.innerHTML = '';
+            const prodContainer = document.getElementById('servicesGridProd'); prodContainer.innerHTML = '';
+            
+            if(pulseInterval) clearInterval(pulseInterval);
+
+            const allSrv = [
+                { cat: 'mkt', id: 'meta_ads', title: 'Meta Ads', icon: 'fa-brands fa-facebook', c: 'text-blue-600', b: 'bg-blue-50' },
+                { cat: 'mkt', id: 'google_ads', title: 'Google & YT', icon: 'fa-brands fa-google', c: 'text-red-500', b: 'bg-red-50' },
+                { cat: 'mkt', id: 'tiktok_ads', title: 'TikTok Ads', icon: 'fa-brands fa-tiktok', c: 'text-black', b: 'bg-gray-100' },
+                { cat: 'mkt', id: 'pinterest_ads', title: 'Pinterest Ads', icon: 'fa-brands fa-pinterest', c: 'text-red-600', b: 'bg-red-50' },
+                { cat: 'mkt', id: 'brandbook', title: 'Manual de Marca', icon: 'fa-solid fa-swatchbook', c: 'text-pink-500', b: 'bg-pink-50' },
+                { cat: 'prod', id: 'web_dev', title: 'Desarrollo Web', icon: 'fa-solid fa-laptop-code', c: 'text-purple-600', b: 'bg-purple-50' },
+                { cat: 'prod', id: 'consulting', title: 'Consultoría Growth', icon: 'fa-solid fa-chess-knight', c: 'text-emerald-600', b: 'bg-emerald-50' },
+                { cat: 'prod', id: 'tech_tools', title: 'Herr. Digitales', icon: 'fa-solid fa-wrench', c: 'text-slate-600', b: 'bg-slate-100' },
+                { cat: 'prod', id: 'ai_automations', title: 'Autom. IA', icon: 'fa-solid fa-robot', c: 'text-orange-500', b: 'bg-orange-50' }
+            ];
+
+            const act = currentUserData.activeServices || [];
+            allSrv.forEach((s) => {
+                const isAct = act.includes(s.id);
+                const cardC = isAct ? `bg-white shadow-sm border-gray-200` : `locked-service-btn locked bg-gray-50/50`;
+                const iC = isAct ? `${s.b} ${s.c}` : `bg-gray-200 text-gray-500`;
+                const btn = isAct ? `<span class="text-[10px] font-extrabold text-custom-main"><i class="fa-solid fa-check"></i> Activo</span>` 
+                    : `<button class="text-[10px] font-bold bg-white shadow-sm border px-3 py-1.5 rounded-lg flex gap-1"><i class="fa-solid fa-plus text-custom-accent"></i> Agregar</button>`;
+
+                const action = !isAct ? (s.cat === 'mkt' ? 'window.open(\'https://matiaslunateran.com\', \'_blank\')' : 'window.open(\'https://wa.link/umhrbw\', \'_blank\')') : '';
+
+                const html = `<div class="service-card p-5 rounded-[20px] border ${cardC} flex items-center justify-between min-w-[260px] flex-shrink-0" onclick="${action}"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center ${iC} text-lg"><i class="${s.icon}"></i></div><h4 class="font-extrabold text-gray-900 text-sm">${s.title}</h4></div>${btn}</div>`;
+                
+                if(s.cat === 'mkt') mktContainer.innerHTML += html;
+                else prodContainer.innerHTML += html;
+            });
+
+            // Random pulse for locked services
+            pulseInterval = setInterval(() => {
+                const btns = document.querySelectorAll('.locked-service-btn');
+                if(!btns.length) return;
+                btns.forEach(b => b.classList.remove('pulse-glow'));
+                btns[Math.floor(Math.random() * btns.length)].classList.add('pulse-glow');
+            }, 3000);
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('dataTableBody'); tbody.innerHTML = '';
+            if(!campaignsData.length) { tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400 font-medium">No hay anuncios registrados.</td></tr>`; return; }
+
+            campaignsData.sort((a,b) => b.createdAt - a.createdAt).forEach(c => {
+                const cpl = c.leads > 0 ? (c.spend / c.leads) : 0;
+                let cplClr = 'text-gray-900 font-bold';
+                if(cpl>0 && cpl<15) cplClr = 'text-finance-up font-extrabold'; else if(cpl>=15) cplClr = 'text-finance-down font-bold';
+                const pIcons = { 'Meta Ads':'fa-facebook text-blue-600', 'Google Ads':'fa-google text-red-500', 'TikTok Ads':'fa-tiktok text-black', 'Pinterest Ads':'fa-pinterest text-red-600' };
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 border-b border-gray-50">
+                        <td class="px-5 py-4"><div class="font-extrabold text-gray-900 text-sm">${c.name}</div><div class="text-[11px] text-gray-500 mt-1"><i class="fa-brands ${pIcons[c.platform]||'fa-rectangle-ad'}"></i> ${c.platform}</div></td>
+                        <td class="px-5 py-4"><div class="text-xs font-bold text-gray-700">R: ${fmtNum(c.reach||0)}</div><div class="text-[10px] text-gray-400">I: ${fmtNum(c.imp||0)}</div></td>
+                        <td class="px-5 py-4 text-right font-extrabold text-gray-700 text-sm">${fmtCurr(c.spend)}</td>
+                        <td class="px-5 py-4 text-center font-extrabold text-custom-main text-sm">${fmtNum(c.leads)}</td>
+                        <td class="px-5 py-4 text-right ${cplClr} text-sm">${fmtCurr(cpl)}</td>
+                        <td class="px-5 py-4 text-center admin-only ${isSuperAdmin?'':'hidden'}">
+                            <button onclick="editCamp('${c.id}')" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="delDoc('${c.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        window.switchDashboardTab = (tId) => {
+            document.querySelectorAll('.dash-tab').forEach(el => { el.classList.remove('active','bg-white','shadow-sm','text-custom-main'); if(!el.classList.contains('text-purple-600')) el.classList.add('text-gray-500'); });
+            const act = document.querySelector(`.dash-tab[data-tab="${tId}"]`); if(act&&!act.classList.contains('text-purple-600')) act.classList.add('active','bg-white','shadow-sm','text-custom-main');
+            document.querySelectorAll('.dash-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tId}`).classList.remove('hidden'); document.getElementById(`tab-${tId}`).classList.add('flex');
+            if(tId==='resumen') setTimeout(() => { if(chartInstance) chartInstance.resize(); else updateMonthlyChart(); }, 100);
+        };
+
+        // --- CSV UPLOAD ---
+        document.getElementById('csvFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0]; if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) { parseMetaCSV(evt.target.result); e.target.value = ''; };
+            reader.readAsText(file);
+        });
+
+        function parseMetaCSV(csvText) {
+            const lines = csvText.split('\n').map(l => l.trim()).filter(l => l);
+            if(lines.length < 2) return;
+            
+            for(let i=1; i<lines.length; i++) {
+                const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
+                if(row.length < 10) continue;
+                
+                const cleanStr = (str) => (str||'').replace(/^"|"$/g, '');
+                const name = cleanStr(row[2]);
+                const leads = parseInt(cleanStr(row[4])) || 0;
+                const spend = parseFloat(cleanStr(row[9])) || 0;
+                const imp = parseInt(cleanStr(row[10])) || 0;
+                const reach = parseInt(cleanStr(row[11])) || 0;
+                
+                const parseDate = (str) => {
+                    if(!str) return Date.now();
+                    if(str.includes('/')) {
+                        const parts = str.split('/');
+                        return new Date(parts[2], parts[1]-1, parts[0]).getTime();
+                    }
+                    return new Date(str).getTime() || Date.now();
+                };
+
+                let startT = parseDate(cleanStr(row[0]));
+                let endT = parseDate(cleanStr(row[1]));
+
+                const newCamp = { id: 'csv_' + Date.now() + Math.random(), name: name, platform: 'Meta Ads', spend: spend, leads: leads, reach: reach, imp: imp, status: 'Activo', createdAt: startT, endAt: endT };
+                syncCampaignToDB(newCamp);
+            }
+            if(window.showToast) window.showToast('CSV Procesado', 'Se cargaron los datos exitosamente.', 'fa-file-csv', 'text-blue-600');
+            updateDashboardKPIs(); renderTable();
+        }
+        
+        // --- FORMS & MODALS ---
+        window.openBudgetModal = () => { if(!isSuperAdmin) return; document.getElementById('budgetInput').value = currentUserData.monthlyBudget || 300; document.getElementById('budgetModal').classList.remove('hidden'); };
+        window.closeBudgetModal = () => document.getElementById('budgetModal').classList.add('hidden');
+        window.saveBudget = async () => { if(!isSuperAdmin) return; currentUserData.monthlyBudget = parseFloat(document.getElementById('budgetInput').value)||0; await syncUserToDB(currentUserData); updateDashboardKPIs(); closeBudgetModal(); window.showToast('Actualizado', 'Presupuesto mensual modificado.', 'fa-wallet', 'text-blue-600'); };
+        
+        window.openFormModal = () => { 
+            if(!isSuperAdmin) return; 
+            document.getElementById('dataForm').reset(); 
+            document.getElementById('formId').value = ''; 
+            document.getElementById('formCreatedAt').value = '';
+            document.getElementById('formEndAt').value = '';
+            document.getElementById('modalTitle').innerText = 'Registrar Campaña';
+            document.getElementById('formModal').classList.remove('hidden'); 
+        };
+        window.closeFormModal = () => document.getElementById('formModal').classList.add('hidden');
+
+        // EDIT CAMPAIGN
+        window.editCamp = (id) => {
+            if(!isSuperAdmin) return;
+            const camp = campaignsData.find(c => c.id === id);
+            if(!camp) return;
+            document.getElementById('formId').value = camp.id;
+            document.getElementById('formName').value = camp.name;
+            document.getElementById('formPlatform').value = camp.platform;
+            document.getElementById('formSpend').value = camp.spend;
+            document.getElementById('formLeads').value = camp.leads;
+            document.getElementById('formReach').value = camp.reach;
+            document.getElementById('formImp').value = camp.imp;
+            document.getElementById('formCreatedAt').value = camp.createdAt || Date.now();
+            document.getElementById('formEndAt').value = camp.endAt || Date.now();
+            document.getElementById('modalTitle').innerText = 'Editar Campaña';
+            document.getElementById('formModal').classList.remove('hidden');
+        };
+
+        window.delDoc = async (id) => { 
+            if(!isSuperAdmin) return; 
+            await deleteCampaignFromDB(id); 
+            campaignsData = campaignsData.filter(c => c.id !== id);
+            updateDashboardKPIs(); renderTable(); 
+            window.showToast('Eliminado', 'Campaña borrada.', 'fa-trash', 'text-red-500'); 
+        };
+
+        document.getElementById('dataForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); if(!isSuperAdmin) return;
+            
+            const idToEdit = document.getElementById('formId').value;
+            const cAt = parseInt(document.getElementById('formCreatedAt').value) || Date.now();
+            const eAt = parseInt(document.getElementById('formEndAt').value) || Date.now();
+
+            const d = { 
+                name: document.getElementById('formName').value, 
+                platform: document.getElementById('formPlatform').value, 
+                spend: parseFloat(document.getElementById('formSpend').value)||0, 
+                leads: parseInt(document.getElementById('formLeads').value)||0, 
+                reach: parseInt(document.getElementById('formReach').value)||0, 
+                imp: parseInt(document.getElementById('formImp').value)||0, 
+                status: 'Activo', 
+                createdAt: cAt, 
+                endAt: eAt 
+            };
+            
+            if (idToEdit) { d.id = idToEdit; } else { d.id = 'manual_' + Date.now(); }
+
+            await syncCampaignToDB(d);
+            
+            // Re-fetch local cache
+            if(!currentUserData.campaigns) currentUserData.campaigns = [];
+            const idx = campaignsData.findIndex(c => c.id === d.id);
+            if(idx !== -1) campaignsData[idx] = d; else campaignsData.push(d);
+            
+            updateDashboardKPIs(); renderTable();
+            closeFormModal();
+            window.showToast('Guardado', 'Campaña registrada correctamente.', 'fa-save', 'text-blue-600');
+        });
+    </script>
+</body>
+</html>
