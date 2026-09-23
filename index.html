@@ -136,11 +136,12 @@
             <div id="auth-login" class="w-full max-w-sm flex flex-col fade-in my-auto">
                 <div class="text-center mb-8">
                     <h1 class="text-3xl font-bold mb-2">Bienvenido</h1>
-                    <p class="text-custom-light text-sm">Ingresa el nombre de tu negocio o titular</p>
+                    <p class="text-custom-light text-sm">Ingresa tu usuario</p>
                 </div>
                 <div class="space-y-6">
                     <div>
-                        <input type="text" id="loginBusiness" class="w-full p-4 premium-input rounded-2xl text-lg font-bold text-center" placeholder="Ej. Karate Imperio, Norvin...">
+                        <!-- SE APLICÓ RESTRICCIÓN AQUÍ TAMBIÉN -->
+                        <input type="text" id="loginBusiness" class="w-full p-4 premium-input rounded-2xl text-lg font-bold text-center" placeholder="Ej. matias, karate, norvin">
                     </div>
                     <button onclick="showLoginPin()" class="w-full py-4 bg-custom-accent text-custom-black font-extrabold rounded-2xl shadow-neon transition-transform hover:scale-105 active:scale-95 text-lg">
                         Siguiente
@@ -152,7 +153,7 @@
                 <div class="text-center mb-8 relative">
                     <button onclick="switchAuthView('login')" class="absolute left-0 top-1 text-custom-light p-2 hover:text-white transition-colors"><i class="fa-solid fa-arrow-left text-lg"></i></button>
                     <h2 class="text-2xl font-bold text-white" id="displayLoginBusiness">Negocio</h2>
-                    <p class="text-custom-light text-sm mt-1">Ingresa tu PIN (puedes usar el teclado)</p>
+                    <p class="text-custom-light text-sm mt-1">Ingresa tu PIN</p>
                 </div>
                 <div class="flex justify-center gap-4 mb-10" id="loginPinDots">
                     <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
@@ -167,7 +168,7 @@
     <!-- MAIN DASHBOARD -->
     <div id="appContainer" class="hidden h-full w-full bg-motion text-gray-900 flex flex-col relative overflow-hidden">
         
-        <header class="bg-white/80 backdrop-blur-md border-b border-custom-light/20 px-4 md:px-8 py-3 flex items-center justify-between sticky top-0 z-40">
+        <header class="bg-white/80 backdrop-blur-md border-b border-custom-light/20 px-3 md:px-8 py-3 flex items-center justify-between sticky top-0 z-40">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-custom-dark flex items-center justify-center shadow-lg shadow-custom-dark/30">
                     <i class="fa-solid fa-chart-simple text-custom-accent"></i>
@@ -179,20 +180,20 @@
             </div>
 
             <div class="flex bg-gray-100/80 p-1 rounded-full border border-gray-200 overflow-x-auto hide-scrollbar">
-                <button onclick="switchDashboardTab('resumen')" class="dash-tab active px-4 md:px-6 py-2 text-xs md:text-sm font-bold rounded-full transition-all bg-white shadow-sm text-custom-main" data-tab="resumen">Resumen</button>
-                <button onclick="switchDashboardTab('anuncios')" id="tabBtnAnuncios" class="dash-tab px-4 md:px-6 py-2 text-xs md:text-sm font-bold rounded-full transition-all text-gray-500 hover:text-gray-900" data-tab="anuncios">Anuncios</button>
-                <button id="adminTabBtn" onclick="switchDashboardTab('admin')" class="hidden dash-tab px-4 md:px-6 py-2 text-xs md:text-sm font-bold rounded-full transition-all text-purple-600 hover:bg-purple-50" data-tab="admin"><i class="fa-solid fa-crown mr-1"></i> Admin</button>
+                <button onclick="switchDashboardTab('resumen')" class="dash-tab active px-3 md:px-6 py-2 text-[11px] md:text-sm font-bold rounded-full transition-all bg-white shadow-sm text-custom-main whitespace-nowrap" data-tab="resumen">Resumen</button>
+                <button onclick="switchDashboardTab('anuncios')" id="tabBtnAnuncios" class="dash-tab px-3 md:px-6 py-2 text-[11px] md:text-sm font-bold rounded-full transition-all text-gray-500 hover:text-gray-900 whitespace-nowrap" data-tab="anuncios">Anuncios</button>
+                <button id="adminTabBtn" onclick="switchDashboardTab('admin')" class="hidden dash-tab px-3 md:px-6 py-2 text-[11px] md:text-sm font-bold rounded-full transition-all text-purple-600 hover:bg-purple-50 whitespace-nowrap" data-tab="admin"><i class="fa-solid fa-crown mr-1"></i> Admin</button>
             </div>
 
-            <div class="flex items-center gap-3">
-                <span id="adminIndicator" class="hidden bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded-md border border-purple-200">Admin</span>
-                <button onclick="logout()" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors shadow-sm" title="Salir">
+            <div class="flex items-center gap-2 md:gap-3">
+                <span id="adminIndicator" class="hidden text-[10px] md:text-xs font-bold px-2 py-1 rounded-md border flex items-center gap-1"></span>
+                <button onclick="logout()" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors shadow-sm shrink-0" title="Salir">
                     <i class="fa-solid fa-power-off"></i>
                 </button>
             </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto px-4 md:px-8 py-6 pb-24">
+        <main class="flex-1 overflow-y-auto px-3 md:px-8 py-6 pb-24">
             
             <!-- ADMIN TAB: Clientes -->
             <div id="tab-admin" class="dash-section hidden fade-in flex-col gap-6 max-w-7xl mx-auto">
@@ -202,24 +203,29 @@
                             <h2 class="text-2xl font-bold text-gray-900 mb-1">Directorio de Clientes</h2>
                             <p class="text-gray-500 text-sm font-medium">Gestiona accesos, servicios y perfiles.</p>
                         </div>
-                        <button onclick="seedMockUsers()" class="px-4 py-2 bg-purple-100 text-purple-700 font-bold rounded-xl hover:bg-purple-200 transition-colors text-xs flex items-center gap-2">
-                            <i class="fa-solid fa-rotate"></i> Restablecer Datos Base
-                        </button>
+                        <div class="flex gap-2 flex-wrap">
+                            <button onclick="openNewClientModal()" class="px-4 py-2 bg-custom-main text-white font-bold rounded-xl hover:opacity-90 transition-colors text-xs flex items-center gap-2 shadow-sm">
+                                <i class="fa-solid fa-user-plus"></i> Nuevo Cliente
+                            </button>
+                            <button onclick="seedMockUsers()" class="px-4 py-2 bg-purple-100 text-purple-700 font-bold rounded-xl hover:bg-purple-200 transition-colors text-xs flex items-center gap-2">
+                                <i class="fa-solid fa-rotate"></i> Restablecer Datos
+                            </button>
+                        </div>
                     </div>
                     
-                    <div class="overflow-x-auto w-full">
-                        <table class="w-full text-left border-collapse min-w-[750px]">
+                    <div class="overflow-x-auto w-full rounded-xl border border-gray-100">
+                        <table class="w-full text-left border-collapse min-w-[700px]">
                             <thead>
-                                <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider font-bold border-b border-gray-100">
-                                    <th class="px-4 py-4">Negocio</th>
-                                    <th class="px-4 py-4">Titular</th>
-                                    <th class="px-4 py-4">Usuario</th>
-                                    <th class="px-4 py-4">PIN</th>
-                                    <th class="px-4 py-4">Servicios Activos</th>
-                                    <th class="px-4 py-4 text-center">Acciones</th>
+                                <tr class="bg-gray-50 text-gray-500 text-[11px] md:text-xs uppercase tracking-wider font-bold border-b border-gray-100">
+                                    <th class="px-4 py-3">Negocio</th>
+                                    <th class="px-4 py-3">Titular</th>
+                                    <th class="px-4 py-3">Usuario</th>
+                                    <th class="px-4 py-3">PIN</th>
+                                    <th class="px-4 py-3">Servicios</th>
+                                    <th class="px-4 py-3 text-center">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="adminUserTable" class="text-sm divide-y divide-gray-100 font-medium"></tbody>
+                            <tbody id="adminUserTable" class="text-xs md:text-sm divide-y divide-gray-100 font-medium"></tbody>
                         </table>
                     </div>
                 </div>
@@ -227,7 +233,6 @@
 
             <!-- RESUMEN TAB -->
             <div id="tab-resumen" class="dash-section fade-in flex flex-col gap-6 max-w-7xl mx-auto">
-                
                 <!-- Hero Section -->
                 <div class="flex flex-col lg:flex-row gap-6 items-stretch">
                     <div class="flex-1 bg-white rounded-[32px] p-6 md:p-10 shadow-panel border border-gray-100 flex flex-col justify-center relative overflow-hidden">
@@ -237,14 +242,14 @@
                         <p class="text-gray-600 font-medium max-w-md leading-relaxed mt-2 text-sm md:text-base">Aquí tienes el resumen en tiempo real del progreso de tu estrategia comercial, campañas y proyectos.</p>
                         
                         <div class="mt-8">
-                            <a href="https://matiaslunateran.com" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-bold rounded-full shadow-lg hover:bg-gray-800 transition-transform hover:scale-105 active:scale-95 text-sm">
-                                ¿Quieres ver más de lo que hago? <i class="fa-solid fa-arrow-right"></i>
+                            <a href="https://matiaslunateran.com" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-bold rounded-full shadow-lg hover:bg-gray-800 transition-transform hover:scale-105 active:scale-95 text-sm w-max">
+                                Ver mi portafolio <i class="fa-solid fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>
 
                     <!-- Video Ad Space -->
-                    <div class="w-full lg:w-72 bg-custom-black rounded-[32px] p-1 shadow-panel relative overflow-hidden flex flex-col items-center justify-center group border-4 border-white shrink-0 aspect-[4/5] mx-auto">
+                    <div class="w-full lg:w-72 bg-custom-black rounded-[32px] p-1 shadow-panel relative overflow-hidden flex flex-col items-center justify-center group border-4 border-white shrink-0 aspect-[4/5] mx-auto max-w-sm">
                         <div id="heroMediaContainer" class="absolute inset-0 w-full h-full"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10 pointer-events-none"></div>
                         
@@ -260,31 +265,31 @@
                 <!-- ADS SECTION -->
                 <div id="adsMetricsSection" class="flex-col gap-5 mt-2">
                     <div class="flex items-center justify-between pl-2">
-                        <h3 class="text-xl font-extrabold text-gray-900"><i class="fa-solid fa-bullhorn text-custom-main mr-2"></i> Rendimiento de Campañas</h3>
+                        <h3 class="text-lg md:text-xl font-extrabold text-gray-900"><i class="fa-solid fa-bullhorn text-custom-main mr-2"></i> Rendimiento de Campañas</h3>
                     </div>
 
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="ad-card bg-white rounded-[24px] p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-36">
-                            <div class="flex items-center justify-between text-custom-main font-bold text-sm">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                        <div class="ad-card bg-white rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-32 md:h-36">
+                            <div class="flex items-center justify-between text-custom-main font-bold text-[11px] md:text-sm">
+                                <div class="flex items-center gap-1.5 md:gap-2">
+                                    <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600"><i class="fa-solid fa-wallet"></i></div>
                                     Ppto. Mes
                                 </div>
-                                <button id="btnEditBudget" onclick="openBudgetModal()" class="hidden w-7 h-7 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 items-center justify-center transition-colors shadow-sm" title="Editar Presupuesto"><i class="fa-solid fa-pen text-xs"></i></button>
+                                <button id="btnEditBudget" onclick="openBudgetModal()" class="hidden w-6 h-6 md:w-7 md:h-7 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 items-center justify-center transition-colors shadow-sm" title="Editar Presupuesto"><i class="fa-solid fa-pen text-[10px] md:text-xs"></i></button>
                             </div>
                             <div>
-                                <div class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-budget">S/ 0</div>
-                                <div class="text-[9px] font-semibold text-gray-400 mt-1 uppercase tracking-wider">*No incluye fee</div>
+                                <div class="text-xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-budget">S/ 0</div>
+                                <div class="text-[8px] md:text-[9px] font-semibold text-gray-400 mt-1 uppercase tracking-wider">*No incluye fee</div>
                             </div>
                         </div>
 
-                        <div class="ad-card bg-white rounded-[24px] p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-36">
-                            <div class="flex items-center gap-2 text-gray-600 font-bold text-sm">
-                                <div class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                        <div class="ad-card bg-white rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-32 md:h-36">
+                            <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 font-bold text-[11px] md:text-sm">
+                                <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-money-bill-trend-up"></i></div>
                                 Inversión
                             </div>
                             <div>
-                                <div class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-spent">S/ 0</div>
+                                <div class="text-xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-spent">S/ 0</div>
                                 <div class="mt-2 flex items-center">
                                     <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
                                         <div class="bg-custom-main h-full rounded-full transition-all duration-1000" id="budget-progress" style="width: 0%"></div>
@@ -293,43 +298,43 @@
                             </div>
                         </div>
 
-                        <div class="ad-card bg-white rounded-[24px] p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-36">
-                            <div class="flex items-center gap-2 text-custom-dark font-bold text-sm">
-                                <div class="w-8 h-8 rounded-lg bg-custom-dark/10 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
+                        <div class="ad-card bg-white rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-32 md:h-36">
+                            <div class="flex items-center gap-1.5 md:gap-2 text-custom-dark font-bold text-[11px] md:text-sm">
+                                <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-custom-dark/10 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
                                 Contactos
                             </div>
                             <div>
-                                <div class="text-3xl md:text-4xl font-extrabold text-gray-900" id="kpi-leads">0</div>
-                                <div class="text-[10px] font-bold text-finance-up mt-1 flex items-center gap-1 uppercase">
+                                <div class="text-2xl md:text-4xl font-extrabold text-gray-900" id="kpi-leads">0</div>
+                                <div class="text-[9px] md:text-[10px] font-bold text-finance-up mt-1 flex items-center gap-1 uppercase">
                                     <i class="fa-solid fa-arrow-trend-up"></i> Leads
                                 </div>
                             </div>
                         </div>
 
-                        <div class="ad-card bg-white rounded-[24px] p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-36">
-                            <div class="flex items-center gap-2 text-gray-600 font-bold text-sm">
-                                <div class="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500"><i class="fa-solid fa-bullseye"></i></div>
-                                Costo x Cto.
+                        <div class="ad-card bg-white rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-32 md:h-36">
+                            <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 font-bold text-[11px] md:text-sm">
+                                <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500"><i class="fa-solid fa-bullseye"></i></div>
+                                Costo Cto.
                             </div>
                             <div class="flex items-end justify-between">
-                                <div class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-cpl">S/ 0</div>
-                                <div id="cpl-indicator" class="bg-gray-100 text-gray-500 px-2 py-1 rounded text-[11px] font-bold mb-1 shadow-sm">--</div>
+                                <div class="text-xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-cpl">S/ 0</div>
+                                <div id="cpl-indicator" class="bg-gray-100 text-gray-500 px-2 py-1 rounded text-[9px] md:text-[11px] font-bold mb-1 shadow-sm">--</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- CHART -->
-                    <div class="bg-white rounded-[32px] p-4 md:p-6 shadow-panel border border-gray-100 mt-2">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <div class="bg-white rounded-[24px] md:rounded-[32px] p-4 md:p-6 shadow-panel border border-gray-100 mt-2">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
                             <div>
-                                <h3 class="text-xl font-extrabold text-gray-900">Evolución de Contactos</h3>
-                                <p class="text-xs text-gray-500 font-medium mt-1">Historial mensual de leads obtenidos.</p>
+                                <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Evolución de Contactos</h3>
+                                <p class="text-[11px] md:text-xs text-gray-500 font-medium mt-1">Historial mensual de leads obtenidos.</p>
                             </div>
                             <button id="btnEditChart" onclick="openChartModal()" class="hidden admin-only px-4 py-2 bg-blue-50 text-blue-700 font-bold rounded-xl hover:bg-blue-100 transition-colors text-xs items-center gap-1.5">
                                 <i class="fa-solid fa-pen"></i> Editar Gráfico
                             </button>
                         </div>
-                        <div class="w-full h-72 relative">
+                        <div class="w-full h-56 md:h-72 relative">
                             <canvas id="leadsChart"></canvas>
                         </div>
                     </div>
@@ -337,10 +342,10 @@
 
                 <!-- WEB DEV SECTION -->
                 <div id="webDevTrackerSection" class="flex-col gap-5 mt-4">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pl-2">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pl-2">
                         <div>
-                            <h3 class="text-xl font-extrabold text-gray-900"><i class="fa-solid fa-laptop-code text-purple-600 mr-2"></i> Desarrollo Página Web</h3>
-                            <p class="text-xs text-gray-500 mt-1 font-medium">Seguimiento ágil de la creación de tu ecosistema digital.</p>
+                            <h3 class="text-lg md:text-xl font-extrabold text-gray-900"><i class="fa-solid fa-laptop-code text-purple-600 mr-2"></i> Desarrollo Página Web</h3>
+                            <p class="text-[11px] md:text-xs text-gray-500 mt-1 font-medium">Seguimiento ágil de la creación de tu ecosistema digital.</p>
                         </div>
                         <button id="btnManageWeb" onclick="openWebModal()" class="hidden admin-only px-4 py-2 bg-purple-100 text-purple-700 font-bold rounded-xl hover:bg-purple-200 transition-colors text-xs items-center gap-1.5">
                             <i class="fa-solid fa-pen"></i> Actualizar Estado
@@ -352,15 +357,15 @@
 
                 <!-- CONSULTING GROWTH SECTION -->
                 <div id="consultingTrackerSection" class="flex-col gap-5 mt-4 hidden relative">
-                    <div class="absolute inset-0 bg-custom-black rounded-[32px] -z-10 shadow-2xl"></div>
-                    <div class="p-6 md:p-8 flex flex-col gap-6">
+                    <div class="absolute inset-0 bg-custom-black rounded-[24px] md:rounded-[32px] -z-10 shadow-2xl"></div>
+                    <div class="p-5 md:p-8 flex flex-col gap-5 md:gap-6">
                         
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
                             <div>
-                                <h3 class="text-2xl font-extrabold text-white tracking-tight flex items-center">
-                                    <i class="fa-solid fa-chess-knight text-custom-accent mr-3"></i> Consultoría Growth & Comercial
+                                <h3 class="text-xl md:text-2xl font-extrabold text-white tracking-tight flex items-center">
+                                    <i class="fa-solid fa-chess-knight text-custom-accent mr-3"></i> Consultoría Growth
                                 </h3>
-                                <p class="text-sm text-gray-400 mt-1">Estrategia gerencial de alto impacto para escalabilidad de negocio.</p>
+                                <p class="text-xs md:text-sm text-gray-400 mt-1">Estrategia gerencial de alto impacto.</p>
                             </div>
                             <button id="btnManageConsulting" onclick="openConsultingModal()" class="hidden admin-only px-4 py-2 bg-white/10 text-white hover:text-custom-accent font-bold rounded-xl border border-white/20 transition-colors text-xs items-center gap-1.5 backdrop-blur-md">
                                 <i class="fa-solid fa-pen"></i> Editar Pipeline
@@ -368,7 +373,7 @@
                         </div>
 
                         <!-- Timeline Pipeline (Fixed overlap) -->
-                        <div class="relative w-full mt-4 mb-10">
+                        <div class="relative w-full mt-2 md:mt-4 mb-8 md:mb-10">
                             <!-- Background track line -->
                             <div class="absolute top-[8px] left-[12%] right-[12%] h-1 bg-white/15 rounded-full z-0"></div>
                             <!-- Active Progress line -->
@@ -380,40 +385,40 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                            <div class="bg-white/5 border border-white/10 p-6 rounded-[24px] md:col-span-2">
-                                <h4 class="text-[11px] uppercase tracking-widest text-custom-accent font-bold mb-4">Objetivos Estratégicos (OKR)</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+                            <div class="bg-white/5 border border-white/10 p-5 rounded-[20px] md:rounded-[24px] md:col-span-2">
+                                <h4 class="text-[10px] md:text-[11px] uppercase tracking-widest text-custom-accent font-bold mb-4">Objetivos Estratégicos (OKR)</h4>
                                 <ul class="space-y-4" id="consultingOkrsList"></ul>
                             </div>
-                            <div class="bg-white/5 border border-white/10 p-6 rounded-[24px] flex flex-col justify-center items-center text-center">
-                                <h4 class="text-[11px] uppercase tracking-widest text-gray-400 font-bold mb-3">Foco Actual</h4>
-                                <div class="w-20 h-20 rounded-full border-4 border-custom-accent flex items-center justify-center text-2xl font-extrabold text-white mb-3 shadow-neon">
+                            <div class="bg-white/5 border border-white/10 p-5 rounded-[20px] md:rounded-[24px] flex flex-col justify-center items-center text-center">
+                                <h4 class="text-[10px] md:text-[11px] uppercase tracking-widest text-gray-400 font-bold mb-3">Foco Actual</h4>
+                                <div class="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-custom-accent flex items-center justify-center text-xl md:text-2xl font-extrabold text-white mb-3 shadow-neon">
                                     <i class="fa-solid fa-rocket"></i>
                                 </div>
-                                <p class="text-xs text-gray-300 font-medium" id="consultingFocusText">Análisis de cuellos de botella y definición de KPIs estructurales.</p>
+                                <p class="text-[11px] md:text-xs text-gray-300 font-medium" id="consultingFocusText">Análisis de cuellos de botella y definición de KPIs estructurales.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- SERVICES SECTION -->
-                <div class="mt-8 mb-4 border-t border-gray-100 pt-8 relative">
-                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-motion px-4 text-xs font-bold text-gray-400 tracking-widest uppercase">Escala tu negocio</div>
+                <div class="mt-6 md:mt-8 mb-4 border-t border-gray-100 pt-6 md:pt-8 relative">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-motion px-4 text-[10px] md:text-xs font-bold text-gray-400 tracking-widest uppercase text-center w-max">Escala tu negocio</div>
                     
-                    <div class="mb-6">
-                        <h3 class="text-2xl font-extrabold text-gray-900">Tus Servicios y Soluciones</h3>
-                        <p class="text-custom-main text-sm font-bold mt-1">Explora herramientas para llevar tu negocio al siguiente nivel.</p>
+                    <div class="mb-5 md:mb-6">
+                        <h3 class="text-xl md:text-2xl font-extrabold text-gray-900">Tus Servicios y Soluciones</h3>
+                        <p class="text-custom-main text-xs md:text-sm font-bold mt-1">Explora herramientas para llevar tu negocio al siguiente nivel.</p>
                     </div>
 
-                    <div id="servicesCategoriesContainer" class="flex flex-col gap-8">
+                    <div id="servicesCategoriesContainer" class="flex flex-col gap-6 md:gap-8">
                         <div>
-                            <h4 class="text-xs font-extrabold text-gray-400 mb-4 tracking-widest uppercase"><i class="fa-solid fa-bullhorn mr-1"></i> Marketing Digital</h4>
+                            <h4 class="text-[10px] md:text-xs font-extrabold text-gray-400 mb-3 md:mb-4 tracking-widest uppercase"><i class="fa-solid fa-bullhorn mr-1"></i> Marketing Digital</h4>
                             <!-- Grid for Desktop, flex/snap for Mobile -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="servicesGridMkt"></div>
+                            <div class="flex overflow-x-auto snap-x gap-3 md:gap-4 md:grid md:grid-cols-4 hide-scrollbar pb-2" id="servicesGridMkt"></div>
                         </div>
                         <div>
-                            <h4 class="text-xs font-extrabold text-gray-400 mb-4 tracking-widest uppercase"><i class="fa-solid fa-gears mr-1"></i> Productividad y Negocio</h4>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="servicesGridProd"></div>
+                            <h4 class="text-[10px] md:text-xs font-extrabold text-gray-400 mb-3 md:mb-4 tracking-widest uppercase"><i class="fa-solid fa-gears mr-1"></i> Productividad y Negocio</h4>
+                            <div class="flex overflow-x-auto snap-x gap-3 md:gap-4 md:grid md:grid-cols-4 hide-scrollbar pb-2" id="servicesGridProd"></div>
                         </div>
                     </div>
                 </div>
@@ -422,36 +427,36 @@
 
             <!-- ANUNCIOS TAB -->
             <div id="tab-anuncios" class="dash-section hidden fade-in flex-col gap-6 max-w-7xl mx-auto">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-6 md:p-8 rounded-[32px] shadow-panel border border-gray-100 gap-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-panel border border-gray-100 gap-4">
                     <div>
-                        <h2 class="text-2xl font-extrabold text-gray-900">Gestión de Anuncios</h2>
-                        <p class="text-gray-500 text-sm font-medium mt-1">Seguimiento detallado por campaña y plataforma.</p>
+                        <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">Gestión de Anuncios</h2>
+                        <p class="text-gray-500 text-xs md:text-sm font-medium mt-1">Seguimiento detallado por campaña y plataforma.</p>
                     </div>
                     <div class="flex gap-2 w-full sm:w-auto">
-                        <label class="hidden admin-only cursor-pointer px-4 py-3 bg-blue-50 text-blue-700 font-extrabold rounded-xl hover:bg-blue-100 transition-colors text-xs items-center gap-2 border border-blue-200">
-                            <i class="fa-solid fa-file-csv"></i> Subir CSV Meta
+                        <label class="hidden admin-only cursor-pointer px-4 py-3 bg-blue-50 text-blue-700 font-extrabold rounded-xl hover:bg-blue-100 transition-colors text-[11px] md:text-xs items-center gap-2 border border-blue-200 w-full sm:w-auto justify-center">
+                            <i class="fa-solid fa-file-csv"></i> Subir CSV
                             <input type="file" id="csvFileInput" accept=".csv" class="hidden">
                         </label>
-                        <button id="btnAddAd" onclick="openFormModal()" class="hidden admin-only px-5 py-3 bg-custom-accent text-custom-black font-extrabold rounded-xl shadow-neon transition-transform hover:scale-105 active:scale-95 whitespace-nowrap items-center gap-2 text-sm">
+                        <button id="btnAddAd" onclick="openFormModal()" class="hidden admin-only px-5 py-3 bg-custom-accent text-custom-black font-extrabold rounded-xl shadow-neon transition-transform hover:scale-105 active:scale-95 whitespace-nowrap items-center gap-2 text-xs md:text-sm w-full sm:w-auto justify-center">
                             <i class="fa-solid fa-plus"></i> Manual
                         </button>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-[24px] shadow-panel border border-gray-100 overflow-hidden">
+                <div class="bg-white rounded-[20px] md:rounded-[24px] shadow-panel border border-gray-100 overflow-hidden">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse min-w-[900px]">
+                        <table class="w-full text-left border-collapse min-w-[800px]">
                             <thead>
-                                <tr class="bg-gray-50 text-gray-500 text-[11px] uppercase tracking-wider font-extrabold border-b border-gray-100">
-                                    <th class="px-5 py-4">Campaña / Plataforma</th>
-                                    <th class="px-5 py-4">Alcance / Impres.</th>
-                                    <th class="px-5 py-4 text-right">Inversión</th>
-                                    <th class="px-5 py-4 text-center">Contactos</th>
-                                    <th class="px-5 py-4 text-right">Costo x Contacto</th>
-                                    <th class="px-5 py-4 text-center admin-only hidden">Acciones</th>
+                                <tr class="bg-gray-50 text-gray-500 text-[10px] md:text-[11px] uppercase tracking-wider font-extrabold border-b border-gray-100">
+                                    <th class="px-4 py-3 md:py-4">Campaña / Plataforma</th>
+                                    <th class="px-4 py-3 md:py-4">Alcance / Impres.</th>
+                                    <th class="px-4 py-3 md:py-4 text-right">Inversión</th>
+                                    <th class="px-4 py-3 md:py-4 text-center">Contactos</th>
+                                    <th class="px-4 py-3 md:py-4 text-right">Costo Cto.</th>
+                                    <th class="px-4 py-3 md:py-4 text-center admin-only hidden">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="dataTableBody" class="text-sm divide-y divide-gray-100 font-medium"></tbody>
+                            <tbody id="dataTableBody" class="text-xs md:text-sm divide-y divide-gray-100 font-medium"></tbody>
                         </table>
                     </div>
                 </div>
@@ -464,26 +469,27 @@
     
     <!-- Modal Edit Client (Admin) -->
     <div id="clientModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
-        <div class="bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden flex flex-col">
-            <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50">
-                <h3 class="text-xl font-extrabold text-custom-dark">Editar Cliente</h3>
+        <div class="bg-white w-full max-w-md rounded-[24px] md:rounded-[32px] shadow-2xl overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center p-5 md:p-6 border-b border-gray-100 bg-gray-50">
+                <h3 id="clientModalTitle" class="text-lg md:text-xl font-extrabold text-custom-dark">Editar Cliente</h3>
                 <button onclick="closeClientModal()" class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
             </div>
-            <div class="p-6 space-y-4 overflow-y-auto max-h-[70vh]">
+            <div class="p-5 md:p-6 space-y-4 overflow-y-auto max-h-[75vh]">
                 <input type="hidden" id="editClientUid">
                 <input type="hidden" id="editClientOriginalUserKey">
                 
-                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Negocio</label><input type="text" id="editClientBiz" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Titular</label><input type="text" id="editClientName" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Usuario (Para Login)</label><input type="text" id="editClientUserKey" class="w-full p-3 bg-gray-50 text-purple-700 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Negocio</label><input type="text" id="editClientBiz" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Titular</label><input type="text" id="editClientName" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                <!-- SE APLICÓ RESTRICCIÓN AQUÍ -->
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Usuario (Solo letras minúsculas)</label><input type="text" id="editClientUserKey" class="w-full p-2.5 md:p-3 bg-gray-50 text-purple-700 border border-gray-200 rounded-xl text-sm font-bold" placeholder="ej. miempresa"></div>
                 
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">RUC</label><input type="text" id="editClientRuc" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Teléfono</label><input type="text" id="editClientPhone" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">RUC</label><input type="text" id="editClientRuc" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Teléfono</label><input type="text" id="editClientPhone" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
                 </div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">PIN Acceso</label><input type="text" id="editClientPin" class="w-full p-3 bg-gray-50 text-purple-700 border border-gray-200 rounded-xl text-sm font-bold"></div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">URL Video / GIF Hero</label><input type="text" id="editClientVideo" class="w-full p-3 bg-gray-50 text-blue-700 border border-gray-200 rounded-xl text-xs font-mono" placeholder="https://..."></div>
-                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">URL Logo Transparente</label><input type="text" id="editClientLogo" class="w-full p-3 bg-gray-50 text-blue-700 border border-gray-200 rounded-xl text-xs font-mono" placeholder="https://..."></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">PIN Acceso</label><input type="text" id="editClientPin" class="w-full p-2.5 md:p-3 bg-gray-50 text-purple-700 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Video / GIF Hero</label><input type="text" id="editClientVideo" class="w-full p-2.5 md:p-3 bg-gray-50 text-blue-700 border border-gray-200 rounded-xl text-[10px] md:text-xs font-mono" placeholder="https://..."></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Logo Transparente</label><input type="text" id="editClientLogo" class="w-full p-2.5 md:p-3 bg-gray-50 text-blue-700 border border-gray-200 rounded-xl text-[10px] md:text-xs font-mono" placeholder="https://..."></div>
                 
                 <button onclick="saveClientEdit()" class="w-full mt-4 py-3.5 bg-purple-600 text-white font-extrabold rounded-xl text-sm hover:bg-purple-700 active:scale-95 transition-all">Guardar Cambios</button>
             </div>
@@ -492,30 +498,30 @@
 
     <!-- Modal Form Ad / Edit Ad (Admin) -->
     <div id="formModal" class="fixed inset-0 z-[100] hidden flex items-end md:items-center justify-center p-0 md:p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
-        <div class="bg-white w-full md:max-w-md rounded-t-[32px] md:rounded-[32px] shadow-2xl overflow-hidden slide-in-right flex flex-col max-h-[90vh]">
-            <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50">
-                <h3 id="modalTitle" class="text-xl font-extrabold text-custom-dark">Registrar Campaña</h3>
+        <div class="bg-white w-full md:max-w-md rounded-t-[24px] md:rounded-[32px] shadow-2xl overflow-hidden slide-in-right flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center p-5 md:p-6 border-b border-gray-100 bg-gray-50">
+                <h3 id="modalTitle" class="text-lg md:text-xl font-extrabold text-custom-dark">Registrar Campaña</h3>
                 <button onclick="closeFormModal()" class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
             </div>
-            <form id="dataForm" class="p-6 space-y-4 overflow-y-auto">
+            <form id="dataForm" class="p-5 md:p-6 space-y-4 overflow-y-auto">
                 <input type="hidden" id="formId">
                 <input type="hidden" id="formCreatedAt">
                 <input type="hidden" id="formEndAt">
-                <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre de Campaña</label><input type="text" id="formName" required class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium text-sm"></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Nombre de Campaña</label><input type="text" id="formName" required class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium text-sm"></div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Plataforma</label>
-                    <select id="formPlatform" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold">
+                    <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Plataforma</label>
+                    <select id="formPlatform" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold">
                         <option value="Meta Ads">Facebook / Instagram</option><option value="TikTok Ads">TikTok</option>
                         <option value="Google Ads">Google / YouTube</option><option value="LinkedIn Ads">LinkedIn</option><option value="Pinterest Ads">Pinterest</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Inversión (S/)</label><input type="number" id="formSpend" required min="0" step="0.01" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold text-sm"></div>
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Total Contactos</label><input type="number" id="formLeads" required min="0" step="1" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold text-sm"></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Inversión (S/)</label><input type="number" id="formSpend" required min="0" step="0.01" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold text-sm"></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Total Contactos</label><input type="number" id="formLeads" required min="0" step="1" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold text-sm"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Alcance</label><input type="number" id="formReach" min="0" step="1" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium text-sm" value="0"></div>
-                    <div><label class="block text-xs font-bold text-gray-500 uppercase mb-1">Impresiones</label><input type="number" id="formImp" min="0" step="1" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium text-sm" value="0"></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Alcance</label><input type="number" id="formReach" min="0" step="1" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium text-sm" value="0"></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Impresiones</label><input type="number" id="formImp" min="0" step="1" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium text-sm" value="0"></div>
                 </div>
                 <button type="submit" id="saveBtn" class="w-full py-3.5 bg-custom-main hover:bg-custom-dark text-white font-extrabold rounded-xl mt-4 shadow-lg active:scale-95 transition-all text-sm">Guardar Datos</button>
             </form>
@@ -524,35 +530,35 @@
 
     <!-- Modal Manual Chart Edit (Admin) -->
     <div id="chartDataModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
-        <div class="bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="bg-white w-full max-w-md rounded-[24px] md:rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
-                <h3 class="text-lg font-extrabold text-blue-700">Editar Leads por Mes</h3>
+                <h3 class="text-base md:text-lg font-extrabold text-blue-700">Editar Leads por Mes</h3>
                 <button onclick="closeChartModal()" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
             </div>
             <div class="p-5 flex flex-col gap-4 bg-white overflow-y-auto">
-                <p class="text-xs text-gray-500 font-medium">Sobrescribe los leads de un mes. El gráfico priorizará estos datos.</p>
+                <p class="text-[11px] md:text-xs text-gray-500 font-medium">Sobrescribe los leads de un mes. El gráfico priorizará estos datos.</p>
                 
                 <div class="flex gap-2 items-center">
                     <input type="hidden" id="editChartIdx" value="">
                     <!-- Native Month Picker -->
-                    <input type="month" id="chartInputMonth" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-sm font-bold" required>
-                    <input type="number" id="chartInputLeads" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-sm" placeholder="Cant. Leads" required min="0">
+                    <input type="month" id="chartInputMonth" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-xs md:text-sm font-bold" required>
+                    <input type="number" id="chartInputLeads" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-xs md:text-sm" placeholder="Cant. Leads" required min="0">
                     <button onclick="addChartRow()" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700"><i class="fa-solid fa-check"></i></button>
                 </div>
                 
                 <div class="border-t border-gray-100 pt-3">
                     <ul id="adminChartList" class="space-y-2 max-h-48 overflow-y-auto"></ul>
                 </div>
-                <button onclick="saveChartData()" class="w-full py-3.5 bg-blue-600 text-white font-extrabold rounded-xl text-sm shadow-md mt-2">Aplicar al Gráfico</button>
+                <button onclick="saveChartData()" class="w-full py-3 bg-blue-600 text-white font-extrabold rounded-xl text-sm shadow-md mt-2">Aplicar al Gráfico</button>
             </div>
         </div>
     </div>
 
     <!-- Modal Web Tasks -->
     <div id="webModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
-        <div class="bg-white w-full md:max-w-lg rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div class="bg-white w-full md:max-w-lg rounded-[24px] md:rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
-                <h3 class="text-lg font-extrabold text-purple-700">Actualizar Estado Web</h3>
+                <h3 class="text-base md:text-lg font-extrabold text-purple-700">Actualizar Estado Web</h3>
                 <button onclick="closeWebModal()" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
             </div>
             <div class="p-5 flex flex-col gap-4 bg-white overflow-y-auto">
@@ -563,8 +569,8 @@
                     <button onclick="selectWebColumn('launch')" class="col-btn py-2 rounded-lg text-gray-500 hover:text-gray-900 font-bold text-[10px] md:text-xs text-center" data-val="launch">Lanzam.</button>
                 </div>
                 <div class="flex gap-2">
-                    <input type="text" id="webTaskInput" class="flex-1 p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-medium focus:border-purple-400 outline-none" placeholder="Nueva tarea...">
-                    <button onclick="addWebTask()" class="px-5 py-3 bg-purple-600 text-white font-extrabold rounded-xl text-sm hover:bg-purple-700 shadow-md">+</button>
+                    <input type="text" id="webTaskInput" class="flex-1 p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-xs md:text-sm font-medium focus:border-purple-400 outline-none" placeholder="Nueva tarea...">
+                    <button onclick="addWebTask()" class="px-4 md:px-5 py-2.5 md:py-3 bg-purple-600 text-white font-extrabold rounded-xl text-sm hover:bg-purple-700 shadow-md">+</button>
                 </div>
                 <div class="border-t border-gray-100 pt-3">
                     <div id="adminTaskList" class="space-y-2 max-h-48 overflow-y-auto"></div>
@@ -575,15 +581,15 @@
 
     <!-- Modal Edit Consulting Pipeline -->
     <div id="consultingModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
-        <div class="bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden flex flex-col">
+        <div class="bg-white w-full max-w-md rounded-[24px] md:rounded-[32px] shadow-2xl overflow-hidden flex flex-col">
             <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
-                <h3 class="text-lg font-extrabold text-custom-dark">Progreso Consultoría</h3>
+                <h3 class="text-base md:text-lg font-extrabold text-custom-dark">Progreso Consultoría</h3>
                 <button onclick="closeConsultingModal()" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
             </div>
             <div class="p-5 flex flex-col gap-4 bg-white overflow-y-auto">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Fase Actual</label>
-                    <select id="consultingStageSelect" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold">
+                    <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-2">Fase Actual</label>
+                    <select id="consultingStageSelect" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-xs md:text-sm font-bold">
                         <option value="0">1. Sesión de diagnóstico</option>
                         <option value="1">2. Plan de acción</option>
                         <option value="2">3. Implementación (acompañamiento)</option>
@@ -591,11 +597,11 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Foco Actual</label>
-                    <input type="text" id="consultingFocusInput" class="w-full p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-medium focus:border-custom-accent outline-none">
+                    <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-2">Foco Actual</label>
+                    <input type="text" id="consultingFocusInput" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-xs md:text-sm font-medium focus:border-custom-accent outline-none">
                 </div>
                 <div class="border-t border-gray-100 pt-3">
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Objetivos (OKRs)</label>
+                    <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-2">Objetivos (OKRs)</label>
                     <div class="flex gap-2 mb-2">
                         <input type="text" id="consultingOkrTitle" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-xs" placeholder="Título ej. Embudo">
                         <input type="text" id="consultingOkrDesc" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-xs" placeholder="Desc. ej. Scripts de cierre">
@@ -603,22 +609,22 @@
                     </div>
                     <ul id="adminOkrList" class="space-y-1 max-h-32 overflow-y-auto text-xs"></ul>
                 </div>
-                <button onclick="saveConsultingState()" class="w-full py-3.5 bg-custom-accent text-custom-black font-extrabold rounded-xl mt-2 text-sm shadow-md">Guardar Progreso</button>
+                <button onclick="saveConsultingState()" class="w-full py-3 bg-custom-accent text-custom-black font-extrabold rounded-xl mt-2 text-sm shadow-md">Guardar Progreso</button>
             </div>
         </div>
     </div>
 
     <!-- Modal Budget Edit -->
     <div id="budgetModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
-        <div class="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden flex flex-col">
-            <div class="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50">
-                <h3 class="text-xl font-extrabold text-custom-dark">Presupuesto Mensual</h3>
+        <div class="bg-white w-full max-w-sm rounded-[24px] md:rounded-[32px] shadow-2xl overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center p-5 md:p-6 border-b border-gray-100 bg-gray-50">
+                <h3 class="text-lg md:text-xl font-extrabold text-custom-dark">Presupuesto Mensual</h3>
                 <button onclick="closeBudgetModal()" class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
             </div>
-            <div class="p-6">
-                <label class="block text-xs font-bold text-gray-500 uppercase mb-2 tracking-wide">Monto Asignado (S/)</label>
-                <input type="number" id="budgetInput" min="0" step="1" class="w-full p-4 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-xl font-extrabold outline-none focus:border-blue-400 focus:bg-white text-center">
-                <button onclick="saveBudget()" class="w-full mt-6 py-4 bg-blue-600 text-white font-extrabold rounded-xl text-lg hover:bg-blue-700 shadow-md">Guardar</button>
+            <div class="p-5 md:p-6">
+                <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-2 tracking-wide">Monto Asignado (S/)</label>
+                <input type="number" id="budgetInput" min="0" step="1" class="w-full p-3 md:p-4 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-lg md:text-xl font-extrabold outline-none focus:border-blue-400 focus:bg-white text-center">
+                <button onclick="saveBudget()" class="w-full mt-5 md:mt-6 py-3 md:py-4 bg-blue-600 text-white font-extrabold rounded-xl text-base md:text-lg hover:bg-blue-700 shadow-md">Guardar</button>
             </div>
         </div>
     </div>
@@ -654,6 +660,15 @@
         let viewedUserId = null;
         let pulseInterval = null;
 
+        // FILTROS DE TEXTO: Evita mayúsculas, espacios, símbolos y números en el input de usuario
+        document.getElementById('loginBusiness').addEventListener('input', function(e) {
+            this.value = this.value.toLowerCase().replace(/[^a-z]/g, '');
+        });
+        document.getElementById('editClientUserKey').addEventListener('input', function(e) {
+            this.value = this.value.toLowerCase().replace(/[^a-z]/g, '');
+        });
+
+
         // --- Mock Data Setup ---
         const karateRealCSV = [
             { id:'mock_k1', name: 'Mensajes Karate', platform: 'Meta Ads', spend: 1542.37, leads: 1004, reach: 127704, imp: 311711, status: 'Activo', createdAt: new Date('2026-01-01').getTime(), endAt: new Date('2026-09-22').getTime() }
@@ -661,8 +676,8 @@
 
         window.seedMockUsers = () => {
             const users = {
-                'admin': { originalName: 'Admin', ownerName: 'Matías Luna', pin: '123456', uid: 'admin_master', isAdmin: true, activeServices: [] },
-                'karate imperio': { 
+                'matias': { originalName: 'Admin', ownerName: 'Matías Luna', pin: '123456', uid: 'admin_master', isAdmin: true, activeServices: [] },
+                'karate': { 
                     originalName: 'Karate Imperio', ownerName: 'Norvin Gutierrez', pin: '111111', uid: 'user_karate', isAdmin: false, 
                     activeServices: ['meta_ads'], monthlyBudget: 300, 
                     videoUrl: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=600&auto=format&fit=crop',
@@ -671,67 +686,117 @@
                 },
                 'bushido': { originalName: 'Bushido Martialshop', ownerName: 'Jairo Teran', pin: '222222', uid: 'user_bushido', isAdmin: false, activeServices: ['meta_ads', 'web_dev'], monthlyBudget: 500, manualChart: [] },
                 'vetra': { originalName: 'Vetra Relojes', ownerName: 'Jairo Teran', pin: '333333', uid: 'user_vetra', isAdmin: false, activeServices: ['meta_ads', 'tiktok_ads'], monthlyBudget: 800, manualChart: [] },
-                'viaja ligero': { originalName: 'Viaja Ligero', ownerName: 'Jairo Teran', pin: '444444', uid: 'user_viaja', isAdmin: false, activeServices: ['meta_ads', 'consulting'], monthlyBudget: 400, manualChart: [] }
+                'viaja': { originalName: 'Viaja Ligero', ownerName: 'Jairo Teran', pin: '444444', uid: 'user_viaja', isAdmin: false, activeServices: ['meta_ads', 'consulting'], monthlyBudget: 400, manualChart: [] }
             };
-            localStorage.setItem('mlt_users_sb', JSON.stringify(users));
-            if(window.showToast) window.showToast('Datos Inicializados', 'Perfiles simulados restaurados.', 'fa-database', 'text-purple-600');
+            
+            // Forzar guardado en local y subida masiva a Supabase para TODOS (incluido matias)
+            Object.keys(users).forEach(k => {
+                syncUserToDB(users[k], k);
+            });
+            
+            if(window.showToast) window.showToast('Datos Inicializados', 'Perfiles simulados restaurados y sincronizados a la nube.', 'fa-database', 'text-purple-600');
             if(isSuperAdmin) renderAdminUserList();
         };
 
         if(!localStorage.getItem('mlt_users_sb')) window.seedMockUsers();
 
-        // --- Database Sync (Supabase vs LocalStorage) ---
+        // --- Database Sync (Supabase + LocalStorage como respaldo garantizado) ---
+        const DEFAULT_ADMIN = { originalName: 'Admin', ownerName: 'Matías Luna', pin: '123456', uid: 'admin_master', isAdmin: true, activeServices: [] };
+
         async function fetchUsersFromDB() {
+            const localUsers = JSON.parse(localStorage.getItem('mlt_users_sb') || '{}');
+            let merged = { ...localUsers };
+
             if(supabase) {
-                const { data, error } = await supabase.from('profiles').select('*');
-                if(!error && data.length > 0) {
-                    let uMap = {};
-                    data.forEach(d => { uMap[d.login_key] = d.payload; });
-                    return uMap;
+                try {
+                    const { data, error } = await supabase.from('profiles').select('*');
+                    if(error) {
+                        console.error('[Supabase] Error al leer profiles:', error);
+                    } else if(data && data.length > 0) {
+                        data.forEach(d => { merged[d.login_key] = d.payload; });
+                    }
+                } catch(e) {
+                    console.error('[Supabase] Excepción al leer profiles:', e);
                 }
             }
-            return JSON.parse(localStorage.getItem('mlt_users_sb') || '{}');
+
+            // Guardar el consolidado (Nube + Local) siempre en local para respaldo total
+            localStorage.setItem('mlt_users_sb', JSON.stringify(merged));
+
+            // Garantía: el usuario master 'matias' SIEMPRE debe existir en ambos lados
+            if(!merged['matias']) {
+                merged['matias'] = DEFAULT_ADMIN;
+                await syncUserToDB(DEFAULT_ADMIN, 'matias');
+            }
+            
+            return merged;
         }
 
         async function syncUserToDB(userObj, loginKey) {
+            // 1) Siempre se escribe en localStorage primero (respaldo garantizado, nunca se pierde nada)
+            const users = JSON.parse(localStorage.getItem('mlt_users_sb') || '{}');
+            const oldKeyLocal = Object.keys(users).find(k => users[k].uid === userObj.uid);
+            
+            // Sanitizamos el finalKey por si acaso (solo letras minúsculas)
+            const finalKey = (loginKey || oldKeyLocal || '').toLowerCase().replace(/[^a-z]/g, '');
+            if(!finalKey) { console.error('[syncUserToDB] No se pudo determinar la clave de usuario.'); return; }
+            
+            if(oldKeyLocal && oldKeyLocal !== finalKey) delete users[oldKeyLocal];
+            users[finalKey] = userObj;
+            localStorage.setItem('mlt_users_sb', JSON.stringify(users));
+
+            // 2) Best-effort: también se intenta sincronizar con Supabase si está disponible
             if(supabase) {
-                const key = loginKey || Object.keys(JSON.parse(localStorage.getItem('mlt_users_sb') || '{}')).find(k => JSON.parse(localStorage.getItem('mlt_users_sb') || '{}')[k].uid === userObj.uid);
-                await supabase.from('profiles').upsert({ id: userObj.uid, login_key: key, payload: userObj });
-            } else {
-                const users = JSON.parse(localStorage.getItem('mlt_users_sb') || '{}');
-                const oldKey = Object.keys(users).find(k => users[k].uid === userObj.uid);
-                if(oldKey && oldKey !== loginKey) delete users[oldKey];
-                users[loginKey || oldKey] = userObj;
-                localStorage.setItem('mlt_users_sb', JSON.stringify(users));
+                try {
+                    const { error } = await supabase.from('profiles').upsert({ id: userObj.uid, login_key: finalKey, payload: userObj });
+                    if(error) console.error('[Supabase] Error al guardar profile:', error);
+                } catch(e) {
+                    console.error('[Supabase] Excepción al guardar profile:', e);
+                }
             }
         }
         
         async function fetchCampaignsFromDB(uid) {
             if(supabase) {
-                const { data, error } = await supabase.from('campaigns').select('*').eq('uid', uid);
-                if(!error) return data.map(d => d.payload);
+                try {
+                    const { data, error } = await supabase.from('campaigns').select('*').eq('uid', uid);
+                    if(error) console.error('[Supabase] Error al leer campaigns:', error);
+                    else if(data) return data.map(d => d.payload);
+                } catch(e) {
+                    console.error('[Supabase] Excepción al leer campaigns:', e);
+                }
             }
             return currentUserData.campaigns || [];
         }
 
         async function syncCampaignToDB(campaignObj) {
+            if(!currentUserData.campaigns) currentUserData.campaigns = [];
+            const idx = currentUserData.campaigns.findIndex(c => c.id === campaignObj.id);
+            if(idx !== -1) currentUserData.campaigns[idx] = campaignObj;
+            else currentUserData.campaigns.push(campaignObj);
+            await syncUserToDB(currentUserData);
+
             if(supabase) {
-                await supabase.from('campaigns').upsert({ id: campaignObj.id, uid: viewedUserId, payload: campaignObj });
-            } else {
-                if(!currentUserData.campaigns) currentUserData.campaigns = [];
-                const idx = currentUserData.campaigns.findIndex(c => c.id === campaignObj.id);
-                if(idx !== -1) currentUserData.campaigns[idx] = campaignObj;
-                else currentUserData.campaigns.push(campaignObj);
-                await syncUserToDB(currentUserData);
+                try {
+                    const { error } = await supabase.from('campaigns').upsert({ id: campaignObj.id, uid: viewedUserId, payload: campaignObj });
+                    if(error) console.error('[Supabase] Error al guardar campaign:', error);
+                } catch(e) {
+                    console.error('[Supabase] Excepción al guardar campaign:', e);
+                }
             }
         }
         
         async function deleteCampaignFromDB(campId) {
+            currentUserData.campaigns = (currentUserData.campaigns || []).filter(c => c.id !== campId);
+            await syncUserToDB(currentUserData);
+
             if(supabase) {
-                await supabase.from('campaigns').delete().eq('id', campId);
-            } else {
-                currentUserData.campaigns = currentUserData.campaigns.filter(c => c.id !== campId);
-                await syncUserToDB(currentUserData);
+                try {
+                    const { error } = await supabase.from('campaigns').delete().eq('id', campId);
+                    if(error) console.error('[Supabase] Error al borrar campaign:', error);
+                } catch(e) {
+                    console.error('[Supabase] Excepción al borrar campaign:', e);
+                }
             }
         }
 
@@ -756,16 +821,11 @@
         };
 
         window.showLoginPin = async () => {
-            let biz = document.getElementById('loginBusiness').value.trim().toLowerCase();
-            if(!biz) { window.showToast('Atención', 'Ingresa el nombre del negocio o titular.', 'fa-exclamation-triangle', 'text-red-500'); return; }
+            let biz = document.getElementById('loginBusiness').value;
+            if(!biz) { window.showToast('Atención', 'Ingresa tu usuario.', 'fa-exclamation-triangle', 'text-red-500'); return; }
             
             const users = await fetchUsersFromDB();
-            
-            const foundKey = Object.keys(users).find(k => 
-                k.toLowerCase() === biz ||
-                users[k].originalName.toLowerCase() === biz || 
-                users[k].ownerName.toLowerCase() === biz
-            );
+            const foundKey = Object.keys(users).find(k => k === biz);
             
             if(!foundKey) { window.showToast('Error', 'Usuario no encontrado.', 'fa-circle-xmark', 'text-red-500'); return; }
             
@@ -814,9 +874,16 @@
                 bar.classList.add('animate-fill-bar');
                 
                 setTimeout(async () => {
-                    await performLogin(users[bizKey]);
-                    loader.classList.add('hidden'); loader.classList.remove('flex');
-                    bar.classList.remove('animate-fill-bar');
+                    try {
+                        await performLogin(users[bizKey]);
+                    } catch(err) {
+                        console.error('Error al iniciar sesión:', err);
+                        document.getElementById('authContainer').classList.remove('hidden');
+                        window.showToast('Error', 'No se pudo cargar el panel. Revisa la consola (F12) para más detalle.', 'fa-triangle-exclamation', 'text-red-500');
+                    } finally {
+                        loader.classList.add('hidden'); loader.classList.remove('flex');
+                        bar.classList.remove('animate-fill-bar');
+                    }
                 }, 1600); 
 
             } else {
@@ -843,6 +910,18 @@
             document.getElementById('dashBusinessName').innerText = currentUserData.originalName;
             document.getElementById('dashUserName').innerText = currentUserData.ownerName;
             
+            // Visual indicator for admin when viewing a client
+            const adminIndicator = document.getElementById('adminIndicator');
+            if (isSuperAdmin && viewedUserId !== currentUserId) {
+                adminIndicator.innerHTML = `<i class="fa-solid fa-eye"></i> Viendo: ${currentUserData.originalName}`;
+                adminIndicator.className = 'text-[10px] md:text-xs font-bold px-2 py-1 rounded-md border flex items-center gap-1 bg-blue-100 text-blue-700 border-blue-200';
+            } else if (isSuperAdmin) {
+                adminIndicator.innerHTML = `<i class="fa-solid fa-crown"></i> Admin`;
+                adminIndicator.className = 'text-[10px] md:text-xs font-bold px-2 py-1 rounded-md border flex items-center gap-1 bg-purple-100 text-purple-700 border-purple-200';
+            } else {
+                adminIndicator.classList.add('hidden');
+            }
+
             const mediaContainer = document.getElementById('heroMediaContainer');
             const mediaUrl = currentUserData.videoUrl || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop';
             const isVideo = mediaUrl.match(/\.(mp4|webm|ogg)$/i);
@@ -905,7 +984,10 @@
             const target = Object.values(users).find(u => u.uid === uid);
             if(!target) return;
             viewedUserId = uid; currentUserData = target;
-            await setupDashboardUI(); switchDashboardTab('resumen');
+            await setupDashboardUI(); 
+            switchDashboardTab('resumen');
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Corrección: Scroll automático hacia arriba
+            window.showToast('Modo Vista', `Inspeccionando a ${target.originalName}`, 'fa-eye', 'text-blue-600');
         };
 
         window.openClientModal = async (uid) => {
@@ -915,6 +997,7 @@
             const target = users[userKey];
             if(!target) return;
             
+            document.getElementById('clientModalTitle').innerText = 'Editar Cliente';
             document.getElementById('editClientUid').value = target.uid;
             document.getElementById('editClientOriginalUserKey').value = userKey;
             document.getElementById('editClientBiz').value = target.originalName;
@@ -929,22 +1012,47 @@
             document.getElementById('clientModal').classList.remove('hidden');
         };
 
+        window.openNewClientModal = () => {
+            if(!isSuperAdmin) return;
+            document.getElementById('clientModalTitle').innerText = 'Nuevo Cliente';
+            document.getElementById('editClientUid').value = '';
+            document.getElementById('editClientOriginalUserKey').value = '';
+            document.getElementById('editClientBiz').value = '';
+            document.getElementById('editClientName').value = '';
+            document.getElementById('editClientUserKey').value = '';
+            document.getElementById('editClientRuc').value = '';
+            document.getElementById('editClientPhone').value = '';
+            document.getElementById('editClientPin').value = '111111';
+            document.getElementById('editClientVideo').value = '';
+            document.getElementById('editClientLogo').value = '';
+            document.getElementById('clientModal').classList.remove('hidden');
+        };
+
         window.closeClientModal = () => document.getElementById('clientModal').classList.add('hidden');
 
         window.saveClientEdit = async () => {
-            const uid = document.getElementById('editClientUid').value;
             const oldKey = document.getElementById('editClientOriginalUserKey').value;
-            const newKey = document.getElementById('editClientUserKey').value.trim().toLowerCase();
-            
+            // Se filtra una última vez al guardar
+            const newKey = document.getElementById('editClientUserKey').value.trim().toLowerCase().replace(/[^a-z]/g, '');
+            const isNew = !oldKey;
+
+            if(!newKey) { window.showToast('Atención', 'El campo "Usuario" es obligatorio y debe tener solo letras.', 'fa-exclamation-triangle', 'text-red-500'); return; }
+
             const users = await fetchUsersFromDB();
-            let userData = users[oldKey];
+
+            if(isNew && users[newKey]) { window.showToast('Atención', 'Ya existe un usuario con esa clave de acceso.', 'fa-exclamation-triangle', 'text-red-500'); return; }
+            if(!isNew && newKey !== oldKey && users[newKey]) { window.showToast('Atención', 'Ya existe otro usuario con esa clave de acceso.', 'fa-exclamation-triangle', 'text-red-500'); return; }
+
+            let userData = isNew
+                ? { uid: 'user_' + Date.now(), isAdmin: false, activeServices: [], monthlyBudget: 300, manualChart: [], campaigns: [] }
+                : users[oldKey];
             if(!userData) return;
 
             userData.originalName = document.getElementById('editClientBiz').value;
             userData.ownerName = document.getElementById('editClientName').value;
             userData.ruc = document.getElementById('editClientRuc').value;
             userData.phone = document.getElementById('editClientPhone').value;
-            userData.pin = document.getElementById('editClientPin').value;
+            userData.pin = document.getElementById('editClientPin').value || '111111';
             userData.videoUrl = document.getElementById('editClientVideo').value;
             userData.logoUrl = document.getElementById('editClientLogo').value;
             
@@ -952,7 +1060,32 @@
             
             await renderAdminUserList(); 
             closeClientModal();
-            window.showToast('Actualizado', 'Datos modificados correctamente.', 'fa-user-pen', 'text-blue-600');
+            window.showToast(isNew ? 'Cliente Creado' : 'Actualizado', isNew ? 'Nuevo cliente registrado correctamente.' : 'Datos modificados correctamente.', 'fa-user-pen', 'text-blue-600');
+        };
+        
+        // --- FUNCIÓN AGREGADA: ELIMINAR CLIENTE ---
+        window.deleteClient = async (uid, loginKey) => {
+            if(!isSuperAdmin) return;
+            if(!confirm('¿Estás seguro de eliminar este cliente? Se borrarán sus datos permanentemente.')) return;
+
+            // Borrar de LocalStorage
+            const users = JSON.parse(localStorage.getItem('mlt_users_sb') || '{}');
+            if(users[loginKey]) {
+                delete users[loginKey];
+                localStorage.setItem('mlt_users_sb', JSON.stringify(users));
+            }
+            
+            // Intentar borrar de Supabase si existe
+            if(supabase) {
+                try {
+                    await supabase.from('profiles').delete().eq('id', uid);
+                } catch(e) {
+                    console.error('[Supabase] Error al borrar perfil', e);
+                }
+            }
+            
+            await renderAdminUserList();
+            window.showToast('Eliminado', 'El cliente ha sido borrado exitosamente.', 'fa-trash', 'text-red-500');
         };
 
         window.toggleClientService = async (uid, serviceId) => {
@@ -980,18 +1113,22 @@
                 let badges = '';
                 Object.keys(sLabels).forEach(sk => {
                     const active = (u.activeServices||[]).includes(sk);
-                    badges += `<button onclick="toggleClientService('${u.uid}','${sk}')" class="px-2 py-0.5 rounded text-[10px] border transition-colors ${active?'bg-purple-100 text-purple-700 border-purple-200 font-bold':'bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-200'}">${sLabels[sk]}</button>`;
+                    badges += `<button onclick="toggleClientService('${u.uid}','${sk}')" class="px-2 py-0.5 rounded text-[10px] border transition-colors mb-1 mr-1 ${active?'bg-purple-100 text-purple-700 border-purple-200 font-bold':'bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-200'}">${sLabels[sk]}</button>`;
                 });
+                // Optimización UI Móvil: Botones cuadrados con iconos en flex-wrap o grid
                 tbody.innerHTML += `
-                    <tr class="hover:bg-gray-50">
+                    <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-4 py-3 font-extrabold text-gray-900">${u.originalName}</td>
                         <td class="px-4 py-3 text-gray-600 font-bold">${u.ownerName}</td>
                         <td class="px-4 py-3 text-purple-600 font-mono font-bold">${key}</td>
                         <td class="px-4 py-3 text-purple-700 font-mono font-bold">${u.pin}</td>
-                        <td class="px-4 py-3"><div class="flex flex-wrap gap-1 w-56">${badges}</div></td>
-                        <td class="px-4 py-3 text-center flex flex-col gap-1">
-                            <button onclick="adminViewClient('${u.uid}')" class="w-full px-3 py-1.5 bg-gray-100 text-gray-700 font-bold rounded-lg hover:bg-gray-200 text-xs">Ver Panel</button>
-                            <button onclick="openClientModal('${u.uid}')" class="w-full px-3 py-1.5 bg-blue-50 text-blue-700 font-bold rounded-lg hover:bg-blue-100 text-xs">Editar</button>
+                        <td class="px-4 py-3 min-w-[150px]">${badges}</td>
+                        <td class="px-4 py-3 text-center">
+                            <div class="flex justify-center gap-1.5 flex-wrap w-[80px] mx-auto">
+                                <button onclick="adminViewClient('${u.uid}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 flex items-center justify-center transition-colors" title="Ver Panel"><i class="fa-solid fa-eye"></i></button>
+                                <button onclick="openClientModal('${u.uid}')" class="w-8 h-8 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 flex items-center justify-center transition-colors" title="Editar Cliente"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="deleteClient('${u.uid}', '${key}')" class="w-8 h-8 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 flex items-center justify-center transition-colors" title="Eliminar Cliente"><i class="fa-solid fa-trash"></i></button>
+                            </div>
                         </td>
                     </tr>`;
             });
@@ -1012,8 +1149,8 @@
                 const txtClr = isActive ? 'text-white' : 'text-gray-500';
                 stepsContainer.innerHTML += `
                     <div class="flex flex-col items-center w-1/4 relative">
-                        <div class="w-4 h-4 rounded-full ${dotClr}"></div>
-                        <p class="mt-3 text-[10px] md:text-xs font-bold ${txtClr} text-center leading-tight absolute top-4 w-24">${st}</p>
+                        <div class="w-3 h-3 md:w-4 md:h-4 rounded-full ${dotClr}"></div>
+                        <p class="mt-2 md:mt-3 text-[9px] md:text-xs font-bold ${txtClr} text-center leading-tight absolute top-4 w-16 md:w-24">${st}</p>
                     </div>`;
             });
 
@@ -1021,7 +1158,7 @@
             
             const okrList = document.getElementById('consultingOkrsList'); okrList.innerHTML = '';
             (data.okrs||[]).forEach(okr => {
-                okrList.innerHTML += `<li class="flex items-start gap-3"><i class="fa-solid fa-play text-custom-accent text-xs mt-1 shadow-neon"></i><div><p class="font-bold text-sm text-white">${okr.title}</p><p class="text-xs text-gray-400 mt-1">${okr.desc}</p></div></li>`;
+                okrList.innerHTML += `<li class="flex items-start gap-2.5 md:gap-3"><i class="fa-solid fa-play text-custom-accent text-[10px] md:text-xs mt-1 shadow-neon"></i><div><p class="font-bold text-xs md:text-sm text-white">${okr.title}</p><p class="text-[11px] md:text-xs text-gray-400 mt-0.5 md:mt-1">${okr.desc}</p></div></li>`;
             });
         }
 
@@ -1096,8 +1233,8 @@
             Object.keys(n).forEach(k => {
                 let lis = '';
                 if((tasks[k]||[]).length===0) lis = '<li class="text-gray-400 text-[11px] py-1 italic">Sin asignar</li>';
-                else (tasks[k]||[]).forEach(t => { lis += `<li class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex items-center gap-2 text-xs font-medium text-gray-700 min-w-[200px]"><i class="fa-solid fa-code text-${clr[k]}-500"></i> ${t.text}</li>`; });
-                c.innerHTML += `<div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm min-w-[240px] flex-shrink-0"><div class="flex items-center justify-between mb-3"><h4 class="font-extrabold text-gray-900 text-sm">${n[k]}</h4></div><ul class="space-y-2">${lis}</ul></div>`;
+                else (tasks[k]||[]).forEach(t => { lis += `<li class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex items-center gap-2 text-xs font-medium text-gray-700 min-w-[200px] md:min-w-0"><i class="fa-solid fa-code text-${clr[k]}-500"></i> ${t.text}</li>`; });
+                c.innerHTML += `<div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm min-w-[240px] md:min-w-0 md:w-1/4 flex-shrink-0"><div class="flex items-center justify-between mb-3"><h4 class="font-extrabold text-gray-900 text-xs md:text-sm">${n[k]}</h4></div><ul class="space-y-2">${lis}</ul></div>`;
             });
         }
 
@@ -1122,8 +1259,8 @@
 
             const cplInd = document.getElementById('cpl-indicator');
             if(cpl === 0) cplInd.innerHTML = "--";
-            else if(cpl < 15) { cplInd.className = "bg-finance-upBg text-finance-up px-2 py-1 rounded text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-down mr-0.5"></i> Óptimo'; }
-            else { cplInd.className = "bg-finance-downBg text-finance-down px-2 py-1 rounded text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-up mr-0.5"></i> Alto'; }
+            else if(cpl < 15) { cplInd.className = "bg-finance-upBg text-finance-up px-2 py-1 rounded text-[9px] md:text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-down mr-0.5"></i> Óptimo'; }
+            else { cplInd.className = "bg-finance-downBg text-finance-down px-2 py-1 rounded text-[9px] md:text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-up mr-0.5"></i> Alto'; }
             
             updateMonthlyChart();
         }
@@ -1150,7 +1287,7 @@
             const list = document.getElementById('adminChartList'); list.innerHTML = '';
             const mChart = currentUserData.manualChart || [];
             mChart.sort((a,b) => a.month.localeCompare(b.month)).forEach((d, i) => {
-                list.innerHTML += `<li class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 text-gray-900 text-xs">
+                list.innerHTML += `<li class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 text-gray-900 text-[11px] md:text-xs">
                     <div><span class="font-bold text-gray-800">${formatMonthInput(d.month)}</span> | Leads: <span class="text-custom-main font-bold">${d.leads}</span></div>
                     <div>
                         <button onclick="editChartRow(${i})" class="text-blue-500 mr-3 hover:text-blue-700 transition-colors"><i class="fa-solid fa-pen"></i></button>
@@ -1275,11 +1412,11 @@
                 const cardC = isAct ? `bg-white shadow-sm border-gray-200` : `locked-service-btn locked bg-gray-50/50`;
                 const iC = isAct ? `${s.b} ${s.c}` : `bg-gray-200 text-gray-500`;
                 const btn = isAct ? `<span class="text-[10px] font-extrabold text-custom-main"><i class="fa-solid fa-check"></i> Activo</span>` 
-                    : `<button class="text-[10px] font-bold bg-white shadow-sm border px-3 py-1.5 rounded-lg flex gap-1"><i class="fa-solid fa-plus text-custom-accent"></i> Agregar</button>`;
+                    : `<button class="text-[9px] md:text-[10px] font-bold bg-white shadow-sm border px-2 md:px-3 py-1.5 rounded-lg flex gap-1"><i class="fa-solid fa-plus text-custom-accent"></i> Agregar</button>`;
 
                 const action = !isAct ? (s.cat === 'mkt' ? 'window.open(\'https://matiaslunateran.com\', \'_blank\')' : 'window.open(\'https://wa.link/umhrbw\', \'_blank\')') : '';
 
-                const html = `<div class="service-card p-5 rounded-[20px] border ${cardC} flex items-center justify-between min-w-[260px] flex-shrink-0" onclick="${action}"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center ${iC} text-lg"><i class="${s.icon}"></i></div><h4 class="font-extrabold text-gray-900 text-sm">${s.title}</h4></div>${btn}</div>`;
+                const html = `<div class="service-card p-4 md:p-5 rounded-[16px] md:rounded-[20px] border ${cardC} flex items-center justify-between min-w-[240px] md:min-w-0 flex-shrink-0 w-full" onclick="${action}"><div class="flex items-center gap-2.5 md:gap-3"><div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center ${iC} text-base md:text-lg"><i class="${s.icon}"></i></div><h4 class="font-extrabold text-gray-900 text-xs md:text-sm">${s.title}</h4></div>${btn}</div>`;
                 
                 if(s.cat === 'mkt') mktContainer.innerHTML += html;
                 else prodContainer.innerHTML += html;
@@ -1296,7 +1433,7 @@
 
         function renderTable() {
             const tbody = document.getElementById('dataTableBody'); tbody.innerHTML = '';
-            if(!campaignsData.length) { tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400 font-medium">No hay anuncios registrados.</td></tr>`; return; }
+            if(!campaignsData.length) { tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400 font-medium text-xs md:text-sm">No hay anuncios registrados.</td></tr>`; return; }
 
             campaignsData.sort((a,b) => b.createdAt - a.createdAt).forEach(c => {
                 const cpl = c.leads > 0 ? (c.spend / c.leads) : 0;
@@ -1306,12 +1443,12 @@
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50 border-b border-gray-50">
-                        <td class="px-5 py-4"><div class="font-extrabold text-gray-900 text-sm">${c.name}</div><div class="text-[11px] text-gray-500 mt-1"><i class="fa-brands ${pIcons[c.platform]||'fa-rectangle-ad'}"></i> ${c.platform}</div></td>
-                        <td class="px-5 py-4"><div class="text-xs font-bold text-gray-700">R: ${fmtNum(c.reach||0)}</div><div class="text-[10px] text-gray-400">I: ${fmtNum(c.imp||0)}</div></td>
-                        <td class="px-5 py-4 text-right font-extrabold text-gray-700 text-sm">${fmtCurr(c.spend)}</td>
-                        <td class="px-5 py-4 text-center font-extrabold text-custom-main text-sm">${fmtNum(c.leads)}</td>
-                        <td class="px-5 py-4 text-right ${cplClr} text-sm">${fmtCurr(cpl)}</td>
-                        <td class="px-5 py-4 text-center admin-only ${isSuperAdmin?'':'hidden'}">
+                        <td class="px-4 py-3 md:py-4"><div class="font-extrabold text-gray-900 text-xs md:text-sm">${c.name}</div><div class="text-[10px] md:text-[11px] text-gray-500 mt-0.5 md:mt-1"><i class="fa-brands ${pIcons[c.platform]||'fa-rectangle-ad'}"></i> ${c.platform}</div></td>
+                        <td class="px-4 py-3 md:py-4"><div class="text-[11px] md:text-xs font-bold text-gray-700">R: ${fmtNum(c.reach||0)}</div><div class="text-[9px] md:text-[10px] text-gray-400">I: ${fmtNum(c.imp||0)}</div></td>
+                        <td class="px-4 py-3 md:py-4 text-right font-extrabold text-gray-700 text-xs md:text-sm">${fmtCurr(c.spend)}</td>
+                        <td class="px-4 py-3 md:py-4 text-center font-extrabold text-custom-main text-xs md:text-sm">${fmtNum(c.leads)}</td>
+                        <td class="px-4 py-3 md:py-4 text-right ${cplClr} text-xs md:text-sm">${fmtCurr(cpl)}</td>
+                        <td class="px-4 py-3 md:py-4 text-center admin-only ${isSuperAdmin?'':'hidden'}">
                             <button onclick="editCamp('${c.id}')" class="text-blue-500 hover:text-blue-700 mr-3"><i class="fa-solid fa-pen"></i></button>
                             <button onclick="delDoc('${c.id}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
                         </td>
