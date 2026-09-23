@@ -348,7 +348,7 @@
                         <div class="w-full">
                             <h3 class="text-lg md:text-xl font-extrabold text-gray-900"><i class="fa-solid fa-laptop-code text-purple-600 mr-2"></i> Desarrollo Página Web</h3>
                             <p class="text-[11px] md:text-xs text-gray-500 mt-1 font-medium">Seguimiento ágil de la creación de tu ecosistema digital.</p>
-                            <!-- Barra de progreso añadida -->
+                            <!-- Barra de progreso -->
                             <div class="mt-3 w-full max-w-md hidden" id="webDevProgressBarContainer">
                                 <div class="flex justify-between items-center mb-1">
                                     <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider">Avance del Proyecto</span>
@@ -1305,11 +1305,19 @@
         };
         window.closeChartModal = () => document.getElementById('chartDataModal').classList.add('hidden');
         
+        // CORRECCIÓN BUG 2: Hacer el formato de fecha muy resistente a fallos.
         const formatMonthInput = (yyyyMm) => { 
             if(!yyyyMm) return '';
-            const [y, m] = yyyMm.split('-');
+            const parts = yyyMm.split('-');
+            if (parts.length < 2) return yyyMm;
+            
+            let y = parts[0];
+            let m = parts[1];
+            
             const monthNames = { '01':'Ene', '02':'Feb', '03':'Mar', '04':'Abr', '05':'May', '06':'Jun', '07':'Jul', '08':'Ago', '09':'Sep', '10':'Oct', '11':'Nov', '12':'Dic' };
-            return `${monthNames[m]} ${y.slice(2)}`;
+            const mName = monthNames[m] || m;
+            const yShort = y && y.length >= 2 ? y.slice(-2) : y;
+            return `${mName} ${yShort}`;
         };
 
         function renderAdminChartList() {
@@ -1363,23 +1371,28 @@
         function updateMonthlyChart() {
             let dist = {};
 
+            // 1. CARGAR DATOS AUTOMÁTICOS: Primero calculamos los datos originales desde campañas.
+            campaignsData.forEach(c => {
+                if(!c.createdAt || !c.endAt || c.leads <= 0) return;
+                
+                let s = new Date(parseInt(c.createdAt) || Date.now());
+                let e = new Date(parseInt(c.endAt) || Date.now());
+                
+                let days = (e-s)/(1000*60*60*24); if(days<1) days=1;
+                let lpd = c.leads / days;
+                
+                for(let d=new Date(s); d<=e; d.setDate(d.getDate()+1)) {
+                    let key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+                    dist[key] = (dist[key] || 0) + lpd;
+                }
+            });
+
+            // CORRECCIÓN BUG 1: FUSIÓN DE DATOS.
+            // 2. APLICAR DATOS MANUALES: En lugar de reemplazar todo, ahora sobrescribe SOLAMENTE los meses específicos que editaste.
             if (currentUserData.manualChart && currentUserData.manualChart.length > 0) {
                 currentUserData.manualChart.forEach(d => {
-                    dist[d.month] = parseInt(d.leads) || 0;
-                });
-            } else {
-                campaignsData.forEach(c => {
-                    if(!c.createdAt || !c.endAt || c.leads <= 0) return;
-                    
-                    let s = new Date(parseInt(c.createdAt) || Date.now());
-                    let e = new Date(parseInt(c.endAt) || Date.now());
-                    
-                    let days = (e-s)/(1000*60*60*24); if(days<1) days=1;
-                    let lpd = c.leads / days;
-                    
-                    for(let d=new Date(s); d<=e; d.setDate(d.getDate()+1)) {
-                        let key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-                        dist[key] = (dist[key] || 0) + lpd;
+                    if (d.month) {
+                        dist[d.month] = parseInt(d.leads) || 0;
                     }
                 });
             }
