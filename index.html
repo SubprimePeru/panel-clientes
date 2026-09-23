@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <title>Reporte de Clientes - Matías Luna Terán</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/jpeg" href="favicon.jpg">
+    <link rel="icon" href="favicon.jpg?v=2">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -36,8 +36,7 @@
     </script>
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        html, body { overscroll-behavior-y: none; }
+        body, html { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; touch-action: manipulation; overscroll-behavior-y: none; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -67,7 +66,8 @@
         .numpad-btn:active { background: var(--custom-accent); color: black; transform: scale(0.92); border-color: transparent; }
         .pin-dot { width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.15); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         
-        .premium-input { background: rgba(0,0,0,0.2); border: 1px solid rgba(140, 185, 204, 0.2); color: white; transition: all 0.2s; }
+        /* input size base is critical to prevent iOS zoom */
+        .premium-input { background: rgba(0,0,0,0.2); border: 1px solid rgba(140, 185, 204, 0.2); color: white; transition: all 0.2s; font-size: 16px !important; }
         .premium-input:focus { border-color: #FFE200; outline: none; box-shadow: 0 0 15px rgba(255, 226, 0, 0.15); background: rgba(0,0,0,0.4); }
 
         .service-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -97,6 +97,27 @@
             transition: transform 0.3s;
         }
         .wp-float:hover { transform: scale(1.1); }
+
+        /* Estilo luminoso amarillo para el botón Agregar */
+        .btn-add-luminoso {
+            background-color: #1a1a1a;
+            color: #FFE200;
+            border: 1px solid rgba(255, 226, 0, 0.4);
+            box-shadow: 0 0 8px rgba(255, 226, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .btn-add-luminoso:hover {
+            background-color: #FFE200;
+            color: #141414;
+            box-shadow: 0 0 15px rgba(255, 226, 0, 0.6);
+        }
+        .icon-luminoso {
+            text-shadow: 0 0 5px rgba(255, 226, 0, 0.8);
+        }
+        .btn-add-luminoso:hover .icon-luminoso {
+            text-shadow: none;
+            color: #141414;
+        }
     </style>
 </head>
 <body class="antialiased overflow-hidden h-screen w-screen bg-custom-black text-white flex flex-col">
@@ -128,15 +149,15 @@
 
     <!-- AUTH SCREEN -->
     <div id="authContainer" class="absolute inset-0 z-50 flex flex-col h-full bg-custom-black" style="background: radial-gradient(circle at top right, #004A6B, #141414 75%);">
-        <div class="p-4 md:p-6 flex justify-between items-center mt-4 px-6 md:px-12">
-            <div class="text-xl md:text-2xl font-extrabold tracking-tight flex items-center">
-                <i class="fa-solid fa-chart-simple text-custom-accent mr-2"></i> Reporte de Clientes <span class="text-custom-light ml-2 text-sm md:text-base font-medium opacity-80 border-l border-white/20 pl-2">Matías Luna Terán</span>
+        <div class="p-4 md:p-6 flex justify-between items-center mt-4 px-4 md:px-12">
+            <div class="text-lg md:text-2xl font-extrabold tracking-tight flex items-center w-full">
+                <i class="fa-solid fa-chart-simple text-custom-accent mr-2"></i> Reporte Clientes <span class="text-custom-light ml-2 text-[11px] md:text-base font-medium opacity-80 border-l border-white/20 pl-2">Matías Luna Terán</span>
             </div>
         </div>
 
         <div class="flex-1 overflow-y-auto flex flex-col items-center px-5 pb-10 justify-center">
             
-            <div id="auth-login" class="w-full max-w-sm flex flex-col fade-in my-auto">
+            <div id="auth-login" class="w-full max-w-sm flex flex-col fade-in my-auto transition-all">
                 <div class="text-center mb-8">
                     <h1 class="text-3xl font-bold mb-2">Bienvenido</h1>
                     <p class="text-custom-light text-sm">Ingresa tu usuario</p>
@@ -151,10 +172,10 @@
                 </div>
             </div>
 
-            <div id="auth-login-pin" class="w-full max-w-sm flex flex-col fade-in hidden my-auto">
-                <div class="text-center mb-8 relative">
+            <div id="auth-login-pin" class="w-full max-w-sm flex-col fade-in hidden my-auto transition-all">
+                <div class="text-center mb-8 relative flex flex-col items-center">
                     <button onclick="switchAuthView('login')" class="absolute left-0 top-1 text-custom-light p-2 hover:text-white transition-colors"><i class="fa-solid fa-arrow-left text-lg"></i></button>
-                    <h2 class="text-2xl font-bold text-white" id="displayLoginBusiness">Negocio</h2>
+                    <h2 class="text-2xl font-bold text-white mt-1" id="displayLoginBusiness">Negocio</h2>
                     <p class="text-custom-light text-sm mt-1">Ingresa tu PIN</p>
                 </div>
                 <div class="flex justify-center gap-4 mb-10" id="loginPinDots">
@@ -170,10 +191,11 @@
     <!-- MAIN DASHBOARD -->
     <div id="appContainer" class="hidden h-full w-full bg-motion text-gray-900 flex flex-col relative overflow-hidden">
         
-        <header class="bg-white/80 backdrop-blur-md border-b border-custom-light/20 px-3 md:px-8 py-3 flex items-center justify-between sticky top-0 z-40">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-custom-dark flex items-center justify-center shadow-lg shadow-custom-dark/30">
-                    <i class="fa-solid fa-chart-simple text-custom-accent"></i>
+        <header class="bg-white/80 backdrop-blur-md border-b border-custom-light/20 px-3 py-3 md:px-8 flex items-center justify-between sticky top-0 z-40 gap-2">
+            <!-- Izquierda -->
+            <div class="flex items-center gap-2 shrink-0">
+                <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-custom-dark flex items-center justify-center shadow-lg shadow-custom-dark/30">
+                    <i class="fa-solid fa-chart-simple text-custom-accent text-sm md:text-base"></i>
                 </div>
                 <div class="hidden md:block">
                     <h2 class="font-extrabold text-lg leading-tight text-gray-900" id="dashBusinessName">Mi Negocio</h2>
@@ -181,15 +203,17 @@
                 </div>
             </div>
 
-            <div class="flex bg-gray-100/80 p-1 rounded-full border border-gray-200 overflow-x-auto hide-scrollbar">
+            <!-- Centro Tabs (Flexible con Scroll) -->
+            <div class="flex-1 max-w-[55%] md:max-w-max bg-gray-100/80 p-1 rounded-full border border-gray-200 overflow-x-auto hide-scrollbar flex items-center">
                 <button onclick="switchDashboardTab('resumen')" class="dash-tab active px-3 md:px-6 py-2 text-[11px] md:text-sm font-bold rounded-full transition-all bg-white shadow-sm text-custom-main whitespace-nowrap" data-tab="resumen">Resumen</button>
                 <button onclick="switchDashboardTab('anuncios')" id="tabBtnAnuncios" class="dash-tab px-3 md:px-6 py-2 text-[11px] md:text-sm font-bold rounded-full transition-all text-gray-500 hover:text-gray-900 whitespace-nowrap" data-tab="anuncios">Anuncios</button>
                 <button id="adminTabBtn" onclick="switchDashboardTab('admin')" class="hidden dash-tab px-3 md:px-6 py-2 text-[11px] md:text-sm font-bold rounded-full transition-all text-purple-600 hover:bg-purple-50 whitespace-nowrap" data-tab="admin"><i class="fa-solid fa-crown mr-1"></i> Admin</button>
             </div>
 
-            <div class="flex items-center gap-2 md:gap-3">
-                <span id="adminIndicator" class="hidden text-[10px] md:text-xs font-bold px-2 py-1 rounded-md border flex items-center gap-1"></span>
-                <button onclick="logout()" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors shadow-sm shrink-0" title="Salir">
+            <!-- Derecha -->
+            <div class="flex items-center gap-2 shrink-0 justify-end">
+                <span id="adminIndicator" class="hidden text-[10px] md:text-xs font-bold px-1.5 py-1 rounded-md border flex items-center gap-1"></span>
+                <button onclick="logout()" class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors shadow-sm shrink-0" title="Salir">
                     <i class="fa-solid fa-power-off"></i>
                 </button>
             </div>
@@ -227,7 +251,7 @@
                                     <th class="px-4 py-3 text-center">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody id="adminUserTable" class="text-xs md:text-sm divide-y divide-gray-100 font-medium"></tbody>
+                            <tbody id="adminUserTable" class="text-[11px] md:text-sm divide-y divide-gray-100 font-medium"></tbody>
                         </table>
                     </div>
                 </div>
@@ -240,7 +264,7 @@
                     <div class="flex-1 bg-white rounded-[32px] p-6 md:p-10 shadow-panel border border-gray-100 flex flex-col justify-center relative overflow-hidden">
                         <div class="absolute -right-20 -top-20 w-64 h-64 bg-custom-light/10 rounded-full blur-3xl pointer-events-none"></div>
                         
-                        <h1 class="text-3xl md:text-5xl font-extrabold text-custom-dark mb-3 tracking-tight">Hola, <span id="dashUserName" class="text-custom-main">Emprendedor</span> <span class="wave-emoji">👋</span></h1>
+                        <h1 class="text-3xl md:text-5xl font-extrabold text-custom-dark mb-3 tracking-tight">Hola, <br class="block md:hidden"> <span id="dashUserName" class="text-custom-main">Emprendedor</span> <span class="wave-emoji">👋</span></h1>
                         <p class="text-gray-600 font-medium max-w-md leading-relaxed mt-2 text-sm md:text-base">Aquí tienes el resumen en tiempo real del progreso de tu estrategia comercial, campañas y proyectos.</p>
                         
                         <div class="mt-8">
@@ -272,26 +296,26 @@
 
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                         <div class="ad-card bg-white rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-32 md:h-36">
-                            <div class="flex items-center justify-between text-custom-main font-bold text-[11px] md:text-sm">
+                            <div class="flex items-center justify-between text-custom-main font-bold text-xs md:text-sm">
                                 <div class="flex items-center gap-1.5 md:gap-2">
-                                    <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600"><i class="fa-solid fa-wallet"></i></div>
+                                    <div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600"><i class="fa-solid fa-wallet"></i></div>
                                     Ppto. Mes
                                 </div>
                                 <button id="btnEditBudget" onclick="openBudgetModal()" class="hidden w-6 h-6 md:w-7 md:h-7 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 items-center justify-center transition-colors shadow-sm" title="Editar Presupuesto"><i class="fa-solid fa-pen text-[10px] md:text-xs"></i></button>
                             </div>
                             <div>
-                                <div class="text-xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-budget">S/ 0</div>
-                                <div class="text-[8px] md:text-[9px] font-semibold text-gray-400 mt-1 uppercase tracking-wider">*No incluye fee</div>
+                                <div class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-budget">S/ 0</div>
+                                <div class="text-[9px] font-semibold text-gray-400 mt-1 uppercase tracking-wider">*No incluye fee</div>
                             </div>
                         </div>
 
                         <div class="ad-card bg-white rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-32 md:h-36">
-                            <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 font-bold text-[11px] md:text-sm">
-                                <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                            <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 font-bold text-xs md:text-sm">
+                                <div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-money-bill-trend-up"></i></div>
                                 Inversión
                             </div>
                             <div>
-                                <div class="text-xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-spent">S/ 0</div>
+                                <div class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-spent">S/ 0</div>
                                 <div class="mt-2 flex items-center">
                                     <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
                                         <div class="bg-custom-main h-full rounded-full transition-all duration-1000" id="budget-progress" style="width: 0%"></div>
@@ -301,26 +325,26 @@
                         </div>
 
                         <div class="ad-card bg-white rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-32 md:h-36">
-                            <div class="flex items-center gap-1.5 md:gap-2 text-custom-dark font-bold text-[11px] md:text-sm">
-                                <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-custom-dark/10 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
+                            <div class="flex items-center gap-1.5 md:gap-2 text-custom-dark font-bold text-xs md:text-sm">
+                                <div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-custom-dark/10 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
                                 Contactos
                             </div>
                             <div>
-                                <div class="text-2xl md:text-4xl font-extrabold text-gray-900" id="kpi-leads">0</div>
-                                <div class="text-[9px] md:text-[10px] font-bold text-finance-up mt-1 flex items-center gap-1 uppercase">
+                                <div class="text-3xl md:text-4xl font-extrabold text-gray-900" id="kpi-leads">0</div>
+                                <div class="text-[10px] font-bold text-finance-up mt-1 flex items-center gap-1 uppercase">
                                     <i class="fa-solid fa-arrow-trend-up"></i> Leads
                                 </div>
                             </div>
                         </div>
 
                         <div class="ad-card bg-white rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-32 md:h-36">
-                            <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 font-bold text-[11px] md:text-sm">
-                                <div class="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500"><i class="fa-solid fa-bullseye"></i></div>
+                            <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 font-bold text-xs md:text-sm">
+                                <div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500"><i class="fa-solid fa-bullseye"></i></div>
                                 Costo Cto.
                             </div>
                             <div class="flex items-end justify-between">
-                                <div class="text-xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-cpl">S/ 0</div>
-                                <div id="cpl-indicator" class="bg-gray-100 text-gray-500 px-2 py-1 rounded text-[9px] md:text-[11px] font-bold mb-1 shadow-sm">--</div>
+                                <div class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-cpl">S/ 0</div>
+                                <div id="cpl-indicator" class="bg-gray-100 text-gray-500 px-2 py-1 rounded text-[10px] md:text-[11px] font-bold mb-1 shadow-sm">--</div>
                             </div>
                         </div>
                     </div>
@@ -330,9 +354,9 @@
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
                             <div>
                                 <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Evolución de Contactos</h3>
-                                <p class="text-[11px] md:text-xs text-gray-500 font-medium mt-1">Historial mensual de leads obtenidos.</p>
+                                <p class="text-xs text-gray-500 font-medium mt-1">Historial mensual de leads obtenidos.</p>
                             </div>
-                            <button id="btnEditChart" onclick="openChartModal()" class="hidden admin-only px-4 py-2 bg-blue-50 text-blue-700 font-bold rounded-xl hover:bg-blue-100 transition-colors text-xs items-center gap-1.5">
+                            <button id="btnEditChart" onclick="openChartModal()" class="hidden admin-only px-4 py-2 bg-blue-50 text-blue-700 font-bold rounded-xl hover:bg-blue-100 transition-colors text-xs items-center gap-1.5 border border-blue-100 w-full sm:w-auto justify-center">
                                 <i class="fa-solid fa-pen"></i> Editar Gráfico
                             </button>
                         </div>
@@ -347,7 +371,7 @@
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pl-2">
                         <div class="w-full">
                             <h3 class="text-lg md:text-xl font-extrabold text-gray-900"><i class="fa-solid fa-laptop-code text-purple-600 mr-2"></i> Desarrollo Página Web</h3>
-                            <p class="text-[11px] md:text-xs text-gray-500 mt-1 font-medium">Seguimiento ágil de la creación de tu ecosistema digital.</p>
+                            <p class="text-xs text-gray-500 mt-1 font-medium">Seguimiento ágil de la creación de tu ecosistema digital.</p>
                             <!-- Barra de progreso -->
                             <div class="mt-3 w-full max-w-md hidden" id="webDevProgressBarContainer">
                                 <div class="flex justify-between items-center mb-1">
@@ -359,7 +383,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button id="btnManageWeb" onclick="openWebModal()" class="hidden admin-only shrink-0 px-4 py-2 bg-purple-100 text-purple-700 font-bold rounded-xl hover:bg-purple-200 transition-colors text-xs items-center gap-1.5">
+                        <button id="btnManageWeb" onclick="openWebModal()" class="hidden admin-only shrink-0 px-4 py-2 bg-purple-100 text-purple-700 font-bold rounded-xl hover:bg-purple-200 transition-colors text-xs items-center gap-1.5 border border-purple-200 w-full sm:w-auto justify-center">
                             <i class="fa-solid fa-pen"></i> Actualizar Estado
                         </button>
                     </div>
@@ -379,22 +403,16 @@
                                 </h3>
                                 <p class="text-xs md:text-sm text-gray-400 mt-1">Estrategia gerencial de alto impacto.</p>
                             </div>
-                            <button id="btnManageConsulting" onclick="openConsultingModal()" class="hidden admin-only px-4 py-2 bg-white/10 text-white hover:text-custom-accent font-bold rounded-xl border border-white/20 transition-colors text-xs items-center gap-1.5 backdrop-blur-md">
+                            <button id="btnManageConsulting" onclick="openConsultingModal()" class="hidden admin-only px-4 py-2 bg-white/10 text-white hover:text-custom-accent font-bold rounded-xl border border-white/20 transition-colors text-xs items-center gap-1.5 backdrop-blur-md w-full sm:w-auto justify-center">
                                 <i class="fa-solid fa-pen"></i> Editar Pipeline
                             </button>
                         </div>
 
                         <!-- Timeline Pipeline (Fixed overlap) -->
                         <div class="relative w-full mt-2 md:mt-4 mb-8 md:mb-10">
-                            <!-- Background track line -->
                             <div class="absolute top-[8px] left-[12%] right-[12%] h-1 bg-white/15 rounded-full z-0"></div>
-                            <!-- Active Progress line -->
                             <div class="absolute top-[8px] left-[12%] h-1 bg-custom-accent rounded-full transition-all duration-700 z-0" id="consultingProgressBar" style="width: 0%;"></div>
-                            
-                            <!-- Dots and Labels -->
-                            <div class="relative flex justify-between w-full z-10" id="consultingPipelineSteps">
-                                <!-- Dynamically injected via JS -->
-                            </div>
+                            <div class="relative flex justify-between w-full z-10" id="consultingPipelineSteps"></div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
@@ -425,12 +443,13 @@
                     <div id="servicesCategoriesContainer" class="flex flex-col gap-6 md:gap-8">
                         <div>
                             <h4 class="text-[10px] md:text-xs font-extrabold text-gray-400 mb-3 md:mb-4 tracking-widest uppercase"><i class="fa-solid fa-bullhorn mr-1"></i> Marketing Digital</h4>
-                            <!-- Grid for Desktop, flex/snap for Mobile -->
-                            <div class="flex overflow-x-auto snap-x gap-3 md:gap-4 md:grid md:grid-cols-4 hide-scrollbar pb-2" id="servicesGridMkt"></div>
+                            <!-- Grid para 2 filas de ancho estricto deslizables -->
+                            <div class="grid grid-rows-2 grid-flow-col gap-3 md:gap-4 overflow-x-auto snap-x hide-scrollbar pb-2 auto-cols-[85vw] sm:auto-cols-[300px] md:auto-cols-max" id="servicesGridMkt"></div>
                         </div>
                         <div>
                             <h4 class="text-[10px] md:text-xs font-extrabold text-gray-400 mb-3 md:mb-4 tracking-widest uppercase"><i class="fa-solid fa-gears mr-1"></i> Productividad y Negocio</h4>
-                            <div class="flex overflow-x-auto snap-x gap-3 md:gap-4 md:grid md:grid-cols-4 hide-scrollbar pb-2" id="servicesGridProd"></div>
+                            <!-- Grid para 2 filas de ancho estricto deslizables -->
+                            <div class="grid grid-rows-2 grid-flow-col gap-3 md:gap-4 overflow-x-auto snap-x hide-scrollbar pb-2 auto-cols-[85vw] sm:auto-cols-[300px] md:auto-cols-max" id="servicesGridProd"></div>
                         </div>
                     </div>
                 </div>
@@ -459,7 +478,7 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[800px]">
                             <thead>
-                                <tr class="bg-gray-50 text-gray-500 text-[10px] md:text-[11px] uppercase tracking-wider font-extrabold border-b border-gray-100">
+                                <tr class="bg-gray-50 text-gray-500 text-[11px] md:text-xs uppercase tracking-wider font-extrabold border-b border-gray-100">
                                     <th class="px-4 py-3 md:py-4">Campaña / Plataforma</th>
                                     <th class="px-4 py-3 md:py-4">Alcance / Impres.</th>
                                     <th class="px-4 py-3 md:py-4 text-right">Inversión</th>
@@ -490,17 +509,17 @@
                 <input type="hidden" id="editClientUid">
                 <input type="hidden" id="editClientOriginalUserKey">
                 
-                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Negocio</label><input type="text" id="editClientBiz" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
-                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Titular</label><input type="text" id="editClientName" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
-                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Usuario (Solo letras minúsculas)</label><input type="text" id="editClientUserKey" class="w-full p-2.5 md:p-3 bg-gray-50 text-purple-700 border border-gray-200 rounded-xl text-sm font-bold" placeholder="ej. miempresa"></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Negocio</label><input type="text" id="editClientBiz" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold"></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Titular</label><input type="text" id="editClientName" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold"></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Usuario (Solo letras minúsculas)</label><input type="text" id="editClientUserKey" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-purple-700 border border-gray-200 rounded-xl font-bold" placeholder="ej. miempresa"></div>
                 
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">RUC</label><input type="text" id="editClientRuc" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
-                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Teléfono</label><input type="text" id="editClientPhone" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">RUC</label><input type="text" id="editClientRuc" maxlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold" placeholder="ej. 10... o 20..."></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Teléfono</label><input type="text" id="editClientPhone" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold"></div>
                 </div>
-                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">PIN Acceso</label><input type="text" id="editClientPin" class="w-full p-2.5 md:p-3 bg-gray-50 text-purple-700 border border-gray-200 rounded-xl text-sm font-bold"></div>
-                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Video / GIF Hero</label><input type="text" id="editClientVideo" class="w-full p-2.5 md:p-3 bg-gray-50 text-blue-700 border border-gray-200 rounded-xl text-[10px] md:text-xs font-mono" placeholder="https://..."></div>
-                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Logo Transparente</label><input type="text" id="editClientLogo" class="w-full p-2.5 md:p-3 bg-gray-50 text-blue-700 border border-gray-200 rounded-xl text-[10px] md:text-xs font-mono" placeholder="https://..."></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">PIN Acceso (6 Dígitos)</label><input type="text" id="editClientPin" maxlength="6" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-purple-700 border border-gray-200 rounded-xl font-bold" placeholder="ej. 123456"></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Video / GIF Hero</label><input type="text" id="editClientVideo" class="w-full p-2.5 md:p-3 text-base md:text-xs bg-gray-50 text-blue-700 border border-gray-200 rounded-xl font-mono" placeholder="https://..."></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Logo Transparente</label><input type="text" id="editClientLogo" class="w-full p-2.5 md:p-3 text-base md:text-xs bg-gray-50 text-blue-700 border border-gray-200 rounded-xl font-mono" placeholder="https://..."></div>
                 
                 <button onclick="saveClientEdit()" class="w-full mt-4 py-3.5 bg-purple-600 text-white font-extrabold rounded-xl text-sm hover:bg-purple-700 active:scale-95 transition-all">Guardar Cambios</button>
             </div>
@@ -518,21 +537,21 @@
                 <input type="hidden" id="formId">
                 <input type="hidden" id="formCreatedAt">
                 <input type="hidden" id="formEndAt">
-                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Nombre de Campaña</label><input type="text" id="formName" required class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium text-sm"></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Nombre de Campaña</label><input type="text" id="formName" required class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium"></div>
                 <div>
                     <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Plataforma</label>
-                    <select id="formPlatform" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-sm font-bold">
+                    <select id="formPlatform" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold">
                         <option value="Meta Ads">Facebook / Instagram</option><option value="TikTok Ads">TikTok</option>
                         <option value="Google Ads">Google / YouTube</option><option value="LinkedIn Ads">LinkedIn</option><option value="Pinterest Ads">Pinterest</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Inversión (S/)</label><input type="number" id="formSpend" required min="0" step="0.01" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold text-sm"></div>
-                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Total Contactos</label><input type="number" id="formLeads" required min="0" step="1" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold text-sm"></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Inversión (S/)</label><input type="number" id="formSpend" required min="0" step="0.01" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold"></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Total Contactos</label><input type="number" id="formLeads" required min="0" step="1" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Alcance</label><input type="number" id="formReach" min="0" step="1" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium text-sm" value="0"></div>
-                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Impresiones</label><input type="number" id="formImp" min="0" step="1" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium text-sm" value="0"></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Alcance</label><input type="number" id="formReach" min="0" step="1" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium" value="0"></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Impresiones</label><input type="number" id="formImp" min="0" step="1" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium" value="0"></div>
                 </div>
                 <button type="submit" id="saveBtn" class="w-full py-3.5 bg-custom-main hover:bg-custom-dark text-white font-extrabold rounded-xl mt-4 shadow-lg active:scale-95 transition-all text-sm">Guardar Datos</button>
             </form>
@@ -547,13 +566,13 @@
                 <button onclick="closeChartModal()" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
             </div>
             <div class="p-5 flex flex-col gap-4 bg-white overflow-y-auto">
-                <p class="text-[11px] md:text-xs text-gray-500 font-medium">Sobrescribe los leads de un mes. El gráfico priorizará estos datos.</p>
+                <p class="text-xs text-gray-500 font-medium">Sobrescribe los leads de un mes. El gráfico priorizará estos datos.</p>
                 
                 <div class="flex gap-2 items-center">
                     <input type="hidden" id="editChartIdx" value="">
                     <!-- Native Month Picker -->
-                    <input type="month" id="chartInputMonth" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-xs md:text-sm font-bold" required>
-                    <input type="number" id="chartInputLeads" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-xs md:text-sm" placeholder="Cant. Leads" required min="0">
+                    <input type="month" id="chartInputMonth" class="w-1/2 p-2 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-lg font-bold" required>
+                    <input type="number" id="chartInputLeads" class="w-1/2 p-2 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-lg" placeholder="Cant. Leads" required min="0">
                     <button onclick="addChartRow()" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700"><i class="fa-solid fa-check"></i></button>
                 </div>
                 
@@ -580,7 +599,7 @@
                     <button onclick="selectWebColumn('launch')" class="col-btn py-2 rounded-lg text-gray-500 hover:text-gray-900 font-bold text-[10px] md:text-xs text-center" data-val="launch">Lanzam.</button>
                 </div>
                 <div class="flex gap-2">
-                    <input type="text" id="webTaskInput" class="flex-1 p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-xs md:text-sm font-medium focus:border-purple-400 outline-none" placeholder="Nueva tarea...">
+                    <input type="text" id="webTaskInput" class="flex-1 p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium focus:border-purple-400 outline-none" placeholder="Nueva tarea...">
                     <button onclick="addWebTask()" class="px-4 md:px-5 py-2.5 md:py-3 bg-purple-600 text-white font-extrabold rounded-xl text-sm hover:bg-purple-700 shadow-md">+</button>
                 </div>
                 <div class="border-t border-gray-100 pt-3">
@@ -600,7 +619,7 @@
             <div class="p-5 flex flex-col gap-4 bg-white overflow-y-auto">
                 <div>
                     <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-2">Fase Actual</label>
-                    <select id="consultingStageSelect" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-xs md:text-sm font-bold">
+                    <select id="consultingStageSelect" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold">
                         <option value="0">1. Sesión de diagnóstico</option>
                         <option value="1">2. Plan de acción</option>
                         <option value="2">3. Implementación (acompañamiento)</option>
@@ -609,13 +628,13 @@
                 </div>
                 <div>
                     <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-2">Foco Actual</label>
-                    <input type="text" id="consultingFocusInput" class="w-full p-2.5 md:p-3 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-xs md:text-sm font-medium focus:border-custom-accent outline-none">
+                    <input type="text" id="consultingFocusInput" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-medium focus:border-custom-accent outline-none">
                 </div>
                 <div class="border-t border-gray-100 pt-3">
                     <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-2">Objetivos (OKRs)</label>
                     <div class="flex gap-2 mb-2">
-                        <input type="text" id="consultingOkrTitle" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-xs" placeholder="Título ej. Embudo">
-                        <input type="text" id="consultingOkrDesc" class="w-1/2 p-2 bg-gray-50 text-gray-900 border border-gray-200 rounded-lg text-xs" placeholder="Desc. ej. Scripts de cierre">
+                        <input type="text" id="consultingOkrTitle" class="w-1/2 p-2 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-lg" placeholder="Título ej. Embudo">
+                        <input type="text" id="consultingOkrDesc" class="w-1/2 p-2 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-lg" placeholder="Desc. ej. Scripts de cierre">
                         <button onclick="addOkr()" class="px-3 bg-gray-900 text-white rounded-lg">+</button>
                     </div>
                     <ul id="adminOkrList" class="space-y-1 max-h-32 overflow-y-auto text-xs"></ul>
@@ -634,7 +653,7 @@
             </div>
             <div class="p-5 md:p-6">
                 <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-2 tracking-wide">Monto Asignado (S/)</label>
-                <input type="number" id="budgetInput" min="0" step="1" class="w-full p-3 md:p-4 bg-gray-50 text-gray-900 border border-gray-200 rounded-xl text-lg md:text-xl font-extrabold outline-none focus:border-blue-400 focus:bg-white text-center">
+                <input type="number" id="budgetInput" min="0" step="1" class="w-full p-3 md:p-4 text-base md:text-xl bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-extrabold outline-none focus:border-blue-400 focus:bg-white text-center">
                 <button onclick="saveBudget()" class="w-full mt-5 md:mt-6 py-3 md:py-4 bg-blue-600 text-white font-extrabold rounded-xl text-base md:text-lg hover:bg-blue-700 shadow-md">Guardar</button>
             </div>
         </div>
@@ -818,7 +837,11 @@
         });
 
         window.switchAuthView = (view) => {
-            document.querySelectorAll('#authContainer > div.flex-1 > div').forEach(el => el.classList.add('hidden'));
+            // Asegurarse de ocultar limpiamente todo usando .hidden de Tailwind
+            document.getElementById('auth-login').classList.add('hidden');
+            document.getElementById('auth-login-pin').classList.add('hidden');
+            
+            // Y mostrar la vista correspondiente
             document.getElementById(`auth-${view}`).classList.remove('hidden');
             if(view === 'login') pinBuffer = '';
         };
@@ -916,11 +939,11 @@
             const adminIndicator = document.getElementById('adminIndicator');
             if (isSuperAdmin && viewedUserId !== currentUserId) {
                 adminIndicator.innerHTML = `<i class="fa-solid fa-eye"></i> Viendo: ${currentUserData.originalName}`;
-                adminIndicator.className = 'text-[10px] md:text-xs font-bold px-2 py-1 rounded-md border flex items-center gap-1 bg-blue-100 text-blue-700 border-blue-200';
+                adminIndicator.className = 'text-[10px] md:text-xs font-bold px-1.5 py-1 rounded-md border flex items-center gap-1 bg-blue-100 text-blue-700 border-blue-200';
                 adminIndicator.classList.remove('hidden');
             } else if (isSuperAdmin) {
                 adminIndicator.innerHTML = `<i class="fa-solid fa-crown"></i> Admin`;
-                adminIndicator.className = 'text-[10px] md:text-xs font-bold px-2 py-1 rounded-md border flex items-center gap-1 bg-purple-100 text-purple-700 border-purple-200';
+                adminIndicator.className = 'text-[10px] md:text-xs font-bold px-1.5 py-1 rounded-md border flex items-center gap-1 bg-purple-100 text-purple-700 border-purple-200';
                 adminIndicator.classList.remove('hidden');
             } else {
                 adminIndicator.classList.add('hidden');
@@ -1042,6 +1065,22 @@
 
             if(!newKey) { window.showToast('Atención', 'El campo "Usuario" es obligatorio y debe tener solo letras.', 'fa-exclamation-triangle', 'text-red-500'); return; }
 
+            // Validaciones RUC
+            const rucInput = document.getElementById('editClientRuc').value;
+            if(rucInput && rucInput.length > 0) {
+                if(rucInput.length !== 11 || (!rucInput.startsWith('10') && !rucInput.startsWith('20'))) {
+                    window.showToast('Error', 'El RUC debe tener 11 dígitos y empezar con 10 o 20', 'fa-exclamation-triangle', 'text-red-500'); 
+                    return;
+                }
+            }
+
+            // Validacion PIN
+            const pinInput = document.getElementById('editClientPin').value;
+            if(!pinInput || pinInput.length !== 6) {
+                window.showToast('Error', 'El PIN de acceso debe tener exactamente 6 dígitos', 'fa-exclamation-triangle', 'text-red-500'); 
+                return;
+            }
+
             const users = await fetchUsersFromDB();
 
             if(isNew && users[newKey]) { window.showToast('Atención', 'Ya existe un usuario con esa clave de acceso.', 'fa-exclamation-triangle', 'text-red-500'); return; }
@@ -1054,9 +1093,9 @@
 
             userData.originalName = document.getElementById('editClientBiz').value;
             userData.ownerName = document.getElementById('editClientName').value;
-            userData.ruc = document.getElementById('editClientRuc').value;
+            userData.ruc = rucInput;
             userData.phone = document.getElementById('editClientPhone').value;
-            userData.pin = document.getElementById('editClientPin').value || '111111';
+            userData.pin = pinInput;
             userData.videoUrl = document.getElementById('editClientVideo').value;
             userData.logoUrl = document.getElementById('editClientLogo').value;
             
@@ -1118,10 +1157,10 @@
                 });
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-4 py-3 font-extrabold text-gray-900">${u.originalName}</td>
-                        <td class="px-4 py-3 text-gray-600 font-bold">${u.ownerName}</td>
-                        <td class="px-4 py-3 text-purple-600 font-mono font-bold">${key}</td>
-                        <td class="px-4 py-3 text-purple-700 font-mono font-bold">${u.pin}</td>
+                        <td class="px-4 py-3 font-extrabold text-gray-900 text-xs md:text-sm">${u.originalName}</td>
+                        <td class="px-4 py-3 text-gray-600 font-bold text-xs md:text-sm">${u.ownerName}</td>
+                        <td class="px-4 py-3 text-purple-600 font-mono font-bold text-[10px] md:text-sm">${key}</td>
+                        <td class="px-4 py-3 text-purple-700 font-mono font-bold text-[10px] md:text-sm">${u.pin}</td>
                         <td class="px-4 py-3 min-w-[150px]">${badges}</td>
                         <td class="px-4 py-3 text-center">
                             <div class="flex justify-center gap-1.5 flex-wrap w-[80px] mx-auto">
@@ -1284,8 +1323,8 @@
 
             const cplInd = document.getElementById('cpl-indicator');
             if(cpl === 0) cplInd.innerHTML = "--";
-            else if(cpl < 15) { cplInd.className = "bg-finance-upBg text-finance-up px-2 py-1 rounded text-[9px] md:text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-down mr-0.5"></i> Óptimo'; }
-            else { cplInd.className = "bg-finance-downBg text-finance-down px-2 py-1 rounded text-[9px] md:text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-up mr-0.5"></i> Alto'; }
+            else if(cpl < 15) { cplInd.className = "bg-finance-upBg text-finance-up px-2 py-1 rounded text-[10px] md:text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-down mr-0.5"></i> Óptimo'; }
+            else { cplInd.className = "bg-finance-downBg text-finance-down px-2 py-1 rounded text-[10px] md:text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-up mr-0.5"></i> Alto'; }
             
             try {
                 updateMonthlyChart();
@@ -1305,7 +1344,6 @@
         };
         window.closeChartModal = () => document.getElementById('chartDataModal').classList.add('hidden');
         
-        // CORRECCIÓN BUG 2: Hacer el formato de fecha muy resistente a fallos.
         const formatMonthInput = (yyyyMm) => { 
             if(!yyyyMm) return '';
             const parts = yyyMm.split('-');
@@ -1324,7 +1362,7 @@
             const list = document.getElementById('adminChartList'); list.innerHTML = '';
             const mChart = currentUserData.manualChart || [];
             mChart.sort((a,b) => a.month.localeCompare(b.month)).forEach((d, i) => {
-                list.innerHTML += `<li class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 text-gray-900 text-[11px] md:text-xs">
+                list.innerHTML += `<li class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 text-gray-900 text-xs md:text-sm">
                     <div><span class="font-bold text-gray-800">${formatMonthInput(d.month)}</span> | Leads: <span class="text-custom-main font-bold">${d.leads}</span></div>
                     <div>
                         <button onclick="editChartRow(${i})" class="text-blue-500 mr-3 hover:text-blue-700 transition-colors"><i class="fa-solid fa-pen"></i></button>
@@ -1371,7 +1409,7 @@
         function updateMonthlyChart() {
             let dist = {};
 
-            // 1. CARGAR DATOS AUTOMÁTICOS: Primero calculamos los datos originales desde campañas.
+            // 1. CARGAR DATOS AUTOMÁTICOS
             campaignsData.forEach(c => {
                 if(!c.createdAt || !c.endAt || c.leads <= 0) return;
                 
@@ -1387,8 +1425,7 @@
                 }
             });
 
-            // CORRECCIÓN BUG 1: FUSIÓN DE DATOS.
-            // 2. APLICAR DATOS MANUALES: En lugar de reemplazar todo, ahora sobrescribe SOLAMENTE los meses específicos que editaste.
+            // 2. APLICAR DATOS MANUALES (Y FORZAR EXISTENCIA)
             if (currentUserData.manualChart && currentUserData.manualChart.length > 0) {
                 currentUserData.manualChart.forEach(d => {
                     if (d.month) {
@@ -1398,7 +1435,19 @@
             }
 
             let keys = Object.keys(dist).sort();
-            if(keys.length === 0) { keys = ['2026-01','2026-02']; dist = {'2026-01':0,'2026-02':0}; }
+            
+            // Forzamos al menos un elemento extra si solo hay un mes, para que ChartJS lo pinte correctamente
+            if(keys.length === 0) { 
+                keys = ['2026-01','2026-02']; dist = {'2026-01':0,'2026-02':0}; 
+            } else if (keys.length === 1) {
+                const parts = keys[0].split('-');
+                let y = parseInt(parts[0]);
+                let m = parseInt(parts[1]) - 1; 
+                if(m === 0) { m = 12; y -= 1; }
+                const prevKey = `${y}-${String(m).padStart(2,'0')}`;
+                dist[prevKey] = 0;
+                keys = Object.keys(dist).sort();
+            }
             
             const labels = keys.map(k => formatMonthInput(k));
             const dataLeads = keys.map(k => Math.round(dist[k]));
@@ -1454,12 +1503,17 @@
                 const isAct = act.includes(s.id);
                 const cardC = isAct ? `bg-white shadow-sm border-gray-200` : `locked-service-btn locked bg-gray-50/50`;
                 const iC = isAct ? `${s.b} ${s.c}` : `bg-gray-200 text-gray-500`;
-                const btn = isAct ? `<span class="text-[10px] font-extrabold text-custom-main"><i class="fa-solid fa-check"></i> Activo</span>` 
-                    : `<button class="text-[9px] md:text-[10px] font-bold bg-white shadow-sm border px-2 md:px-3 py-1.5 rounded-lg flex gap-1"><i class="fa-solid fa-plus text-custom-accent"></i> Agregar</button>`;
+                
+                // Boton Agregar actualizado
+                const btn = isAct ? `<span class="text-[11px] md:text-xs font-extrabold text-custom-main"><i class="fa-solid fa-check"></i> Activo</span>` 
+                    : `<button class="btn-add-luminoso text-[10px] md:text-xs font-extrabold px-3 py-1.5 rounded-lg flex gap-1.5 items-center"><i class="fa-solid fa-plus icon-luminoso text-[11px]"></i> Agregar</button>`;
 
                 const action = !isAct ? (s.cat === 'mkt' ? 'window.open(\'https://matiaslunateran.com\', \'_blank\')' : 'window.open(\'https://wa.link/umhrbw\', \'_blank\')') : '';
 
-                const html = `<div class="service-card p-4 md:p-5 rounded-[16px] md:rounded-[20px] border ${cardC} flex items-center justify-between min-w-[240px] md:min-w-0 flex-shrink-0 w-full" onclick="${action}"><div class="flex items-center gap-2.5 md:gap-3"><div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center ${iC} text-base md:text-lg"><i class="${s.icon}"></i></div><h4 class="font-extrabold text-gray-900 text-xs md:text-sm">${s.title}</h4></div>${btn}</div>`;
+                const html = `<div class="service-card p-4 md:p-5 rounded-[16px] md:rounded-[20px] border ${cardC} flex flex-col justify-between w-full h-full min-h-[110px]" onclick="${action}">
+                                <div class="flex items-center gap-2.5 md:gap-3 mb-3"><div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center ${iC} text-base md:text-lg"><i class="${s.icon}"></i></div><h4 class="font-extrabold text-gray-900 text-sm">${s.title}</h4></div>
+                                <div class="flex justify-end w-full mt-auto">${btn}</div>
+                              </div>`;
                 
                 if(s.cat === 'mkt') mktContainer.innerHTML += html;
                 else prodContainer.innerHTML += html;
