@@ -10,8 +10,6 @@
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -66,7 +64,6 @@
         .numpad-btn:active { background: var(--custom-accent); color: black; transform: scale(0.92); border-color: transparent; }
         .pin-dot { width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,0.15); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         
-        /* input size base is critical to prevent iOS zoom */
         .premium-input { background: rgba(0,0,0,0.2); border: 1px solid rgba(140, 185, 204, 0.2); color: white; transition: all 0.2s; font-size: 16px !important; }
         .premium-input:focus { border-color: #FFE200; outline: none; box-shadow: 0 0 15px rgba(255, 226, 0, 0.15); background: rgba(0,0,0,0.4); }
 
@@ -74,11 +71,28 @@
         .service-card.locked { filter: grayscale(1); opacity: 0.6; cursor: pointer; }
         .service-card.locked:hover { filter: grayscale(0); opacity: 1; transform: translateY(-3px); box-shadow: var(--tw-shadow-neon); border-color: var(--custom-accent); }
 
-        .pulse-glow { animation: softGlow 2s infinite; }
+        @keyframes subtleBeat {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(200,200,200,0.1); background-color: rgba(249, 250, 251, 0.6); }
+            50% { transform: scale(1.015); box-shadow: 0 4px 15px rgba(0,0,0,0.06); background-color: rgba(255, 255, 255, 1); }
+        }
+        .service-card.locked { animation: subtleBeat 4s ease-in-out infinite; }
+
+        .pulse-glow { animation: softGlow 2s infinite !important; }
         @keyframes softGlow {
             0% { box-shadow: 0 0 0 0 rgba(255, 226, 0, 0.4); background-color: #f3f4f6; }
             50% { box-shadow: 0 0 12px 5px rgba(255, 226, 0, 0.3); background-color: #fffbeb; border-color: #fde68a; color: #b45309; }
             100% { box-shadow: 0 0 0 0 rgba(255, 226, 0, 0); background-color: #f3f4f6; }
+        }
+
+        /* Nueva animación de latido para "Interesados Totales" */
+        @keyframes pulseHighlight {
+            0% { transform: scale(1); color: #111827; }
+            50% { transform: scale(1.15); color: #00638E; text-shadow: 0px 0px 15px rgba(0, 99, 142, 0.5); }
+            100% { transform: scale(1); color: #111827; }
+        }
+        .animate-leads-pulse {
+            display: inline-block;
+            animation: pulseHighlight 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
         @keyframes fillBar { 0% { width: 0%; } 100% { width: 100%; } }
@@ -98,26 +112,23 @@
         }
         .wp-float:hover { transform: scale(1.1); }
 
-        /* Estilo luminoso amarillo para el botón Agregar */
         .btn-add-luminoso {
-            background-color: #1a1a1a;
-            color: #FFE200;
-            border: 1px solid rgba(255, 226, 0, 0.4);
-            box-shadow: 0 0 8px rgba(255, 226, 0, 0.2);
-            transition: all 0.3s ease;
+            background-color: #1a1a1a; color: #FFE200; border: 1px solid rgba(255, 226, 0, 0.4);
+            box-shadow: 0 0 8px rgba(255, 226, 0, 0.2); transition: all 0.3s ease;
         }
-        .btn-add-luminoso:hover {
-            background-color: #FFE200;
-            color: #141414;
-            box-shadow: 0 0 15px rgba(255, 226, 0, 0.6);
+        .btn-add-luminoso:hover { background-color: #FFE200; color: #141414; box-shadow: 0 0 15px rgba(255, 226, 0, 0.6); }
+        .icon-luminoso { text-shadow: 0 0 5px rgba(255, 226, 0, 0.8); }
+        .btn-add-luminoso:hover .icon-luminoso { text-shadow: none; color: #141414; }
+
+        .tooltip { position: relative; display: inline-flex; align-items: center; cursor: help; }
+        .tooltip .tooltip-text { 
+            visibility: hidden; width: 220px; background-color: #141414; color: #fff; text-align: center; border-radius: 8px; padding: 8px 12px; 
+            position: absolute; z-index: 50; bottom: 130%; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.2s; 
+            font-size: 11px; font-weight: 500; line-height: 1.4; pointer-events: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .icon-luminoso {
-            text-shadow: 0 0 5px rgba(255, 226, 0, 0.8);
-        }
-        .btn-add-luminoso:hover .icon-luminoso {
-            text-shadow: none;
-            color: #141414;
-        }
+        .tooltip .tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px; border-width: 5px; border-style: solid; border-color: #141414 transparent transparent transparent; }
+        .tooltip:hover .tooltip-text, .tooltip:active .tooltip-text { visibility: visible; opacity: 1; }
     </style>
 </head>
 <body class="antialiased overflow-hidden h-screen w-screen bg-custom-black text-white flex flex-col">
@@ -192,7 +203,6 @@
     <div id="appContainer" class="hidden h-full w-full bg-motion text-gray-900 flex flex-col relative overflow-hidden">
         
         <header class="bg-white/80 backdrop-blur-md border-b border-custom-light/20 px-3 py-3 md:px-8 flex items-center justify-between sticky top-0 z-40 gap-2">
-            <!-- Izquierda -->
             <div class="flex items-center gap-2 shrink-0">
                 <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-custom-dark flex items-center justify-center shadow-lg shadow-custom-dark/30">
                     <i class="fa-solid fa-chart-simple text-custom-accent text-sm md:text-base"></i>
@@ -203,14 +213,11 @@
                 </div>
             </div>
 
-            <!-- Centro Tabs (Flexible con Scroll) -->
-            <div class="flex-1 max-w-[55%] md:max-w-max bg-gray-100/80 p-1 rounded-full border border-gray-200 overflow-x-auto hide-scrollbar flex items-center">
-                <button onclick="switchDashboardTab('resumen')" class="dash-tab active px-3 md:px-6 py-2 text-[11px] md:text-sm font-bold rounded-full transition-all bg-white shadow-sm text-custom-main whitespace-nowrap" data-tab="resumen">Resumen</button>
-                <button onclick="switchDashboardTab('anuncios')" id="tabBtnAnuncios" class="dash-tab px-3 md:px-6 py-2 text-[11px] md:text-sm font-bold rounded-full transition-all text-gray-500 hover:text-gray-900 whitespace-nowrap" data-tab="anuncios">Anuncios</button>
-                <button id="adminTabBtn" onclick="switchDashboardTab('admin')" class="hidden dash-tab px-3 md:px-6 py-2 text-[11px] md:text-sm font-bold rounded-full transition-all text-purple-600 hover:bg-purple-50 whitespace-nowrap" data-tab="admin"><i class="fa-solid fa-crown mr-1"></i> Admin</button>
+            <div class="flex-1 max-w-[65%] md:max-w-max bg-gray-100/80 p-1 rounded-full border border-gray-200 overflow-x-auto hide-scrollbar flex items-center justify-center">
+                <button onclick="switchDashboardTab('reporte')" class="dash-tab active px-4 md:px-8 py-2 text-[11px] md:text-sm font-bold rounded-full transition-all bg-white shadow-sm text-custom-main whitespace-nowrap" data-tab="reporte"><i class="fa-solid fa-chart-pie mr-1"></i> Reporte</button>
+                <button id="adminTabBtn" onclick="switchDashboardTab('admin')" class="hidden dash-tab px-4 md:px-8 py-2 text-[11px] md:text-sm font-bold rounded-full transition-all text-purple-600 hover:bg-purple-50 whitespace-nowrap" data-tab="admin"><i class="fa-solid fa-crown mr-1"></i> Admin</button>
             </div>
 
-            <!-- Derecha -->
             <div class="flex items-center gap-2 shrink-0 justify-end">
                 <span id="adminIndicator" class="hidden text-[10px] md:text-xs font-bold px-1.5 py-1 rounded-md border flex items-center gap-1"></span>
                 <button onclick="logout()" class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors shadow-sm shrink-0" title="Salir">
@@ -227,14 +234,14 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                         <div>
                             <h2 class="text-2xl font-bold text-gray-900 mb-1">Directorio de Clientes</h2>
-                            <p class="text-gray-500 text-sm font-medium">Gestiona accesos, servicios y perfiles.</p>
+                            <p class="text-gray-500 text-sm font-medium">Gestiona accesos, perfiles y elimina registros.</p>
                         </div>
                         <div class="flex gap-2 flex-wrap">
                             <button onclick="openNewClientModal()" class="px-4 py-2 bg-custom-main text-white font-bold rounded-xl hover:opacity-90 transition-colors text-xs flex items-center gap-2 shadow-sm">
                                 <i class="fa-solid fa-user-plus"></i> Nuevo Cliente
                             </button>
-                            <button onclick="seedMockUsers()" class="px-4 py-2 bg-purple-100 text-purple-700 font-bold rounded-xl hover:bg-purple-200 transition-colors text-xs flex items-center gap-2">
-                                <i class="fa-solid fa-rotate"></i> Restablecer Datos
+                            <button onclick="confirmResetData()" class="px-4 py-2 bg-red-100 text-red-700 font-bold rounded-xl hover:bg-red-200 transition-colors text-xs flex items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Restablecer Datos
                             </button>
                         </div>
                     </div>
@@ -247,7 +254,7 @@
                                     <th class="px-4 py-3">Titular</th>
                                     <th class="px-4 py-3">Usuario</th>
                                     <th class="px-4 py-3">PIN</th>
-                                    <th class="px-4 py-3">Servicios</th>
+                                    <th class="px-4 py-3">Servicios Activos</th>
                                     <th class="px-4 py-3 text-center">Acciones</th>
                                 </tr>
                             </thead>
@@ -257,29 +264,31 @@
                 </div>
             </div>
 
-            <!-- RESUMEN TAB -->
-            <div id="tab-resumen" class="dash-section fade-in flex flex-col gap-6 max-w-7xl mx-auto">
+            <!-- REPORTE TAB -->
+            <div id="tab-reporte" class="dash-section fade-in flex flex-col gap-6 max-w-7xl mx-auto">
                 <!-- Hero Section -->
                 <div class="flex flex-col lg:flex-row gap-6 items-stretch">
                     <div class="flex-1 bg-white rounded-[32px] p-6 md:p-10 shadow-panel border border-gray-100 flex flex-col justify-center relative overflow-hidden">
                         <div class="absolute -right-20 -top-20 w-64 h-64 bg-custom-light/10 rounded-full blur-3xl pointer-events-none"></div>
                         
-                        <h1 class="text-3xl md:text-5xl font-extrabold text-custom-dark mb-3 tracking-tight">Hola, <br class="block md:hidden"> <span id="dashUserName" class="text-custom-main">Emprendedor</span> <span class="wave-emoji">👋</span></h1>
-                        <p class="text-gray-600 font-medium max-w-md leading-relaxed mt-2 text-sm md:text-base">Aquí tienes el resumen en tiempo real del progreso de tu estrategia comercial, campañas y proyectos.</p>
+                        <h1 class="text-3xl md:text-5xl font-extrabold text-custom-dark mb-3 tracking-tight leading-snug flex flex-wrap items-center gap-2">
+                            Hola, <br class="block md:hidden"> 
+                            <img id="clientHeroLogoMini" src="" class="h-10 md:h-14 w-auto object-contain hidden border border-gray-100 bg-white p-1 rounded-xl shadow-sm">
+                            <span id="dashUserName" class="text-custom-main">Emprendedor</span> 
+                            <span class="wave-emoji">👋</span>
+                        </h1>
+                        <p class="text-gray-600 font-medium max-w-md leading-relaxed mt-2 text-sm md:text-base">Aquí tienes el reporte en tiempo real del progreso de tu estrategia comercial, campañas y proyectos.</p>
                         
                         <div class="mt-8">
                             <a href="https://matiaslunateran.com" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-bold rounded-full shadow-lg hover:bg-gray-800 transition-transform hover:scale-105 active:scale-95 text-sm w-max">
-                                Ver mi portafolio <i class="fa-solid fa-arrow-right"></i>
+                                Mira mi portafolio <i class="fa-solid fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>
 
-                    <!-- Video Ad Space -->
                     <div class="w-full lg:w-72 bg-custom-black rounded-[32px] p-1 shadow-panel relative overflow-hidden flex flex-col items-center justify-center group border-4 border-white shrink-0 aspect-[4/5] mx-auto max-w-sm">
                         <div id="heroMediaContainer" class="absolute inset-0 w-full h-full"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10 pointer-events-none"></div>
-                        
-                        <img id="clientHeroLogo" src="" class="absolute top-5 left-5 h-10 w-auto object-contain hidden z-20 bg-white/20 p-1.5 rounded-lg backdrop-blur-sm">
                         
                         <div class="absolute bottom-5 left-5 right-5 z-20 text-left">
                             <h3 class="text-white font-bold text-base md:text-lg leading-tight flex items-center gap-2"><i class="fa-solid fa-bolt text-custom-accent"></i> Estrategia Activa</h3>
@@ -288,80 +297,109 @@
                     </div>
                 </div>
 
-                <!-- ADS SECTION -->
+                <!-- ADS SECTION METRICS -->
                 <div id="adsMetricsSection" class="flex-col gap-5 mt-2">
-                    <div class="flex items-center justify-between pl-2">
-                        <h3 class="text-lg md:text-xl font-extrabold text-gray-900"><i class="fa-solid fa-bullhorn text-custom-main mr-2"></i> Rendimiento de Campañas</h3>
+                    
+                    <div class="flex flex-col md:flex-row md:items-center justify-between pl-2 gap-4">
+                        <h3 class="text-lg md:text-xl font-extrabold flex items-center gap-2 transition-colors duration-300" id="rendimientoHeader">
+                            <i class="fa-solid fa-bullhorn" id="rendimientoIcon"></i> <span id="rendimientoTitle">Rendimiento Campañas: Todas</span>
+                        </h3>
+                        
+                        <div class="flex overflow-x-auto gap-2 hide-scrollbar pb-1">
+                            <button class="plat-btn active px-4 py-2 rounded-full font-bold text-xs md:text-sm bg-gray-900 text-white whitespace-nowrap transition-colors" data-plat="Todas" onclick="setPlatformFilter('Todas')">Todas</button>
+                            <button class="plat-btn px-4 py-2 rounded-full font-bold text-xs md:text-sm bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-colors" data-plat="Meta Ads" onclick="setPlatformFilter('Meta Ads')"><i class="fa-brands fa-facebook text-blue-600 mr-1"></i> Meta</button>
+                            <button class="plat-btn px-4 py-2 rounded-full font-bold text-xs md:text-sm bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-colors" data-plat="Google Ads" onclick="setPlatformFilter('Google Ads')"><i class="fa-brands fa-google text-red-500 mr-1"></i> Google</button>
+                            <button class="plat-btn px-4 py-2 rounded-full font-bold text-xs md:text-sm bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-colors" data-plat="TikTok Ads" onclick="setPlatformFilter('TikTok Ads')"><i class="fa-brands fa-tiktok text-black mr-1"></i> TikTok</button>
+                            <button class="plat-btn px-4 py-2 rounded-full font-bold text-xs md:text-sm bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-colors" data-plat="LinkedIn Ads" onclick="setPlatformFilter('LinkedIn Ads')"><i class="fa-brands fa-linkedin text-sky-600 mr-1"></i> LinkedIn</button>
+                            <button class="plat-btn px-4 py-2 rounded-full font-bold text-xs md:text-sm bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-colors" data-plat="Pinterest Ads" onclick="setPlatformFilter('Pinterest Ads')"><i class="fa-brands fa-pinterest text-red-600 mr-1"></i> Pinterest</button>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-                        <div class="ad-card bg-white rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-32 md:h-36">
-                            <div class="flex items-center justify-between text-custom-main font-bold text-xs md:text-sm">
-                                <div class="flex items-center gap-1.5 md:gap-2">
-                                    <div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600"><i class="fa-solid fa-wallet"></i></div>
-                                    Ppto. Mes
+                    <!-- ACUMULADO 2026 -->
+                    <div class="mt-2">
+                        <div class="flex items-center gap-2 mb-3 pl-2">
+                            <h4 class="font-extrabold text-gray-400 uppercase text-[10px] md:text-xs tracking-widest">Acumulado 2026</h4>
+                            <button onclick="openAccumulatedModal()" class="hidden admin-only w-6 h-6 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 items-center justify-center transition-colors shadow-sm" title="Editar Acumulado Manualmente"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                            <div class="bg-white rounded-[20px] p-4 shadow-panel border border-gray-100 flex flex-col justify-center h-24 md:h-28">
+                                <div class="flex items-center text-gray-500 font-bold text-[11px] md:text-sm mb-1">
+                                    Inversión Total 
+                                    <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-gray-300"></i><span class="tooltip-text">El dinero total invertido directamente en la plataforma publicitaria en lo que va del año.</span></div>
                                 </div>
-                                <button id="btnEditBudget" onclick="openBudgetModal()" class="hidden w-6 h-6 md:w-7 md:h-7 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200 items-center justify-center transition-colors shadow-sm" title="Editar Presupuesto"><i class="fa-solid fa-pen text-[10px] md:text-xs"></i></button>
+                                <div class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight" id="kpi-total-spent">S/ 0</div>
                             </div>
-                            <div>
-                                <div class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-budget">S/ 0</div>
-                                <div class="text-[9px] font-semibold text-gray-400 mt-1 uppercase tracking-wider">*No incluye fee</div>
+                            <div class="bg-white rounded-[20px] p-4 shadow-panel border border-gray-100 flex flex-col justify-center h-24 md:h-28 border-l-4 border-l-custom-main">
+                                <div class="flex items-center text-gray-500 font-bold text-[11px] md:text-sm mb-1">
+                                    Interesados Totales 
+                                    <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-gray-300"></i><span class="tooltip-text">Usuarios que mostraron interés real dejando sus datos o enviando un mensaje directo.</span></div>
+                                </div>
+                                <div class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight" id="kpi-total-leads">0</div>
+                            </div>
+                            <div class="bg-white rounded-[20px] p-4 shadow-panel border border-gray-100 flex flex-col justify-center h-24 md:h-28">
+                                <div class="flex items-center text-gray-500 font-bold text-[11px] md:text-sm mb-1">
+                                    Impresiones Totales 
+                                    <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-gray-300"></i><span class="tooltip-text">La cantidad total de veces que tus anuncios fueron mostrados en las pantallas de los usuarios.</span></div>
+                                </div>
+                                <div class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight" id="kpi-total-imp">0</div>
+                            </div>
+                            <div class="bg-white rounded-[20px] p-4 shadow-panel border border-gray-100 flex flex-col justify-center h-24 md:h-28">
+                                <div class="flex items-center text-gray-500 font-bold text-[11px] md:text-sm mb-1">
+                                    Alcance Total 
+                                    <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-gray-300"></i><span class="tooltip-text">El número de personas únicas que vieron tus anuncios al menos una vez en todo el año.</span></div>
+                                </div>
+                                <div class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight" id="kpi-total-reach">0</div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="ad-card bg-white rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-32 md:h-36">
-                            <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 font-bold text-xs md:text-sm">
-                                <div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-money-bill-trend-up"></i></div>
-                                Inversión
-                            </div>
-                            <div>
-                                <div class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-spent">S/ 0</div>
-                                <div class="mt-2 flex items-center">
-                                    <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                                        <div class="bg-custom-main h-full rounded-full transition-all duration-1000" id="budget-progress" style="width: 0%"></div>
+                    <!-- MES ACTUAL + PRESUPUESTO -->
+                    <div class="flex flex-col lg:flex-row gap-4 mt-2">
+                        <!-- Cuadrado Mes Actual -->
+                        <div class="flex-1 bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 shadow-panel border border-gray-100 relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-2 bg-custom-main h-full rounded-l-[32px]"></div>
+                            <h4 class="font-extrabold text-gray-400 uppercase text-[10px] md:text-xs mb-4 md:mb-6 tracking-widest pl-2">Mes Actual</h4>
+                            
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 pl-2">
+                                <div>
+                                    <div class="text-[11px] md:text-sm font-bold text-gray-500 flex items-center mb-1">Impresiones <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-gray-300"></i><span class="tooltip-text">Veces que tus anuncios se han mostrado este mes.</span></div></div>
+                                    <div class="text-xl md:text-3xl font-extrabold text-gray-900" id="kpi-month-imp">0</div>
+                                </div>
+                                <div>
+                                    <div class="text-[11px] md:text-sm font-bold text-gray-500 flex items-center mb-1">Alcance <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-gray-300"></i><span class="tooltip-text">Personas únicas alcanzadas este mes.</span></div></div>
+                                    <div class="text-xl md:text-3xl font-extrabold text-gray-900" id="kpi-month-reach">0</div>
+                                </div>
+                                <div>
+                                    <div class="text-[11px] md:text-sm font-bold text-custom-main flex items-center mb-1"><i class="fa-solid fa-users mr-1"></i> Contactos <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-custom-light"></i><span class="tooltip-text">Leads o prospectos generados durante el mes en curso.</span></div></div>
+                                    <div class="text-2xl md:text-4xl font-extrabold text-gray-900" id="kpi-month-leads">0</div>
+                                </div>
+                                <div>
+                                    <div class="text-[11px] md:text-sm font-bold text-orange-500 flex items-center mb-1"><i class="fa-solid fa-bullseye mr-1"></i> Costo por Contacto <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-orange-300"></i><span class="tooltip-text">Lo que te cuesta en promedio generar un nuevo cliente potencial este mes.</span></div></div>
+                                    <div class="flex items-end gap-2">
+                                        <div class="text-xl md:text-3xl font-extrabold text-gray-900" id="kpi-month-cpl">S/ 0</div>
+                                        <div id="cpl-indicator" class="bg-gray-100 text-gray-500 px-2 py-1 rounded text-[10px] md:text-[11px] font-bold mb-1 shadow-sm">--</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="ad-card bg-white rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-32 md:h-36">
-                            <div class="flex items-center gap-1.5 md:gap-2 text-custom-dark font-bold text-xs md:text-sm">
-                                <div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-custom-dark/10 flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
-                                Contactos
-                            </div>
-                            <div>
-                                <div class="text-3xl md:text-4xl font-extrabold text-gray-900" id="kpi-leads">0</div>
-                                <div class="text-[10px] font-bold text-finance-up mt-1 flex items-center gap-1 uppercase">
-                                    <i class="fa-solid fa-arrow-trend-up"></i> Leads
+                        <!-- Cuadrado Presupuesto -->
+                        <div class="w-full lg:w-1/4 bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 shadow-panel border border-gray-100 flex flex-col justify-center relative">
+                            <button id="btnEditBudget" onclick="openBudgetModal()" class="hidden admin-only absolute top-4 right-4 w-7 h-7 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 items-center justify-center transition-colors shadow-sm" title="Editar Presupuesto"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                            
+                            <h4 class="font-extrabold text-gray-400 uppercase text-[10px] md:text-xs mb-1 tracking-widest">Presupuesto Mensual</h4>
+                            <div class="text-2xl md:text-3xl font-extrabold text-blue-600 tracking-tight" id="kpi-budget">S/ 0</div>
+                            <div class="text-[9px] font-semibold text-gray-400 uppercase tracking-wider mb-4">*No incluye fee</div>
+                            
+                            <div class="mt-auto">
+                                <div class="flex justify-between text-[10px] md:text-xs font-bold text-gray-500 mb-1.5">
+                                    <span>Invertido</span>
+                                    <span id="kpi-month-spent" class="text-gray-900">S/ 0</span>
+                                </div>
+                                <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                                    <div class="bg-blue-600 h-full rounded-full transition-all duration-1000" id="budget-progress" style="width: 0%"></div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="ad-card bg-white rounded-[20px] md:rounded-[24px] p-4 md:p-5 shadow-panel border border-gray-100 flex flex-col justify-between h-32 md:h-36">
-                            <div class="flex items-center gap-1.5 md:gap-2 text-gray-600 font-bold text-xs md:text-sm">
-                                <div class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500"><i class="fa-solid fa-bullseye"></i></div>
-                                Costo Cto.
-                            </div>
-                            <div class="flex items-end justify-between">
-                                <div class="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight" id="kpi-cpl">S/ 0</div>
-                                <div id="cpl-indicator" class="bg-gray-100 text-gray-500 px-2 py-1 rounded text-[10px] md:text-[11px] font-bold mb-1 shadow-sm">--</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CHART -->
-                    <div class="bg-white rounded-[24px] md:rounded-[32px] p-4 md:p-6 shadow-panel border border-gray-100 mt-2">
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
-                            <div>
-                                <h3 class="text-lg md:text-xl font-extrabold text-gray-900">Evolución de Contactos</h3>
-                                <p class="text-xs text-gray-500 font-medium mt-1">Historial mensual de leads obtenidos.</p>
-                            </div>
-                            <button id="btnEditChart" onclick="openChartModal()" class="hidden admin-only px-4 py-2 bg-blue-50 text-blue-700 font-bold rounded-xl hover:bg-blue-100 transition-colors text-xs items-center gap-1.5 border border-blue-100 w-full sm:w-auto justify-center">
-                                <i class="fa-solid fa-pen"></i> Editar Gráfico
-                            </button>
-                        </div>
-                        <div class="w-full h-56 md:h-72 relative">
-                            <canvas id="leadsChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -372,23 +410,31 @@
                         <div class="w-full">
                             <h3 class="text-lg md:text-xl font-extrabold text-gray-900"><i class="fa-solid fa-laptop-code text-purple-600 mr-2"></i> Desarrollo Página Web</h3>
                             <p class="text-xs text-gray-500 mt-1 font-medium">Seguimiento ágil de la creación de tu ecosistema digital.</p>
-                            <!-- Barra de progreso -->
-                            <div class="mt-3 w-full max-w-md hidden" id="webDevProgressBarContainer">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-[10px] font-bold text-purple-600 uppercase tracking-wider">Avance del Proyecto</span>
-                                    <span class="text-[10px] font-bold text-gray-500" id="webDevProgressText">0%</span>
+                            
+                            <!-- Barra de progreso Mejorada -->
+                            <div class="mt-4 w-full bg-gray-50 p-4 rounded-2xl border border-gray-200 hidden shadow-sm" id="webDevProgressBarContainer">
+                                <div class="flex justify-between items-end mb-2">
+                                    <div>
+                                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-bars-progress text-purple-500"></i> Progreso Global</span>
+                                        <h4 class="text-sm font-extrabold text-purple-700 leading-none mt-1.5" id="webDevProgressStatus">Iniciando Proyecto</h4>
+                                    </div>
+                                    <div class="bg-purple-100 text-purple-700 px-3 py-1 rounded-lg border border-purple-200 shadow-sm">
+                                        <span class="text-lg font-extrabold" id="webDevProgressText">0%</span>
+                                    </div>
                                 </div>
-                                <div class="w-full bg-gray-100 rounded-full h-2">
-                                    <div id="webDevProgressBar" class="bg-purple-600 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                                <div class="w-full bg-gray-200 rounded-full h-3 md:h-4 overflow-hidden shadow-inner mt-3">
+                                    <div id="webDevProgressBar" class="bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(147,51,234,0.4)] relative" style="width: 0%">
+                                        <div class="absolute inset-0 bg-white/20 w-full animate-[pulse_2s_ease-in-out_infinite]"></div>
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
                         <button id="btnManageWeb" onclick="openWebModal()" class="hidden admin-only shrink-0 px-4 py-2 bg-purple-100 text-purple-700 font-bold rounded-xl hover:bg-purple-200 transition-colors text-xs items-center gap-1.5 border border-purple-200 w-full sm:w-auto justify-center">
                             <i class="fa-solid fa-pen"></i> Actualizar Estado
                         </button>
                     </div>
-                    <!-- Horizontal scroll on mobile -->
-                    <div class="flex overflow-x-auto snap-x gap-4 hide-scrollbar pb-4" id="agileColumnsContainer"></div>
+                    <div class="flex overflow-x-auto snap-x gap-4 hide-scrollbar pb-4 mt-2" id="agileColumnsContainer"></div>
                 </div>
 
                 <!-- CONSULTING GROWTH SECTION -->
@@ -408,10 +454,12 @@
                             </button>
                         </div>
 
-                        <!-- Timeline Pipeline (Fixed overlap) -->
                         <div class="relative w-full mt-2 md:mt-4 mb-8 md:mb-10">
-                            <div class="absolute top-[8px] left-[12%] right-[12%] h-1 bg-white/15 rounded-full z-0"></div>
-                            <div class="absolute top-[8px] left-[12%] h-1 bg-custom-accent rounded-full transition-all duration-700 z-0" id="consultingProgressBar" style="width: 0%;"></div>
+                            <!-- Contenedor ajustado matemáticamente para que la barra no se salga del último punto -->
+                            <div class="absolute top-[8px] left-[12.5%] right-[12.5%] h-1 z-0">
+                                <div class="absolute inset-0 bg-white/15 rounded-full"></div>
+                                <div class="absolute top-0 left-0 h-full bg-custom-accent rounded-full transition-all duration-700" id="consultingProgressBar" style="width: 0%;"></div>
+                            </div>
                             <div class="relative flex justify-between w-full z-10" id="consultingPipelineSteps"></div>
                         </div>
 
@@ -422,81 +470,100 @@
                             </div>
                             <div class="bg-white/5 border border-white/10 p-5 rounded-[20px] md:rounded-[24px] flex flex-col justify-center items-center text-center">
                                 <h4 class="text-[10px] md:text-[11px] uppercase tracking-widest text-gray-400 font-bold mb-3">Foco Actual</h4>
-                                <div class="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-custom-accent flex items-center justify-center text-xl md:text-2xl font-extrabold text-white mb-3 shadow-neon">
-                                    <i class="fa-solid fa-rocket"></i>
+                                
+                                <!-- ICONO Y BADGE DINÁMICO DE FASE -->
+                                <div class="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-custom-accent flex items-center justify-center text-xl md:text-2xl font-extrabold text-white mb-3 shadow-neon transition-all duration-500" id="consultingFocusIconBox">
+                                    <i class="fa-solid fa-rocket drop-shadow-md" id="consultingFocusIcon"></i>
                                 </div>
+                                <span class="bg-custom-accent/10 text-custom-accent px-2.5 py-0.5 rounded text-[9px] md:text-[10px] font-bold uppercase tracking-widest mb-2 border border-custom-accent/20" id="consultingPhaseBadge">Fase 1</span>
+                                
                                 <p class="text-[11px] md:text-xs text-gray-300 font-medium" id="consultingFocusText">Análisis de cuellos de botella y definición de KPIs estructurales.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- SERVICES SECTION -->
-                <div class="mt-6 md:mt-8 mb-4 border-t border-gray-100 pt-6 md:pt-8 relative">
-                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-motion px-4 text-[10px] md:text-xs font-bold text-gray-400 tracking-widest uppercase text-center w-max">Escala tu negocio</div>
-                    
-                    <div class="mb-5 md:mb-6">
-                        <h3 class="text-xl md:text-2xl font-extrabold text-gray-900">Tus Servicios y Soluciones</h3>
-                        <p class="text-custom-main text-xs md:text-sm font-bold mt-1">Explora herramientas para llevar tu negocio al siguiente nivel.</p>
+                <!-- UPSELLING Y SERVICIOS SECTION -->
+                <div class="mt-8 md:mt-12 mb-4 relative bg-gray-50/50 p-6 md:p-10 rounded-[32px] border border-gray-100 shadow-sm">
+                    <div class="text-center mb-8 md:mb-10 max-w-2xl mx-auto">
+                        <img id="upsellClientLogo" src="" class="h-16 md:h-20 w-auto object-contain hidden mx-auto mb-4 drop-shadow-md">
+                        <h3 class="text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight">¿Cómo podemos escalar y dominar tu mercado, <span class="text-custom-main" id="upsellBusinessName">Negocio</span>?</h3>
+                        <p class="text-gray-500 text-sm md:text-base font-medium mt-3">Integra nuevas soluciones a tu ecosistema estratégico y multiplica tus resultados.</p>
                     </div>
 
-                    <div id="servicesCategoriesContainer" class="flex flex-col gap-6 md:gap-8">
+                    <div id="servicesCategoriesContainer" class="flex flex-col gap-8 md:gap-10">
                         <div>
-                            <h4 class="text-[10px] md:text-xs font-extrabold text-gray-400 mb-3 md:mb-4 tracking-widest uppercase"><i class="fa-solid fa-bullhorn mr-1"></i> Marketing Digital</h4>
-                            <!-- Grid para 2 filas de ancho estricto deslizables -->
-                            <div class="grid grid-rows-2 grid-flow-col gap-3 md:gap-4 overflow-x-auto snap-x hide-scrollbar pb-2 auto-cols-[85vw] sm:auto-cols-[300px] md:auto-cols-max" id="servicesGridMkt"></div>
+                            <h4 class="text-[10px] md:text-xs font-extrabold text-gray-400 mb-3 md:mb-4 tracking-widest uppercase pl-2"><i class="fa-solid fa-bullhorn mr-1"></i> Marketing Digital</h4>
+                            <div class="grid grid-rows-2 md:grid-rows-1 grid-flow-col auto-cols-[85vw] sm:auto-cols-[300px] md:grid-cols-5 overflow-x-auto snap-x hide-scrollbar pb-2 gap-3 md:gap-4" id="servicesGridMkt"></div>
                         </div>
                         <div>
-                            <h4 class="text-[10px] md:text-xs font-extrabold text-gray-400 mb-3 md:mb-4 tracking-widest uppercase"><i class="fa-solid fa-gears mr-1"></i> Productividad y Negocio</h4>
-                            <!-- Grid para 2 filas de ancho estricto deslizables -->
-                            <div class="grid grid-rows-2 grid-flow-col gap-3 md:gap-4 overflow-x-auto snap-x hide-scrollbar pb-2 auto-cols-[85vw] sm:auto-cols-[300px] md:auto-cols-max" id="servicesGridProd"></div>
+                            <h4 class="text-[10px] md:text-xs font-extrabold text-gray-400 mb-3 md:mb-4 tracking-widest uppercase pl-2"><i class="fa-solid fa-gears mr-1"></i> Productividad y Negocio</h4>
+                            <div class="grid grid-rows-2 md:grid-rows-1 grid-flow-col auto-cols-[85vw] sm:auto-cols-[300px] md:grid-cols-4 overflow-x-auto snap-x hide-scrollbar pb-2 gap-3 md:gap-4" id="servicesGridProd"></div>
                         </div>
                     </div>
                 </div>
 
-            </div>
-
-            <!-- ANUNCIOS TAB -->
-            <div id="tab-anuncios" class="dash-section hidden fade-in flex-col gap-6 max-w-7xl mx-auto">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-panel border border-gray-100 gap-4">
-                    <div>
-                        <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">Gestión de Anuncios</h2>
-                        <p class="text-gray-500 text-xs md:text-sm font-medium mt-1">Seguimiento detallado por campaña y plataforma.</p>
+                <!-- ADMIN ONLY: TABLA DE CAMPAÑAS -->
+                <div class="admin-only hidden mt-8 flex-col gap-5 border-t-4 border-purple-100 pt-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-panel border border-purple-200 gap-4">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-extrabold text-purple-800"><i class="fa-solid fa-user-tie mr-2"></i> Zona Admin: Anuncios Base</h2>
+                            <p class="text-gray-500 text-xs md:text-sm font-medium mt-1">Estos datos alimentan los recuadros de arriba de forma automática.</p>
+                        </div>
+                        <div class="flex gap-2 w-full sm:w-auto">
+                            <label class="cursor-pointer px-4 py-3 bg-purple-50 text-purple-700 font-extrabold rounded-xl hover:bg-purple-100 transition-colors text-[11px] md:text-xs items-center gap-2 border border-purple-200 w-full sm:w-auto justify-center flex">
+                                <i class="fa-solid fa-file-csv"></i> Subir CSV
+                                <input type="file" id="csvFileInput" accept=".csv" class="hidden">
+                            </label>
+                            <button id="btnAddAd" onclick="openFormModal()" class="px-5 py-3 bg-purple-600 text-white font-extrabold rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 whitespace-nowrap items-center gap-2 text-xs md:text-sm w-full sm:w-auto justify-center flex">
+                                <i class="fa-solid fa-plus"></i> Manual
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex gap-2 w-full sm:w-auto">
-                        <label class="hidden admin-only cursor-pointer px-4 py-3 bg-blue-50 text-blue-700 font-extrabold rounded-xl hover:bg-blue-100 transition-colors text-[11px] md:text-xs items-center gap-2 border border-blue-200 w-full sm:w-auto justify-center">
-                            <i class="fa-solid fa-file-csv"></i> Subir CSV
-                            <input type="file" id="csvFileInput" accept=".csv" class="hidden">
-                        </label>
-                        <button id="btnAddAd" onclick="openFormModal()" class="hidden admin-only px-5 py-3 bg-custom-accent text-custom-black font-extrabold rounded-xl shadow-neon transition-transform hover:scale-105 active:scale-95 whitespace-nowrap items-center gap-2 text-xs md:text-sm w-full sm:w-auto justify-center">
-                            <i class="fa-solid fa-plus"></i> Manual
-                        </button>
+
+                    <div class="bg-white rounded-[20px] md:rounded-[24px] shadow-panel border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[800px]">
+                                <thead>
+                                    <tr class="bg-gray-50 text-gray-500 text-[10px] md:text-[11px] uppercase tracking-wider font-extrabold border-b border-gray-100">
+                                        <th class="px-4 py-3 md:py-4">Campaña / Plataforma</th>
+                                        <th class="px-4 py-3 md:py-4">Alcance / Impresiones</th>
+                                        <th class="px-4 py-3 md:py-4 text-right">Inversión</th>
+                                        <th class="px-4 py-3 md:py-4 text-center">Contactos</th>
+                                        <th class="px-4 py-3 md:py-4 text-right">Costo Contacto</th>
+                                        <th class="px-4 py-3 md:py-4 text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dataTableBody" class="text-xs md:text-sm divide-y divide-gray-100 font-medium"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-[20px] md:rounded-[24px] shadow-panel border border-gray-100 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse min-w-[800px]">
-                            <thead>
-                                <tr class="bg-gray-50 text-gray-500 text-[11px] md:text-xs uppercase tracking-wider font-extrabold border-b border-gray-100">
-                                    <th class="px-4 py-3 md:py-4">Campaña / Plataforma</th>
-                                    <th class="px-4 py-3 md:py-4">Alcance / Impres.</th>
-                                    <th class="px-4 py-3 md:py-4 text-right">Inversión</th>
-                                    <th class="px-4 py-3 md:py-4 text-center">Contactos</th>
-                                    <th class="px-4 py-3 md:py-4 text-right">Costo Cto.</th>
-                                    <th class="px-4 py-3 md:py-4 text-center admin-only hidden">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dataTableBody" class="text-xs md:text-sm divide-y divide-gray-100 font-medium"></tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
 
         </main>
     </div>
 
     <!-- MODALS -->
+
+    <!-- Modal Editar Acumulado 2026 -->
+    <div id="accumulatedModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
+        <div class="bg-white w-full max-w-sm rounded-[24px] md:rounded-[32px] shadow-2xl overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
+                <h3 class="text-lg font-extrabold text-custom-dark">Editar Acumulado 2026</h3>
+                <button onclick="closeAccumulatedModal()" class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-600"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="p-5 flex flex-col gap-4">
+                <p class="text-[11px] text-gray-500 font-medium">Deja la casilla en blanco para calcular automáticamente desde las campañas.</p>
+                <div><label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Inversión Total (S/)</label><input type="number" id="accInputSpend" step="0.01" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                <div><label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Interesados Totales</label><input type="number" id="accInputLeads" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                <div><label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Impresiones Totales</label><input type="number" id="accInputImp" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                <div><label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Alcance Total</label><input type="number" id="accInputReach" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold"></div>
+                <button onclick="saveAccumulated()" class="w-full mt-2 py-3 bg-blue-600 text-white font-extrabold rounded-xl text-sm hover:bg-blue-700">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
     
     <!-- Modal Edit Client (Admin) -->
     <div id="clientModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
@@ -511,17 +578,27 @@
                 
                 <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Negocio</label><input type="text" id="editClientBiz" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold"></div>
                 <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Titular</label><input type="text" id="editClientName" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold"></div>
-                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Usuario (Solo letras minúsculas)</label><input type="text" id="editClientUserKey" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-purple-700 border border-gray-200 rounded-xl font-bold" placeholder="ej. miempresa"></div>
+                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Usuario (Solo minúsculas)</label><input type="text" id="editClientUserKey" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-purple-700 border border-gray-200 rounded-xl font-bold" placeholder="ej. miempresa"></div>
                 
                 <div class="grid grid-cols-2 gap-3">
                     <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">RUC</label><input type="text" id="editClientRuc" maxlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold" placeholder="ej. 10... o 20..."></div>
                     <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Teléfono</label><input type="text" id="editClientPhone" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold"></div>
                 </div>
                 <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">PIN Acceso (6 Dígitos)</label><input type="text" id="editClientPin" maxlength="6" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-purple-700 border border-gray-200 rounded-xl font-bold" placeholder="ej. 123456"></div>
-                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Video / GIF Hero</label><input type="text" id="editClientVideo" class="w-full p-2.5 md:p-3 text-base md:text-xs bg-gray-50 text-blue-700 border border-gray-200 rounded-xl font-mono" placeholder="https://..."></div>
-                <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Logo Transparente</label><input type="text" id="editClientLogo" class="w-full p-2.5 md:p-3 text-base md:text-xs bg-gray-50 text-blue-700 border border-gray-200 rounded-xl font-mono" placeholder="https://..."></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Video Hero</label><input type="text" id="editClientVideo" class="w-full p-2.5 md:p-3 text-base md:text-xs bg-gray-50 text-blue-700 border border-gray-200 rounded-xl font-mono" placeholder="https://..."></div>
+                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Logo Png</label><input type="text" id="editClientLogo" class="w-full p-2.5 md:p-3 text-base md:text-xs bg-gray-50 text-blue-700 border border-gray-200 rounded-xl font-mono" placeholder="https://..."></div>
+                </div>
                 
-                <button onclick="saveClientEdit()" class="w-full mt-4 py-3.5 bg-purple-600 text-white font-extrabold rounded-xl text-sm hover:bg-purple-700 active:scale-95 transition-all">Guardar Cambios</button>
+                <div class="pt-2 border-t border-gray-100 mt-2">
+                    <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-3">Servicios Activos</label>
+                    <div class="grid grid-cols-4 sm:grid-cols-5 gap-2" id="editClientServicesGrid"></div>
+                </div>
+
+                <div class="flex gap-3 mt-4 pt-2">
+                    <button type="button" onclick="deleteClientFromModal()" id="btnDeleteClientModal" class="w-1/4 py-3.5 bg-red-50 text-red-600 font-extrabold rounded-xl text-sm hover:bg-red-100 transition-all flex items-center justify-center hidden" title="Eliminar Cliente permanentemente"><i class="fa-solid fa-trash"></i></button>
+                    <button type="button" onclick="saveClientEdit()" class="flex-1 py-3.5 bg-purple-600 text-white font-extrabold rounded-xl text-sm hover:bg-purple-700 active:scale-95 transition-all">Guardar Cambios</button>
+                </div>
             </div>
         </div>
     </div>
@@ -541,8 +618,8 @@
                 <div>
                     <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Plataforma</label>
                     <select id="formPlatform" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold">
-                        <option value="Meta Ads">Facebook / Instagram</option><option value="TikTok Ads">TikTok</option>
-                        <option value="Google Ads">Google / YouTube</option><option value="LinkedIn Ads">LinkedIn</option><option value="Pinterest Ads">Pinterest</option>
+                        <option value="Meta Ads">Facebook / Instagram (Meta Ads)</option><option value="TikTok Ads">TikTok Ads</option>
+                        <option value="Google Ads">Google Ads / YouTube</option><option value="LinkedIn Ads">LinkedIn Ads</option><option value="Pinterest Ads">Pinterest Ads</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
@@ -555,32 +632,6 @@
                 </div>
                 <button type="submit" id="saveBtn" class="w-full py-3.5 bg-custom-main hover:bg-custom-dark text-white font-extrabold rounded-xl mt-4 shadow-lg active:scale-95 transition-all text-sm">Guardar Datos</button>
             </form>
-        </div>
-    </div>
-
-    <!-- Modal Manual Chart Edit (Admin) -->
-    <div id="chartDataModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-custom-black/70 backdrop-blur-sm transition-opacity">
-        <div class="bg-white w-full max-w-md rounded-[24px] md:rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
-                <h3 class="text-base md:text-lg font-extrabold text-blue-700">Editar Leads por Mes</h3>
-                <button onclick="closeChartModal()" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 transition-colors"><i class="fa-solid fa-times"></i></button>
-            </div>
-            <div class="p-5 flex flex-col gap-4 bg-white overflow-y-auto">
-                <p class="text-xs text-gray-500 font-medium">Sobrescribe los leads de un mes. El gráfico priorizará estos datos.</p>
-                
-                <div class="flex gap-2 items-center">
-                    <input type="hidden" id="editChartIdx" value="">
-                    <!-- Native Month Picker -->
-                    <input type="month" id="chartInputMonth" class="w-1/2 p-2 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-lg font-bold" required>
-                    <input type="number" id="chartInputLeads" class="w-1/2 p-2 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-lg" placeholder="Cant. Leads" required min="0">
-                    <button onclick="addChartRow()" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700"><i class="fa-solid fa-check"></i></button>
-                </div>
-                
-                <div class="border-t border-gray-100 pt-3">
-                    <ul id="adminChartList" class="space-y-2 max-h-48 overflow-y-auto"></ul>
-                </div>
-                <button onclick="saveChartData()" class="w-full py-3 bg-blue-600 text-white font-extrabold rounded-xl text-sm shadow-md mt-2">Aplicar al Gráfico</button>
-            </div>
         </div>
     </div>
 
@@ -668,7 +719,6 @@
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-        // CONFIGURE SUPABASE HERE
         const SUPABASE_URL = 'https://fqyyirtlkrlhdmbbspou.supabase.co'; 
         const SUPABASE_KEY = 'sb_publishable_yTkDWVdCW0T9DFgdZrIyXw_8mTNpKpd'; 
         
@@ -678,17 +728,30 @@
                 supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
             }
         } catch (e) {
-            console.error("Error de credenciales en Supabase. Usando modo de memoria local para prevención de fallos.", e);
+            console.error("Error de credenciales en Supabase.", e);
         }
 
+        const ALL_SERVICES_CONFIG = [
+            { cat: 'mkt', id: 'meta_ads', title: 'Meta Ads', icon: 'fa-brands fa-facebook', c: 'text-blue-600', b: 'bg-blue-50' },
+            { cat: 'mkt', id: 'google_ads', title: 'Google & YT', icon: 'fa-brands fa-google', c: 'text-red-500', b: 'bg-red-50' },
+            { cat: 'mkt', id: 'tiktok_ads', title: 'TikTok Ads', icon: 'fa-brands fa-tiktok', c: 'text-black', b: 'bg-gray-100' },
+            { cat: 'mkt', id: 'linkedin_ads', title: 'LinkedIn Ads', icon: 'fa-brands fa-linkedin', c: 'text-sky-600', b: 'bg-sky-50' },
+            { cat: 'mkt', id: 'pinterest_ads', title: 'Pinterest Ads', icon: 'fa-brands fa-pinterest', c: 'text-red-600', b: 'bg-red-50' },
+            { cat: 'mkt', id: 'brandbook', title: 'Manual de Marca', icon: 'fa-solid fa-swatchbook', c: 'text-pink-500', b: 'bg-pink-50' },
+            { cat: 'prod', id: 'web_dev', title: 'Desarrollo Web', icon: 'fa-solid fa-laptop-code', c: 'text-purple-600', b: 'bg-purple-50' },
+            { cat: 'prod', id: 'consulting', title: 'Consultoría Growth', icon: 'fa-solid fa-chess-knight', c: 'text-emerald-600', b: 'bg-emerald-50' },
+            { cat: 'prod', id: 'tech_tools', title: 'Herr. Digitales', icon: 'fa-solid fa-wrench', c: 'text-slate-600', b: 'bg-slate-100' },
+            { cat: 'prod', id: 'ai_automations', title: 'Autom. IA', icon: 'fa-solid fa-robot', c: 'text-orange-500', b: 'bg-orange-50' }
+        ];
+
         let campaignsData = [];
-        let chartInstance = null;
-        
         let currentUserId = null; 
         let currentUserData = null;
         let isSuperAdmin = false;
         let viewedUserId = null;
         let pulseInterval = null;
+        let currentPlatformFilter = 'Todas';
+        let tempActiveServices = [];
 
         document.getElementById('loginBusiness').addEventListener('input', function(e) {
             this.value = this.value.toLowerCase().replace(/[^a-z]/g, '');
@@ -697,7 +760,6 @@
             this.value = this.value.toLowerCase().replace(/[^a-z]/g, '');
         });
 
-        // --- Mock Data Setup ---
         const karateRealCSV = [
             { id:'mock_k1', name: 'Mensajes Karate', platform: 'Meta Ads', spend: 1542.37, leads: 1004, reach: 127704, imp: 311711, status: 'Activo', createdAt: new Date('2026-01-01').getTime(), endAt: new Date('2026-09-22').getTime() }
         ];
@@ -710,11 +772,11 @@
                     activeServices: ['meta_ads'], monthlyBudget: 300, 
                     videoUrl: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=600&auto=format&fit=crop',
                     logoUrl: 'https://cdn-icons-png.flaticon.com/512/1042/1042296.png',
-                    campaigns: karateRealCSV, manualChart: []
+                    campaigns: karateRealCSV
                 },
-                'bushido': { originalName: 'Bushido Martialshop', ownerName: 'Jairo Teran', pin: '222222', uid: 'user_bushido', isAdmin: false, activeServices: ['meta_ads', 'web_dev'], monthlyBudget: 500, manualChart: [] },
-                'vetra': { originalName: 'Vetra Relojes', ownerName: 'Jairo Teran', pin: '333333', uid: 'user_vetra', isAdmin: false, activeServices: ['meta_ads', 'tiktok_ads'], monthlyBudget: 800, manualChart: [] },
-                'viaja': { originalName: 'Viaja Ligero', ownerName: 'Jairo Teran', pin: '444444', uid: 'user_viaja', isAdmin: false, activeServices: ['meta_ads', 'consulting'], monthlyBudget: 400, manualChart: [] }
+                'bushido': { originalName: 'Bushido Martialshop', ownerName: 'Jairo Teran', pin: '222222', uid: 'user_bushido', isAdmin: false, activeServices: ['meta_ads', 'web_dev'], monthlyBudget: 500 },
+                'vetra': { originalName: 'Vetra Relojes', ownerName: 'Jairo Teran', pin: '333333', uid: 'user_vetra', isAdmin: false, activeServices: ['meta_ads', 'tiktok_ads'], monthlyBudget: 800 },
+                'viaja': { originalName: 'Viaja Ligero', ownerName: 'Jairo Teran', pin: '444444', uid: 'user_viaja', isAdmin: false, activeServices: ['meta_ads', 'consulting'], monthlyBudget: 400 }
             };
             
             Object.keys(users).forEach(k => {
@@ -723,6 +785,15 @@
             
             if(window.showToast) window.showToast('Datos Inicializados', 'Perfiles simulados restaurados y sincronizados a la nube.', 'fa-database', 'text-purple-600');
             if(isSuperAdmin) renderAdminUserList();
+        };
+
+        window.confirmResetData = () => {
+            const code = prompt("Peligro: Esto borrará los datos actuales y restaurará perfiles de prueba en la nube y de manera local.\n\nEscribe 'RESETEAR' en mayúsculas para confirmar:");
+            if(code === 'RESETEAR') {
+                window.seedMockUsers();
+            } else if (code !== null) {
+                window.showToast('Cancelado', 'Código incorrecto. Base de datos segura.', 'fa-shield-halved', 'text-gray-500');
+            }
         };
 
         if(!localStorage.getItem('mlt_users_sb')) window.seedMockUsers();
@@ -837,11 +908,9 @@
         });
 
         window.switchAuthView = (view) => {
-            // Asegurarse de ocultar limpiamente todo usando .hidden de Tailwind
             document.getElementById('auth-login').classList.add('hidden');
             document.getElementById('auth-login-pin').classList.add('hidden');
             
-            // Y mostrar la vista correspondiente
             document.getElementById(`auth-${view}`).classList.remove('hidden');
             if(view === 'login') pinBuffer = '';
         };
@@ -929,12 +998,13 @@
             window.showToast('👋 ¡Sesión Iniciada!', `Hola ${userData.ownerName}.`, 'fa-bolt', 'text-custom-main');
 
             if(isSuperAdmin) { await renderAdminUserList(); switchDashboardTab('admin'); } 
-            else { switchDashboardTab('resumen'); }
+            else { switchDashboardTab('reporte'); }
         }
 
         async function setupDashboardUI() {
             document.getElementById('dashBusinessName').innerText = currentUserData.originalName;
             document.getElementById('dashUserName').innerText = currentUserData.ownerName;
+            document.getElementById('upsellBusinessName').innerText = currentUserData.originalName;
             
             const adminIndicator = document.getElementById('adminIndicator');
             if (isSuperAdmin && viewedUserId !== currentUserId) {
@@ -956,18 +1026,23 @@
                 ? `<video src="${mediaUrl}" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500"></video>` 
                 : `<img src="${mediaUrl}" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500">`;
             
-            const logoImg = document.getElementById('clientHeroLogo');
-            if(currentUserData.logoUrl) { logoImg.src = currentUserData.logoUrl; logoImg.classList.remove('hidden'); }
-            else { logoImg.classList.add('hidden'); }
+            const logoImg1 = document.getElementById('clientHeroLogoMini');
+            const logoImg2 = document.getElementById('upsellClientLogo');
+            
+            if(currentUserData.logoUrl) { 
+                logoImg1.src = currentUserData.logoUrl; logoImg1.classList.remove('hidden'); 
+                logoImg2.src = currentUserData.logoUrl; logoImg2.classList.remove('hidden'); 
+            } else { 
+                logoImg1.classList.add('hidden'); 
+                logoImg2.classList.add('hidden'); 
+            }
 
             const srv = currentUserData.activeServices || [];
             
             if(srv.some(s => s.includes('_ads'))) {
                 document.getElementById('adsMetricsSection').classList.remove('hidden'); document.getElementById('adsMetricsSection').classList.add('flex');
-                document.getElementById('tabBtnAnuncios').classList.remove('hidden');
             } else {
                 document.getElementById('adsMetricsSection').classList.add('hidden'); document.getElementById('adsMetricsSection').classList.remove('flex');
-                document.getElementById('tabBtnAnuncios').classList.add('hidden');
             }
 
             if(srv.includes('web_dev')) {
@@ -987,20 +1062,16 @@
             if(isSuperAdmin) {
                 document.getElementById('adminTabBtn').classList.remove('hidden'); 
                 document.querySelectorAll('.admin-only').forEach(el => { el.classList.remove('hidden'); if(el.tagName!=='TH'&&el.tagName!=='TD') el.classList.add('flex'); });
-                const b = document.getElementById('btnEditBudget'); if(b) {b.classList.remove('hidden'); b.classList.add('flex');}
-                const mw = document.getElementById('btnManageWeb'); if(mw) {mw.classList.remove('hidden'); mw.classList.add('flex');}
             } else {
                 document.getElementById('adminTabBtn').classList.add('hidden'); 
                 document.querySelectorAll('.admin-only').forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
-                const b = document.getElementById('btnEditBudget'); if(b) {b.classList.add('hidden'); b.classList.remove('flex');}
-                const mw = document.getElementById('btnManageWeb'); if(mw) {mw.classList.add('hidden'); mw.classList.remove('flex');}
             }
 
             renderServicesGrid();
             
             if(srv.some(s => s.includes('_ads'))) {
                 campaignsData = await fetchCampaignsFromDB(viewedUserId);
-                updateDashboardKPIs(); 
+                setPlatformFilter('Todas');
                 renderTable();
             }
         }
@@ -1013,7 +1084,7 @@
             if(!target) return;
             viewedUserId = uid; currentUserData = target;
             await setupDashboardUI(); 
-            switchDashboardTab('resumen');
+            switchDashboardTab('reporte');
             window.scrollTo({ top: 0, behavior: 'smooth' }); 
             window.showToast('Modo Vista', `Inspeccionando a ${target.originalName}`, 'fa-eye', 'text-blue-600');
         };
@@ -1037,6 +1108,9 @@
             document.getElementById('editClientVideo').value = target.videoUrl || '';
             document.getElementById('editClientLogo').value = target.logoUrl || '';
             
+            document.getElementById('btnDeleteClientModal').classList.remove('hidden');
+            tempActiveServices = target.activeServices ? [...target.activeServices] : [];
+            renderEditClientServices();
             document.getElementById('clientModal').classList.remove('hidden');
         };
 
@@ -1050,13 +1124,46 @@
             document.getElementById('editClientUserKey').value = '';
             document.getElementById('editClientRuc').value = '';
             document.getElementById('editClientPhone').value = '';
-            document.getElementById('editClientPin').value = '111111';
+            document.getElementById('editClientPin').value = '';
             document.getElementById('editClientVideo').value = '';
             document.getElementById('editClientLogo').value = '';
+            
+            document.getElementById('btnDeleteClientModal').classList.add('hidden');
+            tempActiveServices = [];
+            renderEditClientServices();
             document.getElementById('clientModal').classList.remove('hidden');
         };
 
         window.closeClientModal = () => document.getElementById('clientModal').classList.add('hidden');
+
+        window.toggleTempService = (srvId) => {
+            if(tempActiveServices.includes(srvId)) {
+                tempActiveServices = tempActiveServices.filter(id => id !== srvId);
+            } else {
+                tempActiveServices.push(srvId);
+            }
+            renderEditClientServices();
+        };
+
+        window.renderEditClientServices = () => {
+            const grid = document.getElementById('editClientServicesGrid');
+            grid.innerHTML = '';
+            ALL_SERVICES_CONFIG.forEach(s => {
+                const isActive = tempActiveServices.includes(s.id);
+                const borderClass = isActive ? 'border-custom-accent bg-white shadow-sm' : 'border-gray-200 bg-gray-50 opacity-60 grayscale hover:grayscale-0 transition-all';
+                const checkHtml = isActive ? `<div class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-custom-accent rounded-full flex items-center justify-center text-[9px] text-black font-bold z-10"><i class="fa-solid fa-check"></i></div>` : '';
+                
+                grid.innerHTML += `
+                    <div onclick="toggleTempService('${s.id}')" class="relative cursor-pointer flex flex-col items-center justify-center p-2 rounded-xl border-2 ${borderClass}">
+                        ${checkHtml}
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center ${s.b} ${s.c} text-lg mb-1">
+                            <i class="${s.icon}"></i>
+                        </div>
+                        <span class="text-[9px] font-bold text-center leading-tight text-gray-700 whitespace-nowrap">${s.title.replace(' Ads', '')}</span>
+                    </div>
+                `;
+            });
+        };
 
         window.saveClientEdit = async () => {
             const oldKey = document.getElementById('editClientOriginalUserKey').value;
@@ -1065,7 +1172,6 @@
 
             if(!newKey) { window.showToast('Atención', 'El campo "Usuario" es obligatorio y debe tener solo letras.', 'fa-exclamation-triangle', 'text-red-500'); return; }
 
-            // Validaciones RUC
             const rucInput = document.getElementById('editClientRuc').value;
             if(rucInput && rucInput.length > 0) {
                 if(rucInput.length !== 11 || (!rucInput.startsWith('10') && !rucInput.startsWith('20'))) {
@@ -1074,7 +1180,6 @@
                 }
             }
 
-            // Validacion PIN
             const pinInput = document.getElementById('editClientPin').value;
             if(!pinInput || pinInput.length !== 6) {
                 window.showToast('Error', 'El PIN de acceso debe tener exactamente 6 dígitos', 'fa-exclamation-triangle', 'text-red-500'); 
@@ -1087,7 +1192,7 @@
             if(!isNew && newKey !== oldKey && users[newKey]) { window.showToast('Atención', 'Ya existe otro usuario con esa clave de acceso.', 'fa-exclamation-triangle', 'text-red-500'); return; }
 
             let userData = isNew
-                ? { uid: 'user_' + Date.now(), isAdmin: false, activeServices: [], monthlyBudget: 300, manualChart: [], campaigns: [] }
+                ? { uid: 'user_' + Date.now(), isAdmin: false, monthlyBudget: 300, campaigns: [] }
                 : users[oldKey];
             if(!userData) return;
 
@@ -1098,6 +1203,7 @@
             userData.pin = pinInput;
             userData.videoUrl = document.getElementById('editClientVideo').value;
             userData.logoUrl = document.getElementById('editClientLogo').value;
+            userData.activeServices = tempActiveServices; 
             
             await syncUserToDB(userData, newKey);
             
@@ -1105,10 +1211,13 @@
             closeClientModal();
             window.showToast(isNew ? 'Cliente Creado' : 'Actualizado', isNew ? 'Nuevo cliente registrado correctamente.' : 'Datos modificados correctamente.', 'fa-user-pen', 'text-blue-600');
         };
-        
-        window.deleteClient = async (uid, loginKey) => {
-            if(!isSuperAdmin) return;
-            if(!confirm('¿Estás seguro de eliminar este cliente? Se borrarán sus datos permanentemente.')) return;
+
+        window.deleteClientFromModal = async () => {
+            const uid = document.getElementById('editClientUid').value;
+            const loginKey = document.getElementById('editClientOriginalUserKey').value;
+            if(!uid || !loginKey) return;
+            
+            if(!confirm('¿Estás seguro de eliminar este cliente? Se borrarán permanentemente sus datos y campañas.')) return;
 
             const users = JSON.parse(localStorage.getItem('mlt_users_sb') || '{}');
             if(users[loginKey]) {
@@ -1119,54 +1228,50 @@
             if(supabase) {
                 try {
                     await supabase.from('profiles').delete().eq('id', uid);
+                    await supabase.from('campaigns').delete().eq('uid', uid);
                 } catch(e) {
                     console.error('[Supabase] Error al borrar perfil', e);
                 }
             }
             
             await renderAdminUserList();
+            closeClientModal();
             window.showToast('Eliminado', 'El cliente ha sido borrado exitosamente.', 'fa-trash', 'text-red-500');
-        };
-
-        window.toggleClientService = async (uid, serviceId) => {
-            if(!isSuperAdmin) return;
-            const users = await fetchUsersFromDB();
-            const k = Object.keys(users).find(k => users[k].uid === uid);
-            let s = users[k].activeServices || [];
-            if(s.includes(serviceId)) s = s.filter(x => x !== serviceId); else s.push(serviceId);
-            users[k].activeServices = s;
-            
-            await syncUserToDB(users[k], k);
-            
-            if(viewedUserId === uid) { currentUserData = users[k]; await setupDashboardUI(); }
-            await renderAdminUserList();
         };
 
         async function renderAdminUserList() {
             const tbody = document.getElementById('adminUserTable'); tbody.innerHTML = '';
             const users = await fetchUsersFromDB();
-            const sLabels = { 'meta_ads':'Meta', 'tiktok_ads':'TikTok', 'google_ads':'Google', 'pinterest_ads':'Pinterest', 'web_dev':'Web', 'consulting':'Growth', 'tech_tools': 'Tools', 'ai_automations':'IA', 'brandbook':'Brand' };
 
             Object.keys(users).forEach(key => {
                 const u = users[key];
                 if(u.isAdmin) return;
+                
                 let badges = '';
-                Object.keys(sLabels).forEach(sk => {
-                    const active = (u.activeServices||[]).includes(sk);
-                    badges += `<button onclick="toggleClientService('${u.uid}','${sk}')" class="px-2 py-0.5 rounded text-[10px] border transition-colors mb-1 mr-1 ${active?'bg-purple-100 text-purple-700 border-purple-200 font-bold':'bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-200'}">${sLabels[sk]}</button>`;
-                });
+                const userServices = u.activeServices || [];
+                if (userServices.length === 0) {
+                    badges = '<span class="text-[10px] text-gray-400 italic">Ninguno</span>';
+                } else {
+                    ALL_SERVICES_CONFIG.forEach(s => {
+                        if(userServices.includes(s.id)) {
+                            badges += `<div class="w-6 h-6 rounded flex items-center justify-center ${s.b} ${s.c} text-[10px] shadow-sm" title="${s.title}"><i class="${s.icon}"></i></div>`;
+                        }
+                    });
+                }
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-4 py-3 font-extrabold text-gray-900 text-xs md:text-sm">${u.originalName}</td>
                         <td class="px-4 py-3 text-gray-600 font-bold text-xs md:text-sm">${u.ownerName}</td>
                         <td class="px-4 py-3 text-purple-600 font-mono font-bold text-[10px] md:text-sm">${key}</td>
                         <td class="px-4 py-3 text-purple-700 font-mono font-bold text-[10px] md:text-sm">${u.pin}</td>
-                        <td class="px-4 py-3 min-w-[150px]">${badges}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex flex-wrap gap-1.5">${badges}</div>
+                        </td>
                         <td class="px-4 py-3 text-center">
                             <div class="flex justify-center gap-1.5 flex-wrap w-[80px] mx-auto">
                                 <button onclick="adminViewClient('${u.uid}')" class="w-8 h-8 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 flex items-center justify-center transition-colors" title="Ver Panel"><i class="fa-solid fa-eye"></i></button>
                                 <button onclick="openClientModal('${u.uid}')" class="w-8 h-8 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 flex items-center justify-center transition-colors" title="Editar Cliente"><i class="fa-solid fa-pen"></i></button>
-                                <button onclick="deleteClient('${u.uid}', '${key}')" class="w-8 h-8 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 flex items-center justify-center transition-colors" title="Eliminar Cliente"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>`;
@@ -1176,7 +1281,6 @@
         // --- CONSULTING GROWTH UI ---
         function renderConsultingSection() {
             const data = currentUserData.consulting || { stage: 0, focus: 'Diagnóstico del modelo de negocio.', okrs: [] };
-            
             const stages = ['Sesión de diagnóstico', 'Plan de acción', 'Implementación (acompañamiento)', 'Resultados'];
             const w = data.stage === 0 ? 0 : (data.stage / (stages.length - 1)) * 100;
             document.getElementById('consultingProgressBar').style.width = `${w}%`;
@@ -1195,6 +1299,18 @@
 
             document.getElementById('consultingFocusText').innerText = data.focus;
             
+            const stg = data.stage || 0;
+            const phaseIcons = ['fa-magnifying-glass-chart', 'fa-map-location-dot', 'fa-rocket', 'fa-chart-line'];
+            
+            document.getElementById('consultingFocusIcon').className = `fa-solid ${phaseIcons[stg]} drop-shadow-md transition-all`;
+            document.getElementById('consultingPhaseBadge').innerText = stages[stg];
+            
+            const iconBox = document.getElementById('consultingFocusIconBox');
+            if (stg === 0) iconBox.className = "w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-blue-400 flex items-center justify-center text-xl md:text-2xl font-extrabold text-blue-400 mb-3 shadow-[0_0_15px_rgba(96,165,250,0.4)] transition-all duration-500";
+            else if (stg === 1) iconBox.className = "w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-orange-400 flex items-center justify-center text-xl md:text-2xl font-extrabold text-orange-400 mb-3 shadow-[0_0_15px_rgba(251,146,60,0.4)] transition-all duration-500";
+            else if (stg === 2) iconBox.className = "w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-custom-accent flex items-center justify-center text-xl md:text-2xl font-extrabold text-custom-accent mb-3 shadow-neon transition-all duration-500";
+            else iconBox.className = "w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-emerald-400 flex items-center justify-center text-xl md:text-2xl font-extrabold text-emerald-400 mb-3 shadow-[0_0_15px_rgba(52,211,153,0.4)] transition-all duration-500";
+
             const okrList = document.getElementById('consultingOkrsList'); okrList.innerHTML = '';
             (data.okrs||[]).forEach(okr => {
                 okrList.innerHTML += `<li class="flex items-start gap-2.5 md:gap-3"><i class="fa-solid fa-play text-custom-accent text-[10px] md:text-xs mt-1 shadow-neon"></i><div><p class="font-bold text-xs md:text-sm text-white">${okr.title}</p><p class="text-[11px] md:text-xs text-gray-400 mt-0.5 md:mt-1">${okr.desc}</p></div></li>`;
@@ -1266,37 +1382,50 @@
         function renderAgileTasks() {
             const tasks = currentUserData.webTasks || { req: [], dev: [], qa: [], launch: [] };
             const c = document.getElementById('agileColumnsContainer'); c.innerHTML = '';
-            const n = { req: 'Requerimientos', dev: 'En Desarrollo', qa: 'Pruebas QA', launch: 'Lanzamiento' };
+            const n = { req: 'Requerimientos', dev: 'Desarrollo', qa: 'Calidad (QA)', launch: 'Lanzamiento' };
             const clr = { req: 'blue', dev: 'amber', qa: 'gray', launch: 'purple' };
             
-            let totalWeight = 0;
-            let currentWeight = 0;
+            let hasAnyTask = false;
 
             Object.keys(n).forEach(k => {
                 let lis = '';
-                const weight = k==='req' ? 1 : k==='dev' ? 2 : k==='qa' ? 3 : 4;
-                
                 if((tasks[k]||[]).length===0) lis = '<li class="text-gray-400 text-[11px] py-1 italic">Sin asignar</li>';
                 else {
+                    hasAnyTask = true;
                     (tasks[k]||[]).forEach(t => { 
                         lis += `<li class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex items-center gap-2 text-xs font-medium text-gray-700 min-w-[200px] md:min-w-0"><i class="fa-solid fa-code text-${clr[k]}-500"></i> ${t.text}</li>`; 
-                        totalWeight += 4;
-                        currentWeight += weight;
                     });
                 }
                 c.innerHTML += `<div class="bg-white p-4 rounded-[20px] border border-gray-100 shadow-sm min-w-[240px] md:min-w-0 md:w-1/4 flex-shrink-0"><div class="flex items-center justify-between mb-3"><h4 class="font-extrabold text-gray-900 text-xs md:text-sm">${n[k]}</h4></div><ul class="space-y-2">${lis}</ul></div>`;
             });
 
-            const progressPct = totalWeight === 0 ? 0 : Math.round((currentWeight / totalWeight) * 100);
+            let progressPct = 0;
+            let statusText = "Iniciando Proyecto";
+
+            if ((tasks.launch || []).length > 0) {
+                progressPct = 100;
+                statusText = "¡Listo para el Lanzamiento! 🚀";
+            } else if ((tasks.qa || []).length > 0) {
+                progressPct = 75;
+                statusText = "Fase de Pruebas (QA)";
+            } else if ((tasks.dev || []).length > 0) {
+                progressPct = 50;
+                statusText = "En Desarrollo y Maquetación";
+            } else if ((tasks.req || []).length > 0) {
+                progressPct = 25;
+                statusText = "Levantamiento y Planificación";
+            }
+
             const pbContainer = document.getElementById('webDevProgressBarContainer');
             const pbBar = document.getElementById('webDevProgressBar');
             const pbText = document.getElementById('webDevProgressText');
             
             if (pbContainer && pbBar && pbText) {
-                if (totalWeight > 0) {
+                if (hasAnyTask) {
                     pbContainer.classList.remove('hidden');
                     pbBar.style.width = `${progressPct}%`;
                     pbText.innerText = `${progressPct}%`;
+                    document.getElementById('webDevProgressStatus').innerText = statusText;
                 } else {
                     pbContainer.classList.add('hidden');
                 }
@@ -1308,176 +1437,151 @@
         const fmtCurr = (v) => new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(v);
         const fmtNum = (v) => new Intl.NumberFormat('en-US').format(v);
 
-        function updateDashboardKPIs() {
-            let tSpend = 0, tLeads = 0;
-            campaignsData.forEach(c => { tSpend += parseFloat(c.spend)||0; tLeads += parseInt(c.leads)||0; });
-            const currentBudget = currentUserData.monthlyBudget || 300;
-            const cpl = tLeads > 0 ? tSpend / tLeads : 0;
-            const pctBudget = Math.min((tSpend / currentBudget) * 100, 100);
-
-            document.getElementById('kpi-budget').innerText = fmtCurr(currentBudget);
-            document.getElementById('kpi-spent').innerText = fmtCurr(tSpend);
-            document.getElementById('budget-progress').style.width = pctBudget + '%';
-            document.getElementById('kpi-leads').innerText = fmtNum(tLeads);
-            document.getElementById('kpi-cpl').innerText = fmtCurr(cpl);
-
-            const cplInd = document.getElementById('cpl-indicator');
-            if(cpl === 0) cplInd.innerHTML = "--";
-            else if(cpl < 15) { cplInd.className = "bg-finance-upBg text-finance-up px-2 py-1 rounded text-[10px] md:text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-down mr-0.5"></i> Óptimo'; }
-            else { cplInd.className = "bg-finance-downBg text-finance-down px-2 py-1 rounded text-[10px] md:text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-up mr-0.5"></i> Alto'; }
+        // --- PLATFORM SELECTOR & METRICS ENGINE ---
+        window.setPlatformFilter = (plat) => {
+            currentPlatformFilter = plat;
             
-            try {
-                updateMonthlyChart();
-            } catch (err) {
-                console.error("Error al actualizar grafico:", err);
-            }
-        }
-
-        // --- MANUAL CHART EDITING ---
-        window.openChartModal = () => {
-            if(!isSuperAdmin) return;
-            document.getElementById('editChartIdx').value = '';
-            document.getElementById('chartInputMonth').value = '';
-            document.getElementById('chartInputLeads').value = '';
-            renderAdminChartList();
-            document.getElementById('chartDataModal').classList.remove('hidden');
-        };
-        window.closeChartModal = () => document.getElementById('chartDataModal').classList.add('hidden');
-        
-        const formatMonthInput = (yyyyMm) => { 
-            if(!yyyyMm) return '';
-            const parts = yyyMm.split('-');
-            if (parts.length < 2) return yyyMm;
-            
-            let y = parts[0];
-            let m = parts[1];
-            
-            const monthNames = { '01':'Ene', '02':'Feb', '03':'Mar', '04':'Abr', '05':'May', '06':'Jun', '07':'Jul', '08':'Ago', '09':'Sep', '10':'Oct', '11':'Nov', '12':'Dic' };
-            const mName = monthNames[m] || m;
-            const yShort = y && y.length >= 2 ? y.slice(-2) : y;
-            return `${mName} ${yShort}`;
-        };
-
-        function renderAdminChartList() {
-            const list = document.getElementById('adminChartList'); list.innerHTML = '';
-            const mChart = currentUserData.manualChart || [];
-            mChart.sort((a,b) => a.month.localeCompare(b.month)).forEach((d, i) => {
-                list.innerHTML += `<li class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 text-gray-900 text-xs md:text-sm">
-                    <div><span class="font-bold text-gray-800">${formatMonthInput(d.month)}</span> | Leads: <span class="text-custom-main font-bold">${d.leads}</span></div>
-                    <div>
-                        <button onclick="editChartRow(${i})" class="text-blue-500 mr-3 hover:text-blue-700 transition-colors"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="delChartRow(${i})" class="text-red-500 hover:text-red-700 transition-colors"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </li>`;
+            document.querySelectorAll('.plat-btn').forEach(btn => {
+                if(btn.dataset.plat === plat) {
+                    btn.className = 'plat-btn active px-4 py-2 rounded-full font-bold text-xs md:text-sm bg-gray-900 text-white whitespace-nowrap transition-colors';
+                } else {
+                    btn.className = 'plat-btn px-4 py-2 rounded-full font-bold text-xs md:text-sm bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-colors';
+                }
             });
-        }
 
-        window.editChartRow = (idx) => {
-            const mChart = currentUserData.manualChart || [];
-            if(mChart[idx]) {
-                document.getElementById('editChartIdx').value = idx;
-                document.getElementById('chartInputMonth').value = mChart[idx].month; 
-                document.getElementById('chartInputLeads').value = mChart[idx].leads;
-            }
+            const titleEl = document.getElementById('rendimientoTitle');
+            const iconEl = document.getElementById('rendimientoIcon');
+            const headerCont = document.getElementById('rendimientoHeader');
+            
+            titleEl.innerText = plat === 'Todas' ? 'Rendimiento Campañas: Todas' : `Rendimiento Campañas: ${plat.replace(' Ads','')}`;
+            
+            let colorClass = 'text-gray-900'; let iconClass = 'fa-bullhorn text-gray-900';
+            if(plat === 'Meta Ads') { colorClass = 'text-blue-600'; iconClass = 'fa-facebook text-blue-600'; }
+            if(plat === 'Google Ads') { colorClass = 'text-red-500'; iconClass = 'fa-google text-red-500'; }
+            if(plat === 'LinkedIn Ads') { colorClass = 'text-sky-600'; iconClass = 'fa-linkedin text-sky-600'; }
+            if(plat === 'TikTok Ads') { colorClass = 'text-black'; iconClass = 'fa-tiktok text-black'; }
+            if(plat === 'Pinterest Ads') { colorClass = 'text-red-600'; iconClass = 'fa-pinterest text-red-600'; }
+
+            headerCont.className = `text-lg md:text-xl font-extrabold flex items-center gap-2 transition-colors duration-300 ${colorClass}`;
+            iconEl.className = `fa-brands ${iconClass} transition-colors duration-300`;
+            if(plat === 'Todas') iconEl.className = `fa-solid fa-bullhorn text-gray-900 transition-colors duration-300`;
+
+            updateDashboardKPIs();
         };
 
-        window.addChartRow = () => {
-            const m = document.getElementById('chartInputMonth').value; 
-            const l = parseInt(document.getElementById('chartInputLeads').value) || 0;
-            if(!m) { window.showToast('Atención', 'Selecciona un mes y año válido', 'fa-exclamation-triangle', 'text-orange-500'); return; }
-            
-            if(!currentUserData.manualChart) currentUserData.manualChart = [];
-            
-            const idx = document.getElementById('editChartIdx').value;
-            if (idx !== '') {
-                currentUserData.manualChart[idx] = { month: m, leads: l };
-                document.getElementById('editChartIdx').value = '';
-            } else {
-                const existingIdx = currentUserData.manualChart.findIndex(x => x.month === m);
-                if(existingIdx !== -1) currentUserData.manualChart[existingIdx].leads = l;
-                else currentUserData.manualChart.push({ month: m, leads: l });
-            }
-            
-            document.getElementById('chartInputMonth').value = '';
-            document.getElementById('chartInputLeads').value = '';
-            renderAdminChartList();
-        };
-        
-        window.delChartRow = (idx) => { currentUserData.manualChart.splice(idx,1); renderAdminChartList(); };
-        window.saveChartData = async () => { await syncUserToDB(currentUserData); updateDashboardKPIs(); closeChartModal(); window.showToast('Actualizado', 'Datos manuales aplicados al gráfico.', 'fa-chart-line', 'text-blue-600'); };
+        function calculateMetrics(platformFilter) {
+            let now = new Date();
+            let currentYear = now.getFullYear();
+            let currentMonth = now.getMonth();
 
-        function updateMonthlyChart() {
-            let dist = {};
+            let total = { spend: 0, leads: 0, imp: 0, reach: 0 };
+            let month = { spend: 0, leads: 0, imp: 0, reach: 0 };
 
-            // 1. CARGAR DATOS AUTOMÁTICOS
             campaignsData.forEach(c => {
-                if(!c.createdAt || !c.endAt || c.leads <= 0) return;
-                
+                if(platformFilter !== 'Todas' && c.platform !== platformFilter) return;
+
                 let s = new Date(parseInt(c.createdAt) || Date.now());
                 let e = new Date(parseInt(c.endAt) || Date.now());
                 
-                let days = (e-s)/(1000*60*60*24); if(days<1) days=1;
-                let lpd = c.leads / days;
-                
-                for(let d=new Date(s); d<=e; d.setDate(d.getDate()+1)) {
-                    let key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-                    dist[key] = (dist[key] || 0) + lpd;
-                }
-            });
+                let days = (e - s) / (1000 * 60 * 60 * 24); 
+                if(days < 1) days = 1;
 
-            // 2. APLICAR DATOS MANUALES (Y FORZAR EXISTENCIA)
-            if (currentUserData.manualChart && currentUserData.manualChart.length > 0) {
-                currentUserData.manualChart.forEach(d => {
-                    if (d.month) {
-                        dist[d.month] = parseInt(d.leads) || 0;
+                let spd = (parseFloat(c.spend) || 0) / days;
+                let lpd = (parseInt(c.leads) || 0) / days;
+                let ipd = (parseInt(c.imp) || 0) / days;
+                let rpd = (parseInt(c.reach) || 0) / days;
+
+                for(let d = new Date(s.getTime()); d <= e; d.setDate(d.getDate() + 1)) {
+                    if (d.getFullYear() === currentYear) {
+                        total.spend += spd;
+                        total.leads += lpd;
+                        total.imp += ipd;
+                        total.reach += rpd;
                     }
-                });
-            }
-
-            let keys = Object.keys(dist).sort();
-            
-            // Forzamos al menos un elemento extra si solo hay un mes, para que ChartJS lo pinte correctamente
-            if(keys.length === 0) { 
-                keys = ['2026-01','2026-02']; dist = {'2026-01':0,'2026-02':0}; 
-            } else if (keys.length === 1) {
-                const parts = keys[0].split('-');
-                let y = parseInt(parts[0]);
-                let m = parseInt(parts[1]) - 1; 
-                if(m === 0) { m = 12; y -= 1; }
-                const prevKey = `${y}-${String(m).padStart(2,'0')}`;
-                dist[prevKey] = 0;
-                keys = Object.keys(dist).sort();
-            }
-            
-            const labels = keys.map(k => formatMonthInput(k));
-            const dataLeads = keys.map(k => Math.round(dist[k]));
-
-            renderChart(labels, dataLeads);
-        }
-
-        function renderChart(labels, dataLeads) {
-            const ctx = document.getElementById('leadsChart').getContext('2d');
-            let gradLeads = ctx.createLinearGradient(0, 0, 0, 300); gradLeads.addColorStop(0, '#00638E'); gradLeads.addColorStop(1, '#8CB9CC'); 
-            
-            if(chartInstance) chartInstance.destroy();
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: { 
-                    labels, 
-                    datasets: [
-                        { type: 'bar', label: 'Contactos (Leads)', data: dataLeads, backgroundColor: gradLeads, borderRadius: 6, maxBarThickness: 45 }
-                    ] 
-                },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } }, 
-                    scales: { 
-                        y: { beginAtZero: true, grid: { borderDash: [4,4] }, border: { display: false } }, 
-                        x: { grid: { display: false }, border: { display: false } } 
-                    } 
+                    if (d.getFullYear() === currentYear && d.getMonth() === currentMonth) {
+                        month.spend += spd;
+                        month.leads += lpd;
+                        month.imp += ipd;
+                        month.reach += rpd;
+                    }
                 }
             });
+
+            if (platformFilter === 'Todas' && currentUserData.manualAccumulated) {
+                if(currentUserData.manualAccumulated.spend !== undefined) total.spend = currentUserData.manualAccumulated.spend;
+                if(currentUserData.manualAccumulated.leads !== undefined) total.leads = currentUserData.manualAccumulated.leads;
+                if(currentUserData.manualAccumulated.imp !== undefined) total.imp = currentUserData.manualAccumulated.imp;
+                if(currentUserData.manualAccumulated.reach !== undefined) total.reach = currentUserData.manualAccumulated.reach;
+            }
+
+            return { total, month };
         }
+
+        function updateDashboardKPIs() {
+            const currentBudget = currentUserData.monthlyBudget || 300;
+            const metrics = calculateMetrics(currentPlatformFilter);
+
+            document.getElementById('kpi-total-spent').innerText = fmtCurr(metrics.total.spend);
+            
+            // Re-inyectar animación para asegurar que se note en actualizaciones
+            document.getElementById('kpi-total-leads').innerHTML = `<span class="animate-leads-pulse">${fmtNum(Math.round(metrics.total.leads))}</span>`;
+            
+            document.getElementById('kpi-total-imp').innerText = fmtNum(Math.round(metrics.total.imp));
+            document.getElementById('kpi-total-reach').innerText = fmtNum(Math.round(metrics.total.reach));
+
+            document.getElementById('kpi-month-spent').innerText = fmtCurr(metrics.month.spend);
+            document.getElementById('kpi-month-leads').innerText = fmtNum(Math.round(metrics.month.leads));
+            document.getElementById('kpi-month-imp').innerText = fmtNum(Math.round(metrics.month.imp));
+            document.getElementById('kpi-month-reach').innerText = fmtNum(Math.round(metrics.month.reach));
+
+            const cplMonth = metrics.month.leads > 0 ? (metrics.month.spend / metrics.month.leads) : 0;
+            document.getElementById('kpi-month-cpl').innerText = fmtCurr(cplMonth);
+            
+            const pctBudget = Math.min((metrics.month.spend / currentBudget) * 100, 100);
+            document.getElementById('kpi-budget').innerText = fmtCurr(currentBudget);
+            document.getElementById('budget-progress').style.width = pctBudget + '%';
+
+            const cplInd = document.getElementById('cpl-indicator');
+            if(cplMonth === 0) cplInd.innerHTML = "--";
+            else if(cplMonth < 15) { cplInd.className = "bg-finance-upBg text-finance-up px-2 py-1 rounded text-[10px] md:text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-check mr-0.5"></i> Óptimo'; }
+            else { cplInd.className = "bg-finance-downBg text-finance-down px-2 py-1 rounded text-[10px] md:text-[11px] font-extrabold shadow-sm"; cplInd.innerHTML = '<i class="fa-solid fa-arrow-up mr-0.5"></i> Alto'; }
+        }
+
+        // --- ACUMULADO MANUAL EDIT ---
+        window.openAccumulatedModal = () => {
+            if(!isSuperAdmin) return;
+            const acc = currentUserData.manualAccumulated || {};
+            document.getElementById('accInputSpend').value = acc.spend !== undefined ? acc.spend : '';
+            document.getElementById('accInputLeads').value = acc.leads !== undefined ? acc.leads : '';
+            document.getElementById('accInputImp').value = acc.imp !== undefined ? acc.imp : '';
+            document.getElementById('accInputReach').value = acc.reach !== undefined ? acc.reach : '';
+            document.getElementById('accumulatedModal').classList.remove('hidden');
+        };
+        
+        window.closeAccumulatedModal = () => {
+            document.getElementById('accumulatedModal').classList.add('hidden');
+        };
+        
+        window.saveAccumulated = async () => {
+            if(!isSuperAdmin) return;
+            
+            const spend = document.getElementById('accInputSpend').value;
+            const leads = document.getElementById('accInputLeads').value;
+            const imp = document.getElementById('accInputImp').value;
+            const reach = document.getElementById('accInputReach').value;
+            
+            currentUserData.manualAccumulated = {
+                spend: spend === '' ? undefined : parseFloat(spend),
+                leads: leads === '' ? undefined : parseInt(leads),
+                imp: imp === '' ? undefined : parseInt(imp),
+                reach: reach === '' ? undefined : parseInt(reach)
+            };
+            
+            await syncUserToDB(currentUserData);
+            setPlatformFilter('Todas');
+            closeAccumulatedModal();
+            window.showToast('Actualizado', 'Acumulado manual guardado.', 'fa-check', 'text-blue-600');
+        };
 
         // --- SERVICES GRID ---
         function renderServicesGrid() {
@@ -1486,25 +1590,12 @@
             
             if(pulseInterval) clearInterval(pulseInterval);
 
-            const allSrv = [
-                { cat: 'mkt', id: 'meta_ads', title: 'Meta Ads', icon: 'fa-brands fa-facebook', c: 'text-blue-600', b: 'bg-blue-50' },
-                { cat: 'mkt', id: 'google_ads', title: 'Google & YT', icon: 'fa-brands fa-google', c: 'text-red-500', b: 'bg-red-50' },
-                { cat: 'mkt', id: 'tiktok_ads', title: 'TikTok Ads', icon: 'fa-brands fa-tiktok', c: 'text-black', b: 'bg-gray-100' },
-                { cat: 'mkt', id: 'pinterest_ads', title: 'Pinterest Ads', icon: 'fa-brands fa-pinterest', c: 'text-red-600', b: 'bg-red-50' },
-                { cat: 'mkt', id: 'brandbook', title: 'Manual de Marca', icon: 'fa-solid fa-swatchbook', c: 'text-pink-500', b: 'bg-pink-50' },
-                { cat: 'prod', id: 'web_dev', title: 'Desarrollo Web', icon: 'fa-solid fa-laptop-code', c: 'text-purple-600', b: 'bg-purple-50' },
-                { cat: 'prod', id: 'consulting', title: 'Consultoría Growth', icon: 'fa-solid fa-chess-knight', c: 'text-emerald-600', b: 'bg-emerald-50' },
-                { cat: 'prod', id: 'tech_tools', title: 'Herr. Digitales', icon: 'fa-solid fa-wrench', c: 'text-slate-600', b: 'bg-slate-100' },
-                { cat: 'prod', id: 'ai_automations', title: 'Autom. IA', icon: 'fa-solid fa-robot', c: 'text-orange-500', b: 'bg-orange-50' }
-            ];
-
             const act = currentUserData.activeServices || [];
-            allSrv.forEach((s) => {
+            ALL_SERVICES_CONFIG.forEach((s) => {
                 const isAct = act.includes(s.id);
                 const cardC = isAct ? `bg-white shadow-sm border-gray-200` : `locked-service-btn locked bg-gray-50/50`;
                 const iC = isAct ? `${s.b} ${s.c}` : `bg-gray-200 text-gray-500`;
                 
-                // Boton Agregar actualizado
                 const btn = isAct ? `<span class="text-[11px] md:text-xs font-extrabold text-custom-main"><i class="fa-solid fa-check"></i> Activo</span>` 
                     : `<button class="btn-add-luminoso text-[10px] md:text-xs font-extrabold px-3 py-1.5 rounded-lg flex gap-1.5 items-center"><i class="fa-solid fa-plus icon-luminoso text-[11px]"></i> Agregar</button>`;
 
@@ -1529,9 +1620,12 @@
 
         function renderTable() {
             const tbody = document.getElementById('dataTableBody'); tbody.innerHTML = '';
-            if(!campaignsData.length) { tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400 font-medium text-xs md:text-sm">No hay anuncios registrados.</td></tr>`; return; }
+            
+            const filteredCampaigns = currentPlatformFilter === 'Todas' ? campaignsData : campaignsData.filter(c => c.platform === currentPlatformFilter);
+            
+            if(!filteredCampaigns.length) { tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-400 font-medium text-xs md:text-sm">No hay anuncios registrados para este filtro.</td></tr>`; return; }
 
-            campaignsData.sort((a,b) => {
+            filteredCampaigns.sort((a,b) => {
                 const dateA = parseInt(a.createdAt) || 0;
                 const dateB = parseInt(b.createdAt) || 0;
                 return dateB - dateA;
@@ -1539,11 +1633,11 @@
                 const cpl = c.leads > 0 ? (c.spend / c.leads) : 0;
                 let cplClr = 'text-gray-900 font-bold';
                 if(cpl>0 && cpl<15) cplClr = 'text-finance-up font-extrabold'; else if(cpl>=15) cplClr = 'text-finance-down font-bold';
-                const pIcons = { 'Meta Ads':'fa-facebook text-blue-600', 'Google Ads':'fa-google text-red-500', 'TikTok Ads':'fa-tiktok text-black', 'Pinterest Ads':'fa-pinterest text-red-600' };
+                const pIcons = { 'Meta Ads':'fa-facebook text-blue-600', 'Google Ads':'fa-google text-red-500', 'TikTok Ads':'fa-tiktok text-black', 'Pinterest Ads':'fa-pinterest text-red-600', 'LinkedIn Ads':'fa-linkedin text-sky-600' };
 
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50 border-b border-gray-50">
-                        <td class="px-4 py-3 md:py-4"><div class="font-extrabold text-gray-900 text-xs md:text-sm">${c.name}</div><div class="text-[10px] md:text-[11px] text-gray-500 mt-0.5 md:mt-1"><i class="fa-brands ${pIcons[c.platform]||'fa-rectangle-ad'}"></i> ${c.platform}</div></td>
+                        <td class="px-4 py-3 md:py-4"><div class="font-extrabold text-gray-900 text-xs md:text-sm">${c.name}</div><div class="text-[10px] md:text-[11px] text-gray-500 mt-0.5 md:mt-1"><i class="fa-brands ${pIcons[c.platform]||'fa-rectangle-ad'}"></i> ${c.platform.replace(' Ads','')}</div></td>
                         <td class="px-4 py-3 md:py-4"><div class="text-[11px] md:text-xs font-bold text-gray-700">R: ${fmtNum(c.reach||0)}</div><div class="text-[9px] md:text-[10px] text-gray-400">I: ${fmtNum(c.imp||0)}</div></td>
                         <td class="px-4 py-3 md:py-4 text-right font-extrabold text-gray-700 text-xs md:text-sm">${fmtCurr(c.spend)}</td>
                         <td class="px-4 py-3 md:py-4 text-center font-extrabold text-custom-main text-xs md:text-sm">${fmtNum(c.leads)}</td>
@@ -1561,7 +1655,10 @@
             const act = document.querySelector(`.dash-tab[data-tab="${tId}"]`); if(act&&!act.classList.contains('text-purple-600')) act.classList.add('active','bg-white','shadow-sm','text-custom-main');
             document.querySelectorAll('.dash-section').forEach(el => el.classList.add('hidden'));
             document.getElementById(`tab-${tId}`).classList.remove('hidden'); document.getElementById(`tab-${tId}`).classList.add('flex');
-            if(tId==='resumen') setTimeout(() => { if(chartInstance) chartInstance.resize(); else updateMonthlyChart(); }, 100);
+            
+            if(tId === 'reporte' && campaignsData.length > 0) {
+                setPlatformFilter('Todas');
+            }
         };
 
         // --- CSV UPLOAD ---
@@ -1604,7 +1701,7 @@
                 campaignsData.push(newCamp);
             }
             if(window.showToast) window.showToast('CSV Procesado', 'Se cargaron los datos exitosamente.', 'fa-file-csv', 'text-blue-600');
-            updateDashboardKPIs(); renderTable();
+            setPlatformFilter(currentPlatformFilter); renderTable();
         }
         
         // --- FORMS & MODALS ---
@@ -1623,7 +1720,6 @@
         };
         window.closeFormModal = () => document.getElementById('formModal').classList.add('hidden');
 
-        // EDIT CAMPAIGN
         window.editCamp = (id) => {
             if(!isSuperAdmin) return;
             const camp = campaignsData.find(c => c.id === id);
@@ -1645,7 +1741,7 @@
             if(!isSuperAdmin) return; 
             await deleteCampaignFromDB(id); 
             campaignsData = campaignsData.filter(c => c.id !== id);
-            updateDashboardKPIs(); renderTable(); 
+            setPlatformFilter(currentPlatformFilter); renderTable(); 
             window.showToast('Eliminado', 'Campaña borrada.', 'fa-trash', 'text-red-500'); 
         };
 
@@ -1676,7 +1772,7 @@
             const idx = campaignsData.findIndex(c => c.id === d.id);
             if(idx !== -1) campaignsData[idx] = d; else campaignsData.push(d);
             
-            updateDashboardKPIs(); 
+            setPlatformFilter(currentPlatformFilter); 
             renderTable();
             closeFormModal();
             window.showToast('Guardado', 'Campaña registrada correctamente.', 'fa-save', 'text-blue-600');
