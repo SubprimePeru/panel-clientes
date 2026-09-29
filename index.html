@@ -34,7 +34,21 @@
     </script>
 
     <style>
-        body, html { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; touch-action: manipulation; overscroll-behavior-y: none; }
+        body, html { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+            touch-action: pan-y; 
+            overscroll-behavior: none; 
+            overflow-x: hidden; 
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -131,7 +145,7 @@
         .tooltip:hover .tooltip-text, .tooltip:active .tooltip-text { visibility: visible; opacity: 1; }
     </style>
 </head>
-<body class="antialiased overflow-hidden h-screen w-screen bg-custom-black text-white flex flex-col">
+<body class="antialiased overflow-x-hidden h-[100dvh] w-full bg-custom-black text-white flex flex-col">
 
     <script>
         window.showToast = (title, message, icon = 'fa-check-circle', color = 'text-finance-up') => {
@@ -200,7 +214,7 @@
     </div>
 
     <!-- MAIN DASHBOARD -->
-    <div id="appContainer" class="hidden h-full w-full bg-motion text-gray-900 flex flex-col relative overflow-hidden">
+    <div id="appContainer" class="hidden h-full w-full bg-motion text-gray-900 flex flex-col relative overflow-x-hidden">
         
         <header class="bg-white/80 backdrop-blur-md border-b border-custom-light/20 px-3 py-3 md:px-8 flex items-center justify-between sticky top-0 z-40 gap-2">
             <div class="flex items-center gap-2 shrink-0">
