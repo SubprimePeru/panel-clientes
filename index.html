@@ -34,15 +34,20 @@
     </script>
 
     <style>
+        /* FIX DEFINITIVO PARA IOS / MOBILE */
         body, html { 
+            position: fixed; 
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw; 
+            height: 100dvh;
+            overflow: hidden; 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             -webkit-tap-highlight-color: transparent; 
             touch-action: pan-y; 
             overscroll-behavior: none; 
-            overflow-x: hidden; 
-            width: 100%;
         }
 
+        /* Prevenir zoom de inputs en iOS */
         @media (max-width: 768px) {
             input, select, textarea {
                 font-size: 16px !important;
@@ -98,7 +103,6 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 226, 0, 0); background-color: #f3f4f6; }
         }
 
-        /* Nueva animación de latido para "Interesados Totales" */
         @keyframes pulseHighlight {
             0% { transform: scale(1); color: #111827; }
             50% { transform: scale(1.15); color: #00638E; text-shadow: 0px 0px 15px rgba(0, 99, 142, 0.5); }
@@ -145,7 +149,7 @@
         .tooltip:hover .tooltip-text, .tooltip:active .tooltip-text { visibility: visible; opacity: 1; }
     </style>
 </head>
-<body class="antialiased overflow-x-hidden h-[100dvh] w-full bg-custom-black text-white flex flex-col">
+<body class="antialiased fixed inset-0 h-[100dvh] w-full max-w-[100vw] bg-custom-black text-white flex flex-col overflow-hidden">
 
     <script>
         window.showToast = (title, message, icon = 'fa-check-circle', color = 'text-finance-up') => {
@@ -214,7 +218,7 @@
     </div>
 
     <!-- MAIN DASHBOARD -->
-    <div id="appContainer" class="hidden h-full w-full bg-motion text-gray-900 flex flex-col relative overflow-x-hidden">
+    <div id="appContainer" class="hidden h-full w-full max-w-[100vw] bg-motion text-gray-900 flex flex-col relative overflow-hidden">
         
         <header class="bg-white/80 backdrop-blur-md border-b border-custom-light/20 px-3 py-3 md:px-8 flex items-center justify-between sticky top-0 z-40 gap-2">
             <div class="flex items-center gap-2 shrink-0">
@@ -240,11 +244,11 @@
             </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto px-3 md:px-8 py-6 pb-24">
+        <main class="flex-1 overflow-y-auto overflow-x-hidden w-full max-w-[100vw] px-3 md:px-8 py-6 pb-24 relative" style="-webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;">
             
             <!-- ADMIN TAB: Clientes -->
-            <div id="tab-admin" class="dash-section hidden fade-in flex-col gap-6 max-w-7xl mx-auto">
-                <div class="bg-white p-4 md:p-6 rounded-[24px] shadow-panel border border-gray-100">
+            <div id="tab-admin" class="dash-section hidden fade-in flex-col gap-6 max-w-7xl mx-auto w-full">
+                <div class="bg-white p-4 md:p-6 rounded-[24px] shadow-panel border border-gray-100 w-full overflow-hidden">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                         <div>
                             <h2 class="text-2xl font-bold text-gray-900 mb-1">Directorio de Clientes</h2>
@@ -260,7 +264,7 @@
                         </div>
                     </div>
                     
-                    <div class="overflow-x-auto w-full rounded-xl border border-gray-100">
+                    <div class="overflow-x-auto w-full max-w-full rounded-xl border border-gray-100 touch-pan-x">
                         <table class="w-full text-left border-collapse min-w-[700px]">
                             <thead>
                                 <tr class="bg-gray-50 text-gray-500 text-[11px] md:text-xs uppercase tracking-wider font-bold border-b border-gray-100">
@@ -279,9 +283,9 @@
             </div>
 
             <!-- REPORTE TAB -->
-            <div id="tab-reporte" class="dash-section fade-in flex flex-col gap-6 max-w-7xl mx-auto">
+            <div id="tab-reporte" class="dash-section fade-in flex flex-col gap-6 max-w-7xl mx-auto w-full">
                 <!-- Hero Section -->
-                <div class="flex flex-col lg:flex-row gap-6 items-stretch">
+                <div class="flex flex-col lg:flex-row gap-6 items-stretch w-full">
                     <div class="flex-1 bg-white rounded-[32px] p-6 md:p-10 shadow-panel border border-gray-100 flex flex-col justify-center relative overflow-hidden">
                         <div class="absolute -right-20 -top-20 w-64 h-64 bg-custom-light/10 rounded-full blur-3xl pointer-events-none"></div>
                         
@@ -312,14 +316,14 @@
                 </div>
 
                 <!-- ADS SECTION METRICS -->
-                <div id="adsMetricsSection" class="flex-col gap-5 mt-2">
+                <div id="adsMetricsSection" class="flex-col gap-5 mt-2 w-full">
                     
                     <div class="flex flex-col md:flex-row md:items-center justify-between pl-2 gap-4">
                         <h3 class="text-lg md:text-xl font-extrabold flex items-center gap-2 transition-colors duration-300" id="rendimientoHeader">
                             <i class="fa-solid fa-bullhorn" id="rendimientoIcon"></i> <span id="rendimientoTitle">Rendimiento Campañas: Todas</span>
                         </h3>
                         
-                        <div class="flex overflow-x-auto gap-2 hide-scrollbar pb-1">
+                        <div class="flex overflow-x-auto gap-2 hide-scrollbar pb-1 w-full md:w-auto touch-pan-x">
                             <button class="plat-btn active px-4 py-2 rounded-full font-bold text-xs md:text-sm bg-gray-900 text-white whitespace-nowrap transition-colors" data-plat="Todas" onclick="setPlatformFilter('Todas')">Todas</button>
                             <button class="plat-btn px-4 py-2 rounded-full font-bold text-xs md:text-sm bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-colors" data-plat="Meta Ads" onclick="setPlatformFilter('Meta Ads')"><i class="fa-brands fa-facebook text-blue-600 mr-1"></i> Meta</button>
                             <button class="plat-btn px-4 py-2 rounded-full font-bold text-xs md:text-sm bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 whitespace-nowrap transition-colors" data-plat="Google Ads" onclick="setPlatformFilter('Google Ads')"><i class="fa-brands fa-google text-red-500 mr-1"></i> Google</button>
@@ -330,85 +334,85 @@
                     </div>
 
                     <!-- ACUMULADO 2026 -->
-                    <div class="mt-2">
+                    <div class="mt-2 w-full">
                         <div class="flex items-center gap-2 mb-3 pl-2">
                             <h4 class="font-extrabold text-gray-400 uppercase text-[10px] md:text-xs tracking-widest">Acumulado 2026</h4>
                             <button onclick="openAccumulatedModal()" class="hidden admin-only w-6 h-6 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 items-center justify-center transition-colors shadow-sm" title="Editar Acumulado Manualmente"><i class="fa-solid fa-pen text-[10px]"></i></button>
                         </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                            <div class="bg-white rounded-[20px] p-4 shadow-panel border border-gray-100 flex flex-col justify-center h-24 md:h-28">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 w-full">
+                            <div class="bg-white rounded-[20px] p-4 shadow-panel border border-gray-100 flex flex-col justify-center h-24 md:h-28 overflow-hidden">
                                 <div class="flex items-center text-gray-500 font-bold text-[11px] md:text-sm mb-1">
                                     Inversión Total 
                                     <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-gray-300"></i><span class="tooltip-text">El dinero total invertido directamente en la plataforma publicitaria en lo que va del año.</span></div>
                                 </div>
-                                <div class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight" id="kpi-total-spent">S/ 0</div>
+                                <div class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight truncate" id="kpi-total-spent">S/ 0</div>
                             </div>
-                            <div class="bg-white rounded-[20px] p-4 shadow-panel border border-gray-100 flex flex-col justify-center h-24 md:h-28 border-l-4 border-l-custom-main">
+                            <div class="bg-white rounded-[20px] p-4 shadow-panel border border-gray-100 flex flex-col justify-center h-24 md:h-28 border-l-4 border-l-custom-main overflow-hidden">
                                 <div class="flex items-center text-gray-500 font-bold text-[11px] md:text-sm mb-1">
                                     Interesados Totales 
                                     <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-gray-300"></i><span class="tooltip-text">Usuarios que mostraron interés real dejando sus datos o enviando un mensaje directo.</span></div>
                                 </div>
-                                <div class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight" id="kpi-total-leads">0</div>
+                                <div class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight truncate" id="kpi-total-leads">0</div>
                             </div>
-                            <div class="bg-white rounded-[20px] p-4 shadow-panel border border-gray-100 flex flex-col justify-center h-24 md:h-28">
+                            <div class="bg-white rounded-[20px] p-4 shadow-panel border border-gray-100 flex flex-col justify-center h-24 md:h-28 overflow-hidden">
                                 <div class="flex items-center text-gray-500 font-bold text-[11px] md:text-sm mb-1">
                                     Impresiones Totales 
                                     <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-gray-300"></i><span class="tooltip-text">La cantidad total de veces que tus anuncios fueron mostrados en las pantallas de los usuarios.</span></div>
                                 </div>
-                                <div class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight" id="kpi-total-imp">0</div>
+                                <div class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight truncate" id="kpi-total-imp">0</div>
                             </div>
-                            <div class="bg-white rounded-[20px] p-4 shadow-panel border border-gray-100 flex flex-col justify-center h-24 md:h-28">
+                            <div class="bg-white rounded-[20px] p-4 shadow-panel border border-gray-100 flex flex-col justify-center h-24 md:h-28 overflow-hidden">
                                 <div class="flex items-center text-gray-500 font-bold text-[11px] md:text-sm mb-1">
                                     Alcance Total 
                                     <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-gray-300"></i><span class="tooltip-text">El número de personas únicas que vieron tus anuncios al menos una vez en todo el año.</span></div>
                                 </div>
-                                <div class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight" id="kpi-total-reach">0</div>
+                                <div class="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight truncate" id="kpi-total-reach">0</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- MES ACTUAL + PRESUPUESTO -->
-                    <div class="flex flex-col lg:flex-row gap-4 mt-2">
+                    <div class="flex flex-col lg:flex-row gap-4 mt-2 w-full">
                         <!-- Cuadrado Mes Actual -->
                         <div class="flex-1 bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 shadow-panel border border-gray-100 relative overflow-hidden">
                             <div class="absolute top-0 left-0 w-2 bg-custom-main h-full rounded-l-[32px]"></div>
                             <h4 class="font-extrabold text-gray-400 uppercase text-[10px] md:text-xs mb-4 md:mb-6 tracking-widest pl-2">Mes Actual</h4>
                             
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 pl-2">
-                                <div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 pl-2 w-full">
+                                <div class="overflow-hidden">
                                     <div class="text-[11px] md:text-sm font-bold text-gray-500 flex items-center mb-1">Impresiones <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-gray-300"></i><span class="tooltip-text">Veces que tus anuncios se han mostrado este mes.</span></div></div>
-                                    <div class="text-xl md:text-3xl font-extrabold text-gray-900" id="kpi-month-imp">0</div>
+                                    <div class="text-xl md:text-3xl font-extrabold text-gray-900 truncate" id="kpi-month-imp">0</div>
                                 </div>
-                                <div>
+                                <div class="overflow-hidden">
                                     <div class="text-[11px] md:text-sm font-bold text-gray-500 flex items-center mb-1">Alcance <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-gray-300"></i><span class="tooltip-text">Personas únicas alcanzadas este mes.</span></div></div>
-                                    <div class="text-xl md:text-3xl font-extrabold text-gray-900" id="kpi-month-reach">0</div>
+                                    <div class="text-xl md:text-3xl font-extrabold text-gray-900 truncate" id="kpi-month-reach">0</div>
                                 </div>
-                                <div>
+                                <div class="overflow-hidden">
                                     <div class="text-[11px] md:text-sm font-bold text-custom-main flex items-center mb-1"><i class="fa-solid fa-users mr-1"></i> Contactos <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-custom-light"></i><span class="tooltip-text">Leads o prospectos generados durante el mes en curso.</span></div></div>
-                                    <div class="text-2xl md:text-4xl font-extrabold text-gray-900" id="kpi-month-leads">0</div>
+                                    <div class="text-2xl md:text-4xl font-extrabold text-gray-900 truncate" id="kpi-month-leads">0</div>
                                 </div>
-                                <div>
+                                <div class="overflow-hidden">
                                     <div class="text-[11px] md:text-sm font-bold text-orange-500 flex items-center mb-1"><i class="fa-solid fa-bullseye mr-1"></i> Costo por Contacto <div class="tooltip ml-1.5"><i class="fa-solid fa-circle-question text-[10px] text-orange-300"></i><span class="tooltip-text">Lo que te cuesta en promedio generar un nuevo cliente potencial este mes.</span></div></div>
-                                    <div class="flex items-end gap-2">
-                                        <div class="text-xl md:text-3xl font-extrabold text-gray-900" id="kpi-month-cpl">S/ 0</div>
-                                        <div id="cpl-indicator" class="bg-gray-100 text-gray-500 px-2 py-1 rounded text-[10px] md:text-[11px] font-bold mb-1 shadow-sm">--</div>
+                                    <div class="flex items-end gap-2 w-full">
+                                        <div class="text-xl md:text-3xl font-extrabold text-gray-900 truncate" id="kpi-month-cpl">S/ 0</div>
+                                        <div id="cpl-indicator" class="bg-gray-100 text-gray-500 px-2 py-1 rounded text-[10px] md:text-[11px] font-bold mb-1 shadow-sm shrink-0">--</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Cuadrado Presupuesto -->
-                        <div class="w-full lg:w-1/4 bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 shadow-panel border border-gray-100 flex flex-col justify-center relative">
+                        <div class="w-full lg:w-1/4 bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 shadow-panel border border-gray-100 flex flex-col justify-center relative overflow-hidden">
                             <button id="btnEditBudget" onclick="openBudgetModal()" class="hidden admin-only absolute top-4 right-4 w-7 h-7 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 items-center justify-center transition-colors shadow-sm" title="Editar Presupuesto"><i class="fa-solid fa-pen text-[10px]"></i></button>
                             
                             <h4 class="font-extrabold text-gray-400 uppercase text-[10px] md:text-xs mb-1 tracking-widest">Presupuesto Mensual</h4>
-                            <div class="text-2xl md:text-3xl font-extrabold text-blue-600 tracking-tight" id="kpi-budget">S/ 0</div>
+                            <div class="text-2xl md:text-3xl font-extrabold text-blue-600 tracking-tight truncate" id="kpi-budget">S/ 0</div>
                             <div class="text-[9px] font-semibold text-gray-400 uppercase tracking-wider mb-4">*No incluye fee</div>
                             
-                            <div class="mt-auto">
-                                <div class="flex justify-between text-[10px] md:text-xs font-bold text-gray-500 mb-1.5">
+                            <div class="mt-auto w-full">
+                                <div class="flex justify-between text-[10px] md:text-xs font-bold text-gray-500 mb-1.5 w-full">
                                     <span>Invertido</span>
-                                    <span id="kpi-month-spent" class="text-gray-900">S/ 0</span>
+                                    <span id="kpi-month-spent" class="text-gray-900 truncate pl-2">S/ 0</span>
                                 </div>
                                 <div class="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                                     <div class="bg-blue-600 h-full rounded-full transition-all duration-1000" id="budget-progress" style="width: 0%"></div>
@@ -419,8 +423,8 @@
                 </div>
 
                 <!-- WEB DEV SECTION -->
-                <div id="webDevTrackerSection" class="flex-col gap-5 mt-4">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pl-2">
+                <div id="webDevTrackerSection" class="flex-col gap-5 mt-4 w-full">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pl-2 w-full">
                         <div class="w-full">
                             <h3 class="text-lg md:text-xl font-extrabold text-gray-900"><i class="fa-solid fa-laptop-code text-purple-600 mr-2"></i> Desarrollo Página Web</h3>
                             <p class="text-xs text-gray-500 mt-1 font-medium">Seguimiento ágil de la creación de tu ecosistema digital.</p>
@@ -448,15 +452,15 @@
                             <i class="fa-solid fa-pen"></i> Actualizar Estado
                         </button>
                     </div>
-                    <div class="flex overflow-x-auto snap-x gap-4 hide-scrollbar pb-4 mt-2" id="agileColumnsContainer"></div>
+                    <div class="flex overflow-x-auto snap-x gap-4 hide-scrollbar pb-4 mt-2 w-full touch-pan-x" id="agileColumnsContainer"></div>
                 </div>
 
                 <!-- CONSULTING GROWTH SECTION -->
-                <div id="consultingTrackerSection" class="flex-col gap-5 mt-4 hidden relative">
+                <div id="consultingTrackerSection" class="flex-col gap-5 mt-4 hidden relative w-full">
                     <div class="absolute inset-0 bg-custom-black rounded-[24px] md:rounded-[32px] -z-10 shadow-2xl"></div>
-                    <div class="p-5 md:p-8 flex flex-col gap-5 md:gap-6">
+                    <div class="p-5 md:p-8 flex flex-col gap-5 md:gap-6 w-full">
                         
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/10 pb-4 w-full">
                             <div>
                                 <h3 class="text-xl md:text-2xl font-extrabold text-white tracking-tight flex items-center">
                                     <i class="fa-solid fa-chess-knight text-custom-accent mr-3"></i> Consultoría Growth
@@ -477,12 +481,12 @@
                             <div class="relative flex justify-between w-full z-10" id="consultingPipelineSteps"></div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
-                            <div class="bg-white/5 border border-white/10 p-5 rounded-[20px] md:rounded-[24px] md:col-span-2">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 w-full">
+                            <div class="bg-white/5 border border-white/10 p-5 rounded-[20px] md:rounded-[24px] md:col-span-2 w-full overflow-hidden">
                                 <h4 class="text-[10px] md:text-[11px] uppercase tracking-widest text-custom-accent font-bold mb-4">Objetivos Estratégicos (OKR)</h4>
-                                <ul class="space-y-4" id="consultingOkrsList"></ul>
+                                <ul class="space-y-4 w-full" id="consultingOkrsList"></ul>
                             </div>
-                            <div class="bg-white/5 border border-white/10 p-5 rounded-[20px] md:rounded-[24px] flex flex-col justify-center items-center text-center">
+                            <div class="bg-white/5 border border-white/10 p-5 rounded-[20px] md:rounded-[24px] flex flex-col justify-center items-center text-center w-full">
                                 <h4 class="text-[10px] md:text-[11px] uppercase tracking-widest text-gray-400 font-bold mb-3">Foco Actual</h4>
                                 
                                 <!-- ICONO Y BADGE DINÁMICO DE FASE -->
@@ -498,28 +502,28 @@
                 </div>
 
                 <!-- UPSELLING Y SERVICIOS SECTION -->
-                <div class="mt-8 md:mt-12 mb-4 relative bg-gray-50/50 p-6 md:p-10 rounded-[32px] border border-gray-100 shadow-sm">
-                    <div class="text-center mb-8 md:mb-10 max-w-2xl mx-auto">
+                <div class="mt-8 md:mt-12 mb-4 relative bg-gray-50/50 p-6 md:p-10 rounded-[32px] border border-gray-100 shadow-sm w-full overflow-hidden">
+                    <div class="text-center mb-8 md:mb-10 max-w-2xl mx-auto w-full">
                         <img id="upsellClientLogo" src="" class="h-16 md:h-20 w-auto object-contain hidden mx-auto mb-4 drop-shadow-md">
                         <h3 class="text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight">¿Cómo podemos escalar y dominar tu mercado, <span class="text-custom-main" id="upsellBusinessName">Negocio</span>?</h3>
                         <p class="text-gray-500 text-sm md:text-base font-medium mt-3">Integra nuevas soluciones a tu ecosistema estratégico y multiplica tus resultados.</p>
                     </div>
 
-                    <div id="servicesCategoriesContainer" class="flex flex-col gap-8 md:gap-10">
-                        <div>
+                    <div id="servicesCategoriesContainer" class="flex flex-col gap-8 md:gap-10 w-full overflow-hidden">
+                        <div class="w-full">
                             <h4 class="text-[10px] md:text-xs font-extrabold text-gray-400 mb-3 md:mb-4 tracking-widest uppercase pl-2"><i class="fa-solid fa-bullhorn mr-1"></i> Marketing Digital</h4>
-                            <div class="grid grid-rows-2 md:grid-rows-1 grid-flow-col auto-cols-[85vw] sm:auto-cols-[300px] md:grid-cols-5 overflow-x-auto snap-x hide-scrollbar pb-2 gap-3 md:gap-4" id="servicesGridMkt"></div>
+                            <div class="grid grid-rows-2 md:grid-rows-1 grid-flow-col auto-cols-[85vw] sm:auto-cols-[300px] md:grid-cols-5 overflow-x-auto snap-x hide-scrollbar pb-2 gap-3 md:gap-4 w-full touch-pan-x" id="servicesGridMkt"></div>
                         </div>
-                        <div>
+                        <div class="w-full">
                             <h4 class="text-[10px] md:text-xs font-extrabold text-gray-400 mb-3 md:mb-4 tracking-widest uppercase pl-2"><i class="fa-solid fa-gears mr-1"></i> Productividad y Negocio</h4>
-                            <div class="grid grid-rows-2 md:grid-rows-1 grid-flow-col auto-cols-[85vw] sm:auto-cols-[300px] md:grid-cols-4 overflow-x-auto snap-x hide-scrollbar pb-2 gap-3 md:gap-4" id="servicesGridProd"></div>
+                            <div class="grid grid-rows-2 md:grid-rows-1 grid-flow-col auto-cols-[85vw] sm:auto-cols-[300px] md:grid-cols-4 overflow-x-auto snap-x hide-scrollbar pb-2 gap-3 md:gap-4 w-full touch-pan-x" id="servicesGridProd"></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- ADMIN ONLY: TABLA DE CAMPAÑAS -->
-                <div class="admin-only hidden mt-8 flex-col gap-5 border-t-4 border-purple-100 pt-8">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-panel border border-purple-200 gap-4">
+                <div class="admin-only hidden mt-8 flex-col gap-5 border-t-4 border-purple-100 pt-8 w-full">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-panel border border-purple-200 gap-4 w-full">
                         <div>
                             <h2 class="text-xl md:text-2xl font-extrabold text-purple-800"><i class="fa-solid fa-user-tie mr-2"></i> Zona Admin: Anuncios Base</h2>
                             <p class="text-gray-500 text-xs md:text-sm font-medium mt-1">Estos datos alimentan los recuadros de arriba de forma automática.</p>
@@ -535,8 +539,8 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-[20px] md:rounded-[24px] shadow-panel border border-gray-100 overflow-hidden">
-                        <div class="overflow-x-auto">
+                    <div class="bg-white rounded-[20px] md:rounded-[24px] shadow-panel border border-gray-100 overflow-hidden w-full">
+                        <div class="overflow-x-auto w-full touch-pan-x">
                             <table class="w-full text-left border-collapse min-w-[800px]">
                                 <thead>
                                     <tr class="bg-gray-50 text-gray-500 text-[10px] md:text-[11px] uppercase tracking-wider font-extrabold border-b border-gray-100">
