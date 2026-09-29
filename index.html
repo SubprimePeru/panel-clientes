@@ -585,9 +585,28 @@
                     <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">Teléfono</label><input type="text" id="editClientPhone" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-gray-900 border border-gray-200 rounded-xl font-bold"></div>
                 </div>
                 <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">PIN Acceso (6 Dígitos)</label><input type="text" id="editClientPin" maxlength="6" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="w-full p-2.5 md:p-3 text-base md:text-sm bg-gray-50 text-purple-700 border border-gray-200 rounded-xl font-bold" placeholder="ej. 123456"></div>
+                
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Video Hero</label><input type="text" id="editClientVideo" class="w-full p-2.5 md:p-3 text-base md:text-xs bg-gray-50 text-blue-700 border border-gray-200 rounded-xl font-mono" placeholder="https://..."></div>
-                    <div><label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Logo Png</label><input type="text" id="editClientLogo" class="w-full p-2.5 md:p-3 text-base md:text-xs bg-gray-50 text-blue-700 border border-gray-200 rounded-xl font-mono" placeholder="https://..."></div>
+                    <div>
+                        <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Video Hero</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="editClientVideo" class="w-full p-2.5 md:p-3 text-base md:text-xs bg-gray-50 text-blue-700 border border-gray-200 rounded-xl font-mono" placeholder="https://...">
+                            <label class="cursor-pointer bg-custom-dark text-white px-3 rounded-xl hover:bg-custom-main flex items-center justify-center transition-colors shadow-sm" title="Subir Video a la Nube">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <input type="file" accept="video/mp4,video/webm,video/ogg" class="hidden" onchange="handleFileUpload(event, 'editClientVideo', 'media')">
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] md:text-xs font-bold text-gray-500 uppercase mb-1">URL Logo Png</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="editClientLogo" class="w-full p-2.5 md:p-3 text-base md:text-xs bg-gray-50 text-blue-700 border border-gray-200 rounded-xl font-mono" placeholder="https://...">
+                            <label class="cursor-pointer bg-custom-dark text-white px-3 rounded-xl hover:bg-custom-main flex items-center justify-center transition-colors shadow-sm" title="Subir Logo a la Nube">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" class="hidden" onchange="handleFileUpload(event, 'editClientLogo', 'media')">
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="pt-2 border-t border-gray-100 mt-2">
@@ -752,6 +771,56 @@
         let pulseInterval = null;
         let currentPlatformFilter = 'Todas';
         let tempActiveServices = [];
+
+        // --- FUNCIÓN DE SUBIDA A SUPABASE STORAGE ---
+        window.handleFileUpload = async (event, inputId, bucketName) => {
+            const file = event.target.files[0];
+            if(!file) return;
+            
+            const inputEl = document.getElementById(inputId);
+            const originalVal = inputEl.value;
+            
+            // UI Feedback de carga
+            inputEl.value = 'Subiendo archivo...';
+            inputEl.disabled = true;
+            if(window.showToast) window.showToast('Subiendo archivo', 'Dependiendo del tamaño, esto puede tomar unos segundos.', 'fa-spinner fa-spin', 'text-custom-main');
+            
+            try {
+                // 1. Crear un nombre único para evitar que archivos con el mismo nombre se sobreescriban
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+                const filePath = `uploads/${fileName}`;
+                
+                // 2. Subir el archivo a Supabase
+                const { data, error } = await supabase.storage.from(bucketName).upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+                
+                if (error) throw error;
+                
+                // 3. Obtener el enlace público directo
+                const { data: urlData } = supabase.storage.from(bucketName).getPublicUrl(filePath);
+                
+                // 4. Escribir la URL en el campo de texto del formulario
+                inputEl.value = urlData.publicUrl;
+                if(window.showToast) window.showToast('Subida exitosa', 'El archivo está listo. Recuerda guardar los cambios.', 'fa-check', 'text-blue-600');
+                
+            } catch(e) {
+                console.error('[Supabase Storage] Error al subir:', e);
+                inputEl.value = originalVal;
+                
+                // Corrección de Bug: Si falla, casi siempre es por las políticas RLS de Supabase.
+                let errorMsg = 'No se pudo subir. Revisa tu conexión.';
+                if(e.message && e.message.includes('row-level security')) {
+                    errorMsg = 'Permiso denegado. Debes habilitar las políticas de INSERT (RLS) en Supabase Storage.';
+                }
+                if(window.showToast) window.showToast('Error de subida', errorMsg, 'fa-circle-xmark', 'text-red-500');
+            } finally {
+                inputEl.disabled = false;
+                event.target.value = ''; // Limpiar el caché del input file
+            }
+        };
 
         document.getElementById('loginBusiness').addEventListener('input', function(e) {
             this.value = this.value.toLowerCase().replace(/[^a-z]/g, '');
