@@ -1961,13 +1961,23 @@
                 ad_spend: 'S/ ' + totals.adSpend.toLocaleString() + ' / mes'
             };
 
+            let emailOk = false;
             try {
                 await emailjs.send('service_n562kvk', 'template_jibyoq2', templateParams, { publicKey: 'Mc6HPTQHfE-zcEDzm' });
-            } catch(err) {}
+                emailOk = true;
+            } catch(err) {
+                console.error('EmailJS error:', err);
+            }
 
-            window.showToast('Cotización enviada', 'Guardada en Supabase y enviada al correo.', 'fa-check-circle', 'text-custom-accent');
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> Enviado correctamente';
+            if(emailOk) {
+                window.showToast('Cotización enviada', 'Guardada en Supabase y enviada al correo.', 'fa-check-circle', 'text-custom-accent');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Enviado correctamente';
+            } else {
+                window.showToast('No se pudo enviar el correo', 'Tu cotización quedó guardada, pero el correo falló. Revisa la consola.', 'fa-triangle-exclamation', 'text-custom-accent');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Reintentar envío';
+            }
 
             const wpText = encodeURIComponent(
                 'Hola Matías, acabo de generar mi cotización para *' + biz + '* (' + name + '):\n\n' +
