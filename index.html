@@ -11,6 +11,8 @@
     <!-- Tailwind CSS & Supabase SDK -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Lexend (300, 400, 500, 600) & Lora (400, 500, 600) -->
@@ -1947,27 +1949,20 @@
                 try { await supabaseClient.from('quotes').upsert({ id: quoteRecord.id, payload: quoteRecord }); } catch(err) {}
             }
 
-            // Disparo a Gmail personal de Matías y copia (_cc) al correo del cliente
-            const payloadMail = {
-                _subject: 'Cotización Matías Luna Terán: ' + biz + ' (' + name + ')',
-                _cc: email,
-                _template: 'table',
-                Cliente: name,
-                Empresa: biz,
-                Telefono: phone,
-                Email_Cliente: email,
-                Detalle_Cotizado: itemsSummaryText,
-                Inversion_Unica: 'S/ ' + totals.oneTime.toLocaleString(),
-                Fee_Mensual_Gestion: 'S/ ' + totals.monthlyFee.toLocaleString() + ' / mes',
-                Presupuesto_Pauta_Redes: 'S/ ' + totals.adSpend.toLocaleString() + ' / mes'
+            // Envío de correo mediante EmailJS
+            const templateParams = {
+                to_email: email,
+                client_name: name,
+                business_name: biz,
+                phone: phone,
+                summary: itemsSummaryText,
+                one_time: 'S/ ' + totals.oneTime.toLocaleString(),
+                monthly_fee: 'S/ ' + totals.monthlyFee.toLocaleString() + ' / mes',
+                ad_spend: 'S/ ' + totals.adSpend.toLocaleString() + ' / mes'
             };
 
             try {
-                await fetch('https://formsubmit.co/ajax/matiaslunateran@gmail.com', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify(payloadMail)
-                });
+                await emailjs.send('service_n562kvk', 'template_jibyoq2', templateParams, { publicKey: 'Mc6HPTQHfE-zcEDzm' });
             } catch(err) {}
 
             window.showToast('Cotización enviada', 'Guardada en Supabase y enviada al correo.', 'fa-check-circle', 'text-custom-accent');
