@@ -1,9 +1,1129 @@
-/ 300/m
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- SEO Optimization -->
+    <title>Matias Luna Teran | Estrategia, Growth & Desarrollo Web</title>
+    <meta name="description" content="Especialista en Growth Marketing, Media Buying, Consultoría y Desarrollo Web. Escalamos las ventas y la infraestructura digital de tu empresa con estrategia y automatización.">
+    <meta name="keywords" content="Matias Luna Teran, Growth Marketing, Media Buying, Consultoría Growth, Meta Ads, Google Ads, Desarrollo Web, Cotizador de Marketing, Automatización IA">
+    <meta name="author" content="Matias Luna Teran">
+    
+    <!-- Favicon Oficial -->
+    <link rel="icon" href="favicon.jpg?v=2">
+    
+    <!-- Tailwind CSS & Supabase SDK -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts: Lexend, Lora & Inter (Para Cotizador Gamificado) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@300;400;500;600&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Lexend', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                        inter: ['Inter', 'sans-serif']
+                    },
+                    colors: {
+                        custom: { 
+                            black: '#06080B', 
+                            surface: '#0D1218',
+                            card: '#121922',
+                            dark: '#003852', 
+                            main: '#00638E', 
+                            teal: '#0088B8',
+                            light: '#94C2DA', 
+                            accent: '#FFE200' 
+                        }
+                    },
+                    boxShadow: {
+                        'neon': '0 0 28px rgba(255, 226, 0, 0.42)',
+                        'neon-hover': '0 8px 30px rgba(255, 226, 0, 0.25)',
+                        'apple': '0 24px 48px -12px rgba(0, 0, 0, 0.7)'
+                    }
+                }
+            }
+        }
+    </script>
 
+    <style>
+        /* Reglas Tipográficas */
+        * {
+            font-style: normal !important;
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+            user-select: text !important;
+            -webkit-user-select: text !important;
+        }
 
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden !important;
+            background-color: #06080B;
+            color: #FFFFFF;
+            font-family: 'Lexend', sans-serif;
+            font-weight: 400;
+            touch-action: pan-y;
+            overscroll-behavior-x: none;
+            -webkit-text-size-adjust: 100%;
+            letter-spacing: -0.015em;
+        }
 
+        h1, h2, h3, h4, h5, h6, button, strong, b {
+            font-weight: 600 !important;
+        }
 
-```
+        .font-lora { font-family: 'Lora', serif !important; font-weight: 500 !important; }
+        .font-inter { font-family: 'Inter', sans-serif !important; }
+
+        .apple-section {
+            min-height: calc(100dvh - 4.5rem);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 3.5rem;
+            padding-bottom: 3.5rem;
+            position: relative;
+        }
+
+        .section-transition {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .section-transition.visible { opacity: 1; transform: translateY(0); }
+
+        .bg-blueprint-hero {
+            background-color: #06080B;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 15% 20%, rgba(0, 136, 184, 0.42) 0%, rgba(0, 56, 82, 0.22) 48%, #06080B 85%);
+            background-size: 56px 56px, 56px 56px, 100% 100%;
+        }
+
+        .bg-blueprint-dark {
+            background-color: #06080B;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+            background-size: 56px 56px;
+        }
+
+        .soft-divider {
+            height: 1px; width: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(148, 194, 218, 0.2) 50%, transparent 100%);
+        }
+
+        .apple-card {
+            background: rgba(18, 25, 34, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (max-width: 768px) { input, select, textarea { font-size: 16px !important; } }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #06080B; }
+        ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 9999px; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .fade-in { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Inputs & Botones */
+        .blueprint-input {
+            background: #06080B;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #FFFFFF;
+            transition: all 0.2s;
+        }
+        .blueprint-input:focus { border-color: #FFE200; outline: none; box-shadow: 0 0 16px rgba(255, 226, 0, 0.18); }
+
+        .numpad-btn {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12);
+            color: #FFFFFF; font-size: 1.25rem; font-weight: 600 !important;
+            border-radius: 16px; display: flex; align-items: center; justify-content: center;
+            height: 52px; transition: all 0.15s; cursor: pointer;
+        }
+        .numpad-btn:hover { border-color: #FFE200; color: #FFE200; background: rgba(255, 226, 0, 0.08); }
+        .numpad-btn:active { background: #FFE200; color: #06080B; transform: scale(0.95); }
+        .pin-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.2s ease; }
+
+        /* M Float Btn */
+        @keyframes mYellowPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(255, 226, 0, 0.65), 0 0 40px rgba(255, 226, 0, 0.35); }
+            50% { transform: scale(1.08); box-shadow: 0 0 32px rgba(255, 226, 0, 0.95), 0 0 60px rgba(255, 226, 0, 0.55); }
+        }
+        .m-float-btn {
+            position: fixed; bottom: 26px; right: 26px; z-index: 140;
+            background-color: #FFE200; color: #06080B; border-radius: 50%;
+            width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;
+            font-family: 'Lexend', sans-serif; font-size: 25px; font-weight: 600 !important; line-height: 1;
+            border: none !important; outline: none !important;
+            animation: mYellowPulse 2.2s infinite ease-in-out; text-decoration: none; padding: 0;
+        }
+        .m-float-btn span { display: inline-block; color: #06080B !important; transform: translateY(-1px); letter-spacing: -0.03em; }
+
+        /* Slider Custom */
+        input[type=range].accent-slider { -webkit-appearance: none; width: 100%; background: rgba(255,255,255,0.15); height: 6px; border-radius: 999px; outline: none; }
+        input[type=range].accent-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: #FFE200; cursor: pointer; box-shadow: 0 0 12px rgba(255, 226, 0, 0.9); border: none; }
+    </style>
+</head>
+<body class="antialiased w-full bg-custom-black text-white selection:bg-custom-accent selection:text-custom-black">
+
+    <script>
+        document.addEventListener('gesturestart', function(e) { e.preventDefault(); }, { passive: false });
+        document.addEventListener('dblclick', function(e) { e.preventDefault(); }, { passive: false });
+    </script>
+
+    <div id="toastContainer" class="fixed top-5 right-5 z-[250] flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- ========================================================================= -->
+    <!-- VISTA 1: PUBLIC LANDING PAGE -->
+    <!-- ========================================================================= -->
+    <div id="publicLandingContainer" class="w-full block">
+        
+        <header class="sticky top-0 z-50 bg-custom-black/85 backdrop-blur-xl border-b border-white/10 h-[4.5rem]">
+            <div class="max-w-7xl mx-auto px-6 sm:px-10 h-full flex items-center justify-between">
+                <a href="https://matiaslunateran.com" target="_blank" class="flex items-center gap-3.5 group">
+                    <div class="w-10 h-10 bg-custom-main flex items-center justify-center overflow-hidden shrink-0">
+                        <img src="favicon.jpg" alt="m." class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div style="display:none;" class="w-full h-full bg-gradient-to-br from-custom-main to-custom-dark items-center justify-center">
+                            <span class="text-xl font-semibold text-white">m<span class="text-custom-accent">.</span></span>
+                        </div>
+                    </div>
+                    <span class="text-lg font-semibold tracking-tight text-white">Matias Luna Teran<span class="text-custom-accent">.</span></span>
+                </a>
+                <nav class="hidden md:flex items-center gap-9 text-sm text-slate-300">
+                    <button type="button" onclick="openAndScrollQuoter()" class="hover:text-white transition-colors">Cotizador</button>
+                    <a href="#casos-estudio" class="hover:text-white transition-colors">Casos de éxito</a>
+                    <a href="#arquitectura-servicios" class="hover:text-white transition-colors">Capacidades</a>
+                </nav>
+                <button type="button" onclick="openAndScrollQuoter()" class="px-5 py-2.5 rounded-full bg-custom-accent text-custom-black font-semibold text-sm shadow-neon hover:scale-105 transition-transform">
+                    Cotizar ahora
+                </button>
+            </div>
+            <div class="h-[2px] w-full bg-gradient-to-r from-custom-accent via-custom-accent/40 to-transparent"></div>
+        </header>
+
+        <section class="apple-section bg-blueprint-hero justify-between">
+            <div class="max-w-7xl mx-auto px-6 sm:px-10 w-full my-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                    
+                    <div class="lg:col-span-7 flex flex-col items-start text-left space-y-7">
+                        <h1 class="text-4xl sm:text-6xl lg:text-[4.25rem] font-semibold tracking-tight leading-[1.06] text-white">
+                            Estrategia que escala<span class="text-custom-accent">.</span> <br>
+                            <span class="font-lora text-custom-accent">Resultados que se miden.</span>
+                        </h1>
+                        <p class="text-slate-300 text-lg sm:text-xl leading-relaxed max-w-xl font-normal">
+                            Campañas de adquisición, ecosistemas web y consultoría inteligente para multiplicar las ventas de tu empresa.
+                        </p>
+                        <div class="grid grid-cols-3 gap-5 w-full max-w-lg pt-2">
+                            <div class="apple-card rounded-2xl p-4 sm:p-5">
+                                <div class="text-2xl sm:text-3xl font-semibold text-white">+6 años</div>
+                                <div class="text-xs sm:text-sm text-slate-300 mt-1">en performance</div>
+                            </div>
+                            <div class="apple-card rounded-2xl p-4 sm:p-5">
+                                <div class="text-2xl sm:text-3xl font-semibold text-custom-accent">10</div>
+                                <div class="text-xs sm:text-sm text-slate-300 mt-1">plataformas</div>
+                            </div>
+                            <div class="apple-card rounded-2xl p-4 sm:p-5">
+                                <div class="text-2xl sm:text-3xl font-semibold text-white">24/7</div>
+                                <div class="text-xs sm:text-sm text-slate-300 mt-1">métricas en vivo</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-4 pt-2">
+                            <button type="button" onclick="openAndScrollQuoter()" class="px-8 py-4 rounded-2xl bg-custom-accent text-custom-black font-semibold text-base sm:text-lg shadow-neon hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3">
+                                <span>Calcular mi inversión</span>
+                                <i class="fa-solid fa-arrow-down text-sm"></i>
+                            </button>
+                            <a href="#casos-estudio" class="px-7 py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 text-white font-semibold text-base transition-all">
+                                Ver casos reales
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 w-full">
+                        <div class="apple-card rounded-[32px] p-8 sm:p-10 shadow-apple">
+                            <div class="flex items-center justify-between pb-5 mb-7 border-b border-white/10">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                                    <span class="text-sm text-custom-light font-semibold">Portal de clientes</span>
+                                </div>
+                                <span class="text-sm text-custom-accent font-lora">Acceso privado</span>
+                            </div>
+
+                            <div id="auth-login" class="flex flex-col fade-in">
+                                <h2 class="text-2xl sm:text-3xl font-semibold text-white">Bienvenido de vuelta<span class="text-custom-accent">.</span></h2>
+                                <p class="text-slate-300 text-sm sm:text-base mt-2 mb-7 leading-relaxed">
+                                    Revisa tus campañas, el avance de tu web y el retorno de tu presupuesto en tiempo real.
+                                </p>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm text-slate-200 mb-2 font-semibold">Usuario asignado</label>
+                                        <input type="text" id="loginBusiness" class="w-full px-5 py-4 blueprint-input rounded-2xl text-base font-semibold" placeholder="Escribe tu usuario">
+                                    </div>
+                                    <button type="button" onclick="showLoginPin()" class="w-full py-4 bg-custom-accent hover:bg-yellow-300 text-custom-black font-semibold rounded-2xl transition-all flex items-center justify-center gap-2.5 text-base shadow-neon">
+                                        <span>Iniciar sesión</span>
+                                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="auth-login-pin" class="flex-col fade-in hidden">
+                                <div class="flex items-center justify-between mb-5">
+                                    <button type="button" onclick="switchAuthView('login')" class="text-custom-light hover:text-white text-sm font-semibold flex items-center gap-2">
+                                        <i class="fa-solid fa-arrow-left"></i> Cambiar usuario
+                                    </button>
+                                    <span class="text-xs bg-custom-accent/20 text-custom-accent px-3 py-1 rounded-full font-semibold" id="displayLoginBusiness">Cliente</span>
+                                </div>
+                                <div class="text-center mb-5">
+                                    <h3 class="text-xl font-semibold text-white">Ingresa tu PIN de 6 dígitos<span class="text-custom-accent">.</span></h3>
+                                </div>
+                                <div class="flex justify-center gap-3.5 mb-6" id="loginPinDots">
+                                    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+                                    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2.5" id="numpadLogin"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="bg-black/80 border-t border-white/10 py-4 px-6 mt-10">
+                <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-around gap-6 text-slate-200 text-sm">
+                    <span class="flex items-center gap-2 font-semibold"><i class="fa-brands fa-tiktok text-white text-lg"></i> TikTok Ads</span>
+                    <span class="flex items-center gap-2 font-semibold"><i class="fa-brands fa-google text-red-500 text-lg"></i> Google Ads</span>
+                    <span class="flex items-center gap-2 font-semibold"><i class="fa-brands fa-pinterest text-red-600 text-lg"></i> Pinterest Ads</span>
+                    <span class="flex items-center gap-2 font-semibold"><i class="fa-brands fa-facebook text-blue-500 text-lg"></i> Meta Ads</span>
+                    <span class="flex items-center gap-2 font-semibold"><i class="fa-brands fa-linkedin text-sky-400 text-lg"></i> LinkedIn Ads</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="soft-divider"></div>
+
+        <!-- ========================================================================= -->
+        <!-- SECCIÓN 2: COTIZADOR GAMIFICADO (FUENTE INTER + NUEVAS OPCIONES) -->
+        <!-- ========================================================================= -->
+        <section id="cotizador-section" class="apple-section bg-blueprint-dark section-transition font-inter">
+            <div class="max-w-6xl mx-auto px-6 sm:px-10 w-full my-auto">
+                
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 gap-6">
+                    <div>
+                        <span class="text-custom-accent text-sm font-semibold block mb-1 uppercase tracking-wider">Configurador Interactivo</span>
+                        <h2 class="text-3xl sm:text-5xl font-bold text-white tracking-tight">Cotización instantánea<span class="text-custom-accent">.</span></h2>
+                    </div>
+                    <div class="apple-card rounded-2xl px-6 py-4 flex items-center gap-6 shrink-0 border-white/5 bg-white/5">
+                        <div>
+                            <span class="text-xs text-slate-400 block font-medium uppercase tracking-wider">Avance</span>
+                            <span id="publicStepLabel" class="text-xl sm:text-2xl font-bold text-white">Paso 1 de 4</span>
+                        </div>
+                        <div class="h-10 w-[1px] bg-white/15"></div>
+                        <div>
+                            <span class="text-xs text-slate-400 block font-medium uppercase tracking-wider">Inversión estimada</span>
+                            <span id="publicTopTotal" class="text-2xl sm:text-3xl font-bold text-custom-accent drop-shadow-md">S/ 300/m</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden mb-8">
+                    <div id="publicProgressBar" class="h-full bg-custom-accent transition-all duration-500 shadow-neon" style="width: 25%"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                    
+                    <!-- Lado del Formulario interactivo -->
+                    <div class="lg:col-span-7 apple-card rounded-[28px] p-7 sm:p-9 flex flex-col justify-between min-h-[460px] bg-[#0A0E13] border-white/5 relative overflow-hidden">
+                        <!-- Brillo de fondo estético -->
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-custom-accent/5 rounded-full blur-[80px] pointer-events-none"></div>
+                        
+                        <div id="publicQuoterStep" class="fade-in z-10 relative"></div>
+                        
+                        <div class="flex items-center justify-between pt-5 mt-6 border-t border-white/10 z-10 relative">
+                            <button type="button" id="publicBtnBack" onclick="stepBackQuoter('public')" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm font-semibold flex items-center gap-2 invisible transition-colors">
+                                <i class="fa-solid fa-arrow-left"></i> Volver atrás
+                            </button>
+                            <span class="text-xs text-slate-500 font-medium">Precios expresados en Soles (S/)</span>
+                        </div>
+                    </div>
+
+                    <!-- Lado del Invoice -->
+                    <div class="lg:col-span-5 bg-gradient-to-b from-[#121922] to-[#0A0E13] border border-white/10 rounded-[28px] p-7 sm:p-9 flex flex-col justify-between shadow-apple relative overflow-hidden">
+                        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/5 rounded-full blur-[60px] pointer-events-none"></div>
+                        
+                        <div class="z-10 relative">
+                            <div class="flex items-start justify-between pb-5 mb-5 border-b border-white/10">
+                                <div>
+                                    <span class="text-xs text-custom-light font-semibold block uppercase tracking-wider">Resumen de propuesta</span>
+                                    <h3 class="text-2xl font-bold text-white mt-1 tracking-tight">Detalle de inversión<span class="text-custom-accent">.</span></h3>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-slate-500 block font-mono">ID #2026</span>
+                                    <span id="publicDiscountBadge" class="hidden mt-1 inline-block px-2.5 py-0.5 rounded-full bg-custom-accent text-custom-black text-xs font-bold shadow-neon">-25% FAMILIA</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-5">
+                                <div class="flex justify-between text-xs text-slate-500 pb-2 border-b border-white/5 mb-3 uppercase tracking-wider font-semibold">
+                                    <span>Concepto seleccionado</span>
+                                    <span>Importe</span>
+                                </div>
+                                <div id="publicSummaryItems" class="space-y-3"></div>
+                            </div>
+
+                            <div class="mb-6 pt-3 border-t border-white/5">
+                                <span class="text-xs text-slate-400 font-semibold block mb-2.5 uppercase tracking-wider">Complementos (1 Click)</span>
+                                <div class="grid grid-cols-3 gap-2.5">
+                                    <button type="button" id="pub-addon-brand" onclick="toggleAddon('public', 'brand')" class="p-3 rounded-xl bg-white/5 border border-transparent hover:border-white/10 text-left transition-all">
+                                        <span class="text-xs font-semibold text-white block">Creativos</span>
+                                        <span class="text-xs text-custom-accent mt-0.5 block font-semibold" id="pub-price-brand">+S/ 600/m</span>
+                                    </button>
+                                    <button type="button" id="pub-addon-domain" onclick="toggleAddon('public', 'domain')" class="p-3 rounded-xl bg-white/5 border border-transparent hover:border-white/10 text-left transition-all">
+                                        <span class="text-xs font-semibold text-white block">Dominio</span>
+                                        <span class="text-xs text-emerald-400 mt-0.5 block font-semibold" id="pub-price-domain">+S/ 800</span>
+                                    </button>
+                                    <button type="button" id="pub-addon-bot" onclick="toggleAddon('public', 'bot')" class="p-3 rounded-xl bg-white/5 border border-transparent hover:border-white/10 text-left transition-all">
+                                        <span class="text-xs font-semibold text-white block">Bot IA Wsp</span>
+                                        <span class="text-xs text-custom-accent mt-0.5 block font-semibold" id="pub-price-bot">+S/ 1,100</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/40 rounded-2xl p-5 border border-white/5 space-y-3 z-10 relative">
+                            <div class="flex justify-between items-center text-sm text-slate-300">
+                                <span>Pago único de setup:</span>
+                                <span id="publicOneTime" class="font-bold text-white text-base">S/ 0</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm text-slate-300">
+                                <span>Fee mensual de gestión:</span>
+                                <span id="publicMonthlyFee" class="font-bold text-custom-accent text-base drop-shadow-md">S/ 300 / mes</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs text-slate-500 pt-3 border-t border-white/5">
+                                <span>Presupuesto en redes:</span>
+                                <span id="publicAdSpend" class="font-bold text-white">S/ 1,500 / mes</span>
+                            </div>
+
+                            <div class="pt-4 border-t border-white/5">
+                                <button type="button" id="btnToggleCoupon" onclick="toggleCouponBox()" class="text-xs text-custom-accent hover:text-white transition-colors font-semibold flex items-center gap-1.5 uppercase tracking-wide">
+                                    <i class="fa-solid fa-ticket"></i> Ingresar código promocional
+                                </button>
+                                <div id="couponInputBox" class="hidden mt-3 flex gap-2">
+                                    <input type="text" id="publicCouponInput" oninput="this.value = this.value.toUpperCase()" class="flex-1 px-3.5 py-2.5 bg-black/50 border border-white/10 focus:border-custom-accent rounded-xl text-xs font-bold tracking-widest text-white outline-none transition-colors" placeholder="CÓDIGO FAMILIA">
+                                    <button type="button" onclick="applyPublicCoupon()" class="px-5 py-2.5 bg-custom-accent hover:bg-yellow-400 text-custom-black font-bold rounded-xl text-xs transition-colors">
+                                        Aplicar
+                                    </button>
+                                </div>
+                                <p id="couponFeedback" class="text-xs mt-2 hidden"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <div class="soft-divider"></div>
+
+        <!-- ========================================================================= -->
+        <!-- SECCIÓN 3: CASOS DE ESTUDIO -->
+        <!-- ========================================================================= -->
+        <section id="casos-estudio" class="apple-section bg-blueprint-hero section-transition overflow-hidden">
+            <!-- (Contenido idéntico de Casos de Estudio, no se tocó para mantener tamaño y enfoque en la lógica solicitada) -->
+            <div class="max-w-7xl mx-auto px-6 sm:px-10 w-full my-auto">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+                    <div>
+                        <span class="text-custom-accent text-sm font-semibold block mb-1">Resultados comprobados</span>
+                        <h2 class="text-3xl sm:text-5xl font-lora text-white">Casos de éxito por servicio<span class="text-custom-accent">.</span></h2>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <button type="button" onclick="filterCaseStudies('todos')" class="case-filter-btn active px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-custom-accent text-custom-black" data-filter="todos">Todos</button>
+                        <button type="button" onclick="filterCaseStudies('media')" class="case-filter-btn px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-white/10 text-white" data-filter="media">Media Buying</button>
+                        <button type="button" onclick="filterCaseStudies('web')" class="case-filter-btn px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-white/10 text-white" data-filter="web">E-Commerce & Web</button>
+                        <button type="button" onclick="filterCaseStudies('inmo')" class="case-filter-btn px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-white/10 text-white" data-filter="inmo">Inmobiliaria</button>
+                        
+                        <div class="flex items-center gap-2 ml-2">
+                            <button type="button" onclick="slideCaseStudies(-1)" class="w-10 h-10 rounded-full bg-white/10 border border-white/20 hover:border-custom-accent flex items-center justify-center text-white">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                            </button>
+                            <button type="button" onclick="slideCaseStudies(1)" class="w-10 h-10 rounded-full bg-white/10 border border-white/20 hover:border-custom-accent flex items-center justify-center text-white">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="caseStudiesCarousel" class="flex gap-7 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-4 scroll-smooth">
+                    <!-- CASO 1: KARATE IMPERIO -->
+                    <div class="case-card snap-start shrink-0 w-[88vw] sm:w-[400px] apple-card rounded-[28px] p-8 flex flex-col justify-between" data-category="media">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="w-12 h-12 rounded-2xl bg-custom-accent flex items-center justify-center text-custom-black">
+                                    <i class="fa-solid fa-bullseye text-xl"></i>
+                                </div>
+                                <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-200 text-xs font-semibold">Media Buying · Retainer</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">Karate Imperio<span class="text-custom-accent">.</span></h3>
+                            <p class="text-sm text-slate-300 leading-relaxed mb-6">Captación continua en Meta Ads para matrículas presenciales cerradas por WhatsApp.</p>
+                            <div class="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-black/50 border border-white/10 mb-6 text-center">
+                                <div><span class="text-lg font-semibold text-custom-accent block">1,004</span><span class="text-xs text-slate-400">Prospectos</span></div>
+                                <div class="border-x border-white/10"><span class="text-lg font-semibold text-emerald-400 block">S/ 1.54</span><span class="text-xs text-slate-400">Costo/Lead</span></div>
+                                <div><span class="text-lg font-semibold text-white block">311k</span><span class="text-xs text-slate-400">Impresiones</span></div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="prefillQuoterFromCase('other', 'ads')" class="w-full py-3.5 rounded-xl bg-white/10 hover:bg-custom-accent hover:text-custom-black text-white text-sm font-semibold transition-all flex items-center justify-center gap-2">
+                            <span>Cotizar este servicio</span><i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- CASO 2: BUSHIDO MARTIALSHOP -->
+                    <div class="case-card snap-start shrink-0 w-[88vw] sm:w-[400px] apple-card rounded-[28px] p-8 flex flex-col justify-between" data-category="web">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="w-12 h-12 rounded-2xl border border-custom-accent flex items-center justify-center text-custom-accent">
+                                    <i class="fa-solid fa-laptop-code text-xl"></i>
+                                </div>
+                                <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-200 text-xs font-semibold">E-Commerce + Consultoría</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">Bushido Martialshop<span class="text-custom-accent">.</span></h3>
+                            <p class="text-sm text-slate-300 leading-relaxed mb-6">Tienda online de ropa deportiva integrada con consultoría comercial y control de catálogo.</p>
+                            <div class="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-black/50 border border-white/10 mb-6 text-center">
+                                <div><span class="text-lg font-semibold text-custom-accent block">+240%</span><span class="text-xs text-slate-400">Conversión</span></div>
+                                <div class="border-x border-white/10"><span class="text-lg font-semibold text-emerald-400 block">100%</span><span class="text-xs text-slate-400">Digital</span></div>
+                                <div><span class="text-lg font-semibold text-white block">24/7</span><span class="text-xs text-slate-400">Pedidos</span></div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="prefillQuoterFromCase('other', 'web')" class="w-full py-3.5 rounded-xl bg-white/10 hover:bg-custom-accent hover:text-custom-black text-white text-sm font-semibold transition-all flex items-center justify-center gap-2">
+                            <span>Cotizar tienda online</span><i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- CASO 3: PROYECTO INMOBILIARIO -->
+                    <div class="case-card snap-start shrink-0 w-[88vw] sm:w-[400px] apple-card rounded-[28px] p-8 flex flex-col justify-between" data-category="inmo">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="w-12 h-12 rounded-2xl bg-custom-accent flex items-center justify-center text-custom-black">
+                                    <i class="fa-solid fa-building text-xl"></i>
+                                </div>
+                                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-200 text-xs font-semibold">Web + Media Buying</span>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-white mb-2">Residencial Depa<span class="text-custom-accent">.</span></h3>
+                            <p class="text-sm text-slate-300 leading-relaxed mb-6">Web inmobiliaria interactiva de 10 pisos conectada a campañas de captación de compradores.</p>
+                            <div class="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-black/50 border border-white/10 mb-6 text-center">
+                                <div><span class="text-lg font-semibold text-custom-accent block">-42%</span><span class="text-xs text-slate-400">Costo Lead</span></div>
+                                <div class="border-x border-white/10"><span class="text-lg font-semibold text-emerald-400 block">3.8x</span><span class="text-xs text-slate-400">Visitas</span></div>
+                                <div><span class="text-lg font-semibold text-white block">10</span><span class="text-xs text-slate-400">Pisos Prev.</span></div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="prefillQuoterFromCase('real_estate', 'developer')" class="w-full py-3.5 rounded-xl bg-white/10 hover:bg-custom-accent hover:text-custom-black text-white text-sm font-semibold transition-all flex items-center justify-center gap-2">
+                            <span>Cotizar inmobiliaria</span><i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SCRIPT PRINCIPAL (VECTORES GAMIFICADOS, LÓGICA DE COTIZADOR INTERACTIVO) -->
+    <!-- ========================================================================= -->
+    <script>
+        // Redondeo a múltiplos de 5
+        function roundTo5(num) { return Math.round(num / 5) * 5; }
+
+        window.showToast = function(title, message, icon, color) {
+            icon = icon || 'fa-check-circle'; color = color || 'text-custom-accent';
+            const container = document.getElementById('toastContainer');
+            if(!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'bg-custom-surface p-4 rounded-2xl shadow-2xl border border-custom-accent/50 flex items-start gap-3 w-80 fade-in pointer-events-auto';
+            toast.innerHTML = '<div class="' + color + ' text-lg mt-0.5"><i class="fa-solid ' + icon + '"></i></div><div><h4 class="font-semibold text-white text-sm">' + title + '</h4><p class="text-xs text-slate-300 mt-0.5">' + message + '</p></div>';
+            container.appendChild(toast);
+            setTimeout(function() { toast.remove(); }, 3600);
+        };
+
+        // Biblioteca de Vectores SVGs Limpios e Interactivos para el Cotizador
+        const SVG_VECTORS = {
+            real_estate: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4M9 9v.01M9 13v.01M9 17v.01"/></svg>',
+            finance: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
+            other: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 15h6"/></svg>',
+            
+            agent: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+            developer: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"/><path d="M14 2v4a2 2 0 0 0 2 2h4M2 14h6"/><path d="M2 18h6"/></svg>',
+            
+            lots: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+            houses: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+            buildings: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="9.01" y2="6"/><line x1="15" y1="6" x2="15.01" y2="6"/><line x1="9" y1="10" x2="9.01" y2="10"/><line x1="15" y1="10" x2="15.01" y2="10"/><line x1="9" y1="14" x2="9.01" y2="14"/><line x1="15" y1="14" x2="15.01" y2="14"/></svg>',
+            
+            fin_aum: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+            fin_credit: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8h20M6 16h.01M10 16h.01"/></svg>',
+            fin_tech: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01M3 12h1M20 12h1"/></svg>',
+            
+            ads: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+            web: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+            auto: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>',
+            
+            web_land: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>',
+            web_comp: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
+            web_ecom: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
+            
+            auto_com: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>',
+            auto_ops: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>',
+            auto_ind: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M6 10V4h3v6M15 10V4h3v6M10 20v-4h4v4"/></svg>',
+            
+            cons_main: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
+            cons_full: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
+            cons_growth: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+            cons_session: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>',
+            
+            creative_yes: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>',
+            creative_no: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>'
+        };
+
+        const quoterInstances = {
+            public: {
+                discount: 1.0, couponApplied: false, stepId: 'step_sector', history: [],
+                sector: 'other', reRole: 'developer', reProjectType: 'buildings',
+                finFocus: 'wealth_aum', otherGoal: 'ads', webScale: 'complete', autoCategory: 'commercial',
+                consultingTier: 'growth', adPlatforms: ['Meta Ads', 'Google Ads'],
+                adMonthlySpend: 1500, needsCreatives: 'yes', addons: { brand: false, domain: false, bot: false }
+            }
+        };
+
+        // UI Builder helper - Gamified Option Card
+        function renderOptionCard(ctx, key, val, nextStep, vectorId, title, desc, priceStr, isHighlighted = false) {
+            const bgClass = isHighlighted ? 'bg-custom-accent/5 border-custom-accent' : 'bg-[#121922] border-white/5';
+            const hoverClass = 'hover:border-custom-accent hover:-translate-y-1 hover:shadow-neon-hover';
+            const iconBg = isHighlighted ? 'bg-custom-accent text-custom-black' : 'bg-black/50 text-white group-hover:bg-custom-accent group-hover:text-custom-black border border-white/5';
+            
+            return `
+                <button type="button" onclick="chooseQuoterOpt('${ctx}', '${key}', '${val}', '${nextStep}')" class="p-4 sm:p-5 rounded-2xl ${bgClass} border-2 ${hoverClass} transition-all duration-300 text-left flex items-center justify-between group">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors ${iconBg}">
+                            ${SVG_VECTORS[vectorId] || SVG_VECTORS.other}
+                        </div>
+                        <div>
+                            <h4 class="text-base sm:text-lg font-bold text-white group-hover:text-custom-accent transition-colors tracking-tight">${title}</h4>
+                            <p class="text-xs sm:text-sm text-slate-400 mt-1 line-clamp-2">${desc}</p>
+                        </div>
+                    </div>
+                    ${priceStr ? `
+                        <div class="flex flex-col items-end gap-1 ml-4 shrink-0">
+                            <span class="text-sm sm:text-base font-bold text-custom-accent">${priceStr}</span>
+                            <div class="w-7 h-7 rounded-full bg-white/5 group-hover:bg-custom-accent flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-chevron-right text-slate-400 group-hover:text-custom-black text-xs"></i>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="w-7 h-7 rounded-full bg-white/5 group-hover:bg-custom-accent flex items-center justify-center transition-colors shrink-0 ml-4">
+                            <i class="fa-solid fa-chevron-right text-slate-400 group-hover:text-custom-black text-xs"></i>
+                        </div>
+                    `}
+                </button>
+            `;
+        }
+
+        window.toggleCouponBox = function() {
+            const box = document.getElementById('couponInputBox');
+            if(box) box.classList.toggle('hidden');
+        };
+
+        window.applyPublicCoupon = function() {
+            const input = document.getElementById('publicCouponInput');
+            const feedback = document.getElementById('couponFeedback');
+            const badge = document.getElementById('publicDiscountBadge');
+            const code = (input.value || '').trim().toUpperCase();
+            input.value = code;
+
+            if(code === 'FAMILIA') {
+                quoterInstances.public.discount = 0.75;
+                quoterInstances.public.couponApplied = true;
+                if(feedback) {
+                    feedback.innerText = '✓ Código FAMILIA activado (-25% aplicado)';
+                    feedback.className = 'text-xs mt-2 text-emerald-400 font-bold block';
+                }
+                if(badge) badge.classList.remove('hidden');
+                document.getElementById('pub-price-brand').innerText = '+S/ ' + roundTo5(600 * 0.75) + '/m';
+                document.getElementById('pub-price-domain').innerText = '+S/ ' + roundTo5(800 * 0.75);
+                document.getElementById('pub-price-bot').innerText = '+S/ ' + roundTo5(1100 * 0.75);
+                renderQuoter('public', quoterInstances.public.stepId);
+                updateQuoterSummary('public');
+                window.showToast('Cupón FAMILIA', '25% de descuento aplicado en toda tu propuesta.', 'fa-ticket', 'text-custom-accent');
+            } else {
+                if(feedback) {
+                    feedback.innerText = 'Código no válido. Verifica que esté bien escrito.';
+                    feedback.className = 'text-xs mt-2 text-red-400 font-bold block';
+                }
+            }
+        };
+
+        window.openAndScrollQuoter = function() {
+            const sec = document.getElementById('cotizador-section');
+            if(sec) sec.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.prefillQuoterFromCase = function(sector, subChoice) {
+            const inst = quoterInstances.public;
+            inst.history = ['step_sector'];
+            inst.sector = sector;
+            if(sector === 'real_estate') {
+                inst.reRole = subChoice || 'developer';
+                renderQuoter('public', 'step_re_role');
+            } else {
+                inst.otherGoal = subChoice || 'ads';
+                if(subChoice === 'ads') renderQuoter('public', 'step_ads_config');
+                else if(subChoice === 'web') renderQuoter('public', 'step_web_catalog');
+                else if(subChoice === 'automation') renderQuoter('public', 'step_auto_type');
+                else renderQuoter('public', 'step_other_goal');
+            }
+            updateQuoterSummary('public');
+            window.openAndScrollQuoter();
+        };
+
+        window.chooseQuoterOpt = function(ctx, key, val, nextStep) {
+            const inst = quoterInstances[ctx];
+            inst[key] = val;
+            if(nextStep) {
+                inst.history.push(inst.stepId);
+                renderQuoter(ctx, nextStep);
+            }
+            updateQuoterSummary(ctx);
+        };
+
+        window.stepBackQuoter = function(ctx) {
+            const inst = quoterInstances[ctx];
+            if(inst.history.length === 0) return;
+            const prev = inst.history.pop();
+            renderQuoter(ctx, prev);
+            updateQuoterSummary(ctx);
+        };
+
+        window.toggleAddon = function(ctx, addonKey) {
+            const inst = quoterInstances[ctx];
+            inst.addons[addonKey] = !inst.addons[addonKey];
+            const btn = document.getElementById('pub-addon-' + addonKey);
+            if(btn) {
+                btn.className = inst.addons[addonKey]
+                    ? 'p-3 rounded-xl bg-custom-accent/10 border-2 border-custom-accent text-left transition-all shadow-neon'
+                    : 'p-3 rounded-xl bg-white/5 border-2 border-transparent hover:border-white/10 text-left transition-all';
+            }
+            updateQuoterSummary(ctx);
+        };
+
+        window.togglePlat = function(ctx, platId) {
+            const inst = quoterInstances[ctx];
+            if(inst.adPlatforms.includes(platId)) {
+                if(inst.adPlatforms.length > 1) inst.adPlatforms = inst.adPlatforms.filter(p => p !== platId);
+            } else {
+                inst.adPlatforms.push(platId);
+            }
+            renderQuoter(ctx, 'step_ads_config');
+            updateQuoterSummary(ctx);
+        };
+
+        window.slideSpend = function(ctx, val) {
+            const inst = quoterInstances[ctx];
+            inst.adMonthlySpend = parseInt(val, 10) || 1000;
+            const finalFee = Math.max(300, roundTo5(inst.adMonthlySpend * 0.20));
+            const sEl = document.getElementById(ctx + '-slider-spend');
+            const fEl = document.getElementById(ctx + '-slider-fee');
+            if(sEl) sEl.innerText = 'S/ ' + inst.adMonthlySpend.toLocaleString() + '/m';
+            if(fEl) fEl.innerText = 'S/ ' + finalFee.toLocaleString() + '/m';
+            updateQuoterSummary(ctx);
+        };
+
+        window.setCreatives = function(ctx, val) {
+            const inst = quoterInstances[ctx];
+            inst.needsCreatives = val;
+            renderQuoter(ctx, 'step_ads_config');
+            updateQuoterSummary(ctx);
+        };
+
+        window.goContact = function(ctx) {
+            const inst = quoterInstances[ctx];
+            inst.history.push(inst.stepId);
+            renderQuoter(ctx, 'step_contact');
+            updateQuoterSummary(ctx);
+        };
+
+        function renderQuoter(ctx, stepId) {
+            const inst = quoterInstances[ctx];
+            inst.stepId = stepId;
+            const container = document.getElementById(ctx + 'QuoterStep');
+            const backBtn = document.getElementById(ctx + 'BtnBack');
+            const progBar = document.getElementById(ctx + 'ProgressBar');
+            const stepLbl = document.getElementById(ctx + 'StepLabel');
+            if(!container) return;
+
+            if(backBtn) backBtn.classList.toggle('invisible', inst.history.length === 0);
+            const depth = inst.history.length + 1;
+            const pct = stepId === 'step_contact' ? 100 : Math.min(25 * depth, 85);
+            if(progBar) progBar.style.width = pct + '%';
+            if(stepLbl) stepLbl.innerText = stepId === 'step_contact' ? 'Paso 4 de 4' : 'Paso ' + depth + ' de 4';
+
+            const d = inst.discount;
+
+            const headerTemplate = (num, subtitle, title) => `
+                <div class="mb-7">
+                    <span class="text-xs text-custom-accent font-bold block mb-2 tracking-widest uppercase">${num} · ${subtitle}</span>
+                    <h3 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">${title}<span class="text-custom-accent">.</span></h3>
+                </div>
+            `;
+
+            if(stepId === 'step_sector') {
+                container.innerHTML = `
+                    <div class="flex flex-col h-full fade-in">
+                        ${headerTemplate('01', 'Sector', '¿En qué rubro está tu negocio?')}
+                        <div class="grid grid-cols-1 gap-4 flex-1">
+                            ${renderOptionCard(ctx, 'sector', 'real_estate', 'step_re_role', 'real_estate', 'Inmobiliaria y construcción', 'Desarrolladoras (lotes, edificios) o agentes.', '', inst.sector === 'real_estate')}
+                            ${renderOptionCard(ctx, 'sector', 'finance', 'step_finance_focus', 'finance', 'Finanzas y capital', 'Captación de AUM, originación crediticia y Fintech.', '', inst.sector === 'finance')}
+                            ${renderOptionCard(ctx, 'sector', 'other', 'step_other_goal', 'other', 'Comercio, servicios o industria', 'Campañas, páginas web, IA y consultoría.', '', inst.sector === 'other')}
+                        </div>
+                    </div>
+                `;
+            }
+            else if(stepId === 'step_re_role') {
+                container.innerHTML = `
+                    <div class="flex flex-col h-full fade-in">
+                        ${headerTemplate('02', 'Perfil inmobiliario', 'Selecciona tu modalidad')}
+                        <div class="grid grid-cols-1 gap-4 flex-1">
+                            ${renderOptionCard(ctx, 'reRole', 'agent', 'step_ads_config', 'agent', 'Agente inmobiliario', 'Captación directa de compradores calificados.', '', inst.reRole === 'agent')}
+                            ${renderOptionCard(ctx, 'reRole', 'developer', 'step_re_dev_type', 'developer', 'Desarrolladora de proyectos', 'Comercialización de lotes, casas o edificios enteros.', '', inst.reRole === 'developer')}
+                        </div>
+                    </div>
+                `;
+            }
+            else if(stepId === 'step_re_dev_type') {
+                container.innerHTML = `
+                    <div class="flex flex-col h-full fade-in">
+                        ${headerTemplate('03', 'Tipo de proyecto', '¿Qué comercializas?')}
+                        <div class="grid grid-cols-1 gap-4 flex-1">
+                            ${renderOptionCard(ctx, 'reProjectType', 'lots', 'step_ads_config', 'lots', 'Venta de lotes', 'Landing de proyecto + agendamiento.', 'S/ ' + roundTo5(3000*d).toLocaleString(), inst.reProjectType === 'lots')}
+                            ${renderOptionCard(ctx, 'reProjectType', 'houses', 'step_ads_config', 'houses', 'Casas o condominios', 'Portal interactivo + filtro bancario.', 'S/ ' + roundTo5(3800*d).toLocaleString(), inst.reProjectType === 'houses')}
+                            ${renderOptionCard(ctx, 'reProjectType', 'buildings', 'step_ads_config', 'buildings', 'Edificio de departamentos', 'Selector por pisos + CRM cloud.', 'S/ ' + roundTo5(4800*d).toLocaleString(), inst.reProjectType === 'buildings')}
+                        </div>
+                    </div>
+                `;
+            }
+            else if(stepId === 'step_finance_focus') {
+                container.innerHTML = `
+                    <div class="flex flex-col h-full fade-in">
+                        ${headerTemplate('02', 'Tesis financiera', 'Vector de adquisición')}
+                        <div class="grid grid-cols-1 gap-4 flex-1">
+                            ${renderOptionCard(ctx, 'finFocus', 'wealth_aum', 'step_ads_config', 'fin_aum', 'Captación de AUM e Inversionistas', 'Embudos de autoridad y perfilamiento algorítmico.', 'S/ ' + roundTo5(4200*d).toLocaleString(), inst.finFocus === 'wealth_aum')}
+                            ${renderOptionCard(ctx, 'finFocus', 'credit_dealflow', 'step_ads_config', 'fin_credit', 'Originación Crediticia & Deal Flow', 'Validación RUC, pre-scoring y captura.', 'S/ ' + roundTo5(5000*d).toLocaleString(), inst.finFocus === 'credit_dealflow')}
+                            ${renderOptionCard(ctx, 'finFocus', 'fintech_scale', 'step_ads_config', 'fin_tech', 'Escalamiento Fintech & LTV/CAC', 'Atribución full-funnel y cohortes.', 'S/ ' + roundTo5(6000*d).toLocaleString(), inst.finFocus === 'fintech_scale')}
+                        </div>
+                    </div>
+                `;
+            }
+            else if(stepId === 'step_other_goal') {
+                container.innerHTML = `
+                    <div class="flex flex-col h-full fade-in">
+                        ${headerTemplate('02', 'Objetivo principal', '¿Qué necesitas activar hoy?')}
+                        <div class="grid grid-cols-1 gap-4 flex-1 overflow-y-auto pr-2 pb-2">
+                            ${renderOptionCard(ctx, 'otherGoal', 'ads', 'step_ads_config', 'ads', 'Conseguir más clientes con anuncios', 'Campañas en redes y Google hacia WhatsApp/Web.', '', inst.otherGoal === 'ads')}
+                            ${renderOptionCard(ctx, 'otherGoal', 'web', 'step_web_catalog', 'web', 'Crear página web o tienda online', 'Diseño veloz para vender servicios o productos.', '', inst.otherGoal === 'web')}
+                            ${renderOptionCard(ctx, 'otherGoal', 'automation', 'step_auto_type', 'auto', 'Automatizar procesos con IA', 'CRM, bots de atención y operaciones.', '', inst.otherGoal === 'automation')}
+                            ${renderOptionCard(ctx, 'otherGoal', 'consulting', 'step_consulting_tier', 'cons_main', 'Consultoría Estratégica & Growth', 'Diagnóstico y plan de acción de marketing y ventas.', '', inst.otherGoal === 'consulting')}
+                        </div>
+                    </div>
+                `;
+            }
+            else if(stepId === 'step_consulting_tier') {
+                container.innerHTML = `
+                    <div class="flex flex-col h-full fade-in">
+                        ${headerTemplate('03', 'Profundidad', 'Selecciona el nivel de consultoría')}
+                        <div class="grid grid-cols-1 gap-4 flex-1">
+                            ${renderOptionCard(ctx, 'consultingTier', 'full', 'step_contact', 'cons_full', 'Consultoría Completa + Implementación', 'Plan integral, estructuración de equipo y ejecución a medida.', 'S/ ' + roundTo5(5000*d).toLocaleString(), inst.consultingTier === 'full')}
+                            ${renderOptionCard(ctx, 'consultingTier', 'growth', 'step_contact', 'cons_growth', 'Consultoría Growth (Mkt & Comercial)', 'Auditoría profunda, funnels de conversión y optimización de CAC.', 'S/ ' + roundTo5(2000*d).toLocaleString(), inst.consultingTier === 'growth')}
+                            ${renderOptionCard(ctx, 'consultingTier', 'session', 'step_contact', 'cons_session', 'Sesión Estratégica (1 a 1)', 'Asesoría de 60 mins enfocada en destrabar un cuello de botella puntual.', 'S/ ' + roundTo5(50*d).toLocaleString(), inst.consultingTier === 'session')}
+                        </div>
+                    </div>
+                `;
+            }
+            else if(stepId === 'step_web_catalog') {
+                container.innerHTML = `
+                    <div class="flex flex-col h-full fade-in">
+                        ${headerTemplate('03', 'Alcance Web (Pago único)', 'Elige el nivel de tu plataforma')}
+                        <div class="grid grid-cols-1 gap-4 flex-1">
+                            ${renderOptionCard(ctx, 'webScale', 'landing', 'step_contact', 'web_land', 'Landing Page Express', 'Ideal para servicios. Conversión directa a WhatsApp.', 'S/ ' + roundTo5(1000*d).toLocaleString(), inst.webScale === 'landing')}
+                            ${renderOptionCard(ctx, 'webScale', 'complete', 'step_contact', 'web_comp', 'Website Completa + Supabase', 'Múltiples páginas, base de datos nube y SEO.', 'S/ ' + roundTo5(3000*d).toLocaleString(), inst.webScale === 'complete')}
+                            ${renderOptionCard(ctx, 'webScale', 'ecommerce', 'step_contact', 'web_ecom', 'E-Commerce Total + Pasarela', 'Catálogo completo, pagos online y control de stock.', 'S/ ' + roundTo5(6600*d).toLocaleString(), inst.webScale === 'ecommerce')}
+                        </div>
+                    </div>
+                `;
+            }
+            else if(stepId === 'step_auto_type') {
+                container.innerHTML = `
+                    <div class="flex flex-col h-full fade-in">
+                        ${headerTemplate('03', 'Automatización IA', '¿Qué área automatizaremos?')}
+                        <div class="grid grid-cols-1 gap-4 flex-1">
+                            ${renderOptionCard(ctx, 'autoCategory', 'commercial', 'step_contact', 'auto_com', 'Procesos comerciales (CRM / Bots)', 'Calificación, WhatsApp IA y atención automática.', 'S/ ' + roundTo5(3400*d).toLocaleString(), inst.autoCategory === 'commercial')}
+                            ${renderOptionCard(ctx, 'autoCategory', 'operations', 'step_contact', 'auto_ops', 'Procesos operativos y reportes', 'Cobranzas, flujos internos y dashboards en vivo.', 'S/ ' + roundTo5(5600*d).toLocaleString(), inst.autoCategory === 'operations')}
+                            ${renderOptionCard(ctx, 'autoCategory', 'industrial', 'step_contact', 'auto_ind', 'Procesos industriales (Planta / ERP)', 'Control de producción, stock e insumos en tiempo real.', 'S/ ' + roundTo5(10000*d).toLocaleString(), inst.autoCategory === 'industrial')}
+                        </div>
+                    </div>
+                `;
+            }
+            else if(stepId === 'step_ads_config') {
+                const platformsList = [
+                    { id: 'Meta Ads', label: 'Meta', icon: 'fa-brands fa-facebook text-blue-400' },
+                    { id: 'Google Ads', label: 'Google', icon: 'fa-brands fa-google text-red-400' },
+                    { id: 'TikTok Ads', label: 'TikTok', icon: 'fa-brands fa-tiktok text-white' },
+                    { id: 'LinkedIn Ads', label: 'LinkedIn', icon: 'fa-brands fa-linkedin text-sky-400' },
+                    { id: 'Pinterest Ads', label: 'Pinterest', icon: 'fa-brands fa-pinterest text-red-500' }
+                ];
+
+                let platButtons = '';
+                platformsList.forEach(p => {
+                    const active = inst.adPlatforms.includes(p.id);
+                    const btnClass = active 
+                        ? 'bg-custom-accent text-custom-black border-custom-accent shadow-neon' 
+                        : 'bg-[#121922] border-white/10 text-white hover:border-custom-accent hover:bg-custom-accent/10';
+                    platButtons += `<button type="button" onclick="togglePlat('${ctx}', '${p.id}')" class="px-5 py-3 rounded-xl border-2 font-bold text-sm sm:text-base flex items-center gap-2.5 transition-all duration-300 ${btnClass}"><i class="${p.icon}"></i><span>${p.label}</span></button>`;
+                });
+
+                const calcFee = Math.max(300, roundTo5(inst.adMonthlySpend * 0.20));
+
+                container.innerHTML = `
+                    <div class="flex flex-col h-full fade-in">
+                        ${headerTemplate('03', 'Pauta publicitaria', 'Redes y presupuesto mensual')}
+                        
+                        <div class="flex flex-wrap gap-3 mb-6">${platButtons}</div>
+
+                        <div class="bg-[#121922] p-6 rounded-2xl border-2 border-white/5 mb-6">
+                            <div class="flex justify-between items-center text-sm mb-3">
+                                <span class="text-slate-300 font-medium">Inversión mensual en redes:</span>
+                                <span id="${ctx}-slider-spend" class="text-xl font-bold text-custom-accent drop-shadow-md">S/ ${inst.adMonthlySpend.toLocaleString()}/m</span>
+                            </div>
+                            <input type="range" min="500" max="20000" step="250" value="${inst.adMonthlySpend}" oninput="slideSpend('${ctx}', this.value)" class="accent-slider my-4 cursor-pointer">
+                            <div class="flex justify-between items-center text-xs sm:text-sm pt-4 border-t border-white/5">
+                                <span class="text-slate-400 font-medium">Fee de gestión (20% · mín. S/ 300):</span>
+                                <span id="${ctx}-slider-fee" class="font-bold text-white">S/ ${calcFee.toLocaleString()}/m</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <button type="button" onclick="setCreatives('${ctx}', 'yes')" class="p-4 rounded-xl border-2 text-left flex items-start gap-3 transition-all duration-300 ${inst.needsCreatives==='yes'?'border-custom-accent bg-custom-accent/10 text-white shadow-neon':'border-white/5 bg-[#121922] text-slate-400 hover:border-white/20'}">
+                                <div class="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center ${inst.needsCreatives==='yes'?'bg-custom-accent text-custom-black':'bg-black/50 text-slate-400'}">${SVG_VECTORS.creative_yes}</div>
+                                <div>
+                                    <span class="font-bold block text-sm">Incluir foto/video</span>
+                                    <span class="text-xs ${inst.needsCreatives==='yes'?'text-custom-accent':'text-slate-500'}">Cotización adicional</span>
+                                </div>
+                            </button>
+                            <button type="button" onclick="setCreatives('${ctx}', 'no')" class="p-4 rounded-xl border-2 text-left flex items-start gap-3 transition-all duration-300 ${inst.needsCreatives==='no'?'border-custom-accent bg-custom-accent/10 text-white shadow-neon':'border-white/5 bg-[#121922] text-slate-400 hover:border-white/20'}">
+                                <div class="w-8 h-8 rounded-lg shrink-0 flex items-center justify-center ${inst.needsCreatives==='no'?'bg-custom-accent text-custom-black':'bg-black/50 text-slate-400'}">${SVG_VECTORS.creative_no}</div>
+                                <div>
+                                    <span class="font-bold block text-sm">Tengo mis anuncios</span>
+                                    <span class="text-xs ${inst.needsCreatives==='no'?'text-custom-accent':'text-slate-500'}">Solo gestión de pauta</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <button type="button" onclick="goContact('${ctx}')" class="w-full py-4 rounded-2xl bg-custom-accent hover:bg-yellow-400 text-custom-black font-bold text-lg shadow-neon hover:shadow-neon-hover flex items-center justify-center gap-3 transition-all hover:-translate-y-1">
+                            <span>Siguiente paso</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                `;
+            }
+            else if(stepId === 'step_contact') {
+                const defaultName = (ctx === 'dash' && currentUserData) ? currentUserData.ownerName : '';
+                const defaultBiz = (ctx === 'dash' && currentUserData) ? currentUserData.originalName : '';
+                container.innerHTML = `
+                    <div class="flex flex-col h-full fade-in">
+                        ${headerTemplate('04', 'Paso final', 'Envío de propuesta formal')}
+                        <p class="text-sm text-slate-400 mb-6 -mt-4">Recibirás una copia inmediata detallada en tu correo electrónico con los siguientes pasos.</p>
+
+                        <form onsubmit="submitQuoter(event, '${ctx}')" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <input type="text" id="${ctx}-name" required value="${defaultName}" class="w-full p-4 bg-[#121922] border-2 border-white/5 focus:border-custom-accent rounded-2xl text-sm text-white font-medium outline-none transition-colors" placeholder="Tu nombre y apellido">
+                                <input type="text" id="${ctx}-biz" required value="${defaultBiz}" class="w-full p-4 bg-[#121922] border-2 border-white/5 focus:border-custom-accent rounded-2xl text-sm text-white font-medium outline-none transition-colors" placeholder="Nombre de tu empresa">
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <input type="tel" id="${ctx}-phone" required class="w-full p-4 bg-[#121922] border-2 border-white/5 focus:border-custom-accent rounded-2xl text-sm text-white font-medium outline-none transition-colors" placeholder="WhatsApp (Ej: +51 987...)">
+                                <input type="email" id="${ctx}-email" required class="w-full p-4 bg-[#121922] border-2 border-white/5 focus:border-custom-accent rounded-2xl text-sm text-white font-medium outline-none transition-colors" placeholder="Correo electrónico corporativo">
+                            </div>
+                            
+                            <div class="pt-4">
+                                <button type="submit" id="${ctx}-submit-btn" class="w-full py-5 rounded-2xl bg-custom-accent hover:bg-yellow-400 text-custom-black font-bold text-lg shadow-neon hover:shadow-neon-hover flex items-center justify-center gap-3 transition-all hover:-translate-y-1">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span>Generar y enviar cotización</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                `;
+            }
+        }
+
+        function computeQuoter(ctx) {
+            const inst = quoterInstances[ctx];
+            const d = inst.discount;
+            let items = [];
+            let oneTime = 0;
+            let monthlyFee = 0;
+            let adSpend = 0;
+
+            if(inst.sector === 'real_estate') {
+                if(inst.reRole === 'agent') {
+                    const p = roundTo5(1400 * d);
+                    oneTime += p;
+                    items.push({ title: 'Landing Inmobiliaria Agente', price: 'S/ ' + p.toLocaleString() });
+                } else {
+                    let base = 4800; let name = 'Web Edificio Departamentos';
+                    if(inst.reProjectType === 'lots') { base = 3000; name = 'Web Proyecto Lotes'; }
+                    if(inst.reProjectType === 'houses') { base = 3800; name = 'Web Proyecto Casas'; }
+                    const p = roundTo5(base * d); oneTime += p;
+                    items.push({ title: name, price: 'S/ ' + p.toLocaleString() });
+                }
+                const fee = Math.max(300, roundTo5(inst.adMonthlySpend * 0.20));
+                monthlyFee += fee; adSpend = inst.adMonthlySpend;
+                items.push({ title: 'Gestión Campañas (' + inst.adPlatforms.length + ' redes)', price: 'S/ ' + fee.toLocaleString() + '/m' });
+                if(inst.needsCreatives === 'yes') items.push({ title: 'Producción foto/video', price: 'A conversar' });
+            }
+            else if(inst.sector === 'finance') {
+                let base = 4200; let name = 'Setup Adquisición AUM';
+                if(inst.finFocus === 'credit_dealflow') { base = 5000; name = 'Originación Crediticia Cloud'; }
+                if(inst.finFocus === 'fintech_scale') { base = 6000; name = 'Full-Funnel Fintech'; }
+                const p = roundTo5(base * d); oneTime += p;
+                items.push({ title: name, price: 'S/ ' + p.toLocaleString() });
+                const fee = Math.max(300, roundTo5(inst.adMonthlySpend * 0.20));
+                monthlyFee += fee; adSpend = inst.adMonthlySpend;
+                items.push({ title: 'Media Buying (' + inst.adPlatforms.length + ' redes)', price: 'S/ ' + fee.toLocaleString() + '/m' });
+            }
+            else {
+                if(inst.otherGoal === 'web') {
+                    let base = 3000; let name = 'Website Completa + Supabase';
+                    if(inst.webScale === 'landing') { base = 1000; name = 'Landing Page Express'; }
+                    if(inst.webScale === 'ecommerce') { base = 6600; name = 'E-Commerce Total + ERP'; }
+                    const p = roundTo5(base * d); oneTime += p;
+                    items.push({ title: name, price: 'S/ ' + p.toLocaleString() });
+                } else if(inst.otherGoal === 'automation') {
+                    let base = 3400; let name = 'Automatización Comercial IA';
+                    if(inst.autoCategory === 'operations') { base = 5600; name = 'Automatización Operativa'; }
+                    if(inst.autoCategory === 'industrial') { base = 10000; name = 'Automatización Industrial IA'; }
+                    const p = roundTo5(base * d); oneTime += p;
+                    items.push({ title: name, price: 'S/ ' + p.toLocaleString() });
+                } else if (inst.otherGoal === 'consulting') {
+                    let base = 2000; let name = 'Consultoría Growth (Mkt & Comercial)';
+                    if(inst.consultingTier === 'full') { base = 5000; name = 'Consultoría Completa + Implementación'; }
+                    if(inst.consultingTier === 'session') { base = 50; name = 'Sesión Estratégica 1a1'; }
+                    const p = roundTo5(base * d); oneTime += p;
+                    items.push({ title: name, price: 'S/ ' + p.toLocaleString() });
+                } else {
+                    const fee = Math.max(300, roundTo5(inst.adMonthlySpend * 0.20));
+                    monthlyFee += fee; adSpend = inst.adMonthlySpend;
+                    items.push({ title: 'Gestión (' + inst.adPlatforms.join(', ') + ')', price: 'S/ ' + fee.toLocaleString() + '/m' });
+                    if(inst.needsCreatives === 'yes') items.push({ title: 'Piezas publicitarias', price: 'A conversar' });
+                }
+            }
+
+            if(inst.addons.brand) { const p = roundTo5(600 * d); monthlyFee += p; items.push({ title: 'Dirección creativa', price: '+S/ ' + p + '/m' }); }
+            if(inst.addons.domain) { const p = roundTo5(800 * d); oneTime += p; items.push({ title: 'Dominio + Correo', price: '+S/ ' + p }); }
+            if(inst.addons.bot) { const p = roundTo5(1100 * d); oneTime += p; items.push({ title: 'Bot IA WhatsApp', price: '+S/ ' + p }); }
+
+            return { items: items, oneTime: oneTime, monthlyFee: monthlyFee, adSpend: adSpend };
+        }
+
+        function updateQuoterSummary(ctx) {
+            const res = computeQuoter(ctx);
+            const listEl = document.getElementById(ctx + 'SummaryItems');
+            const topEl = document.getElementById(ctx + 'TopTotal');
+            if(topEl) topEl.innerText = res.oneTime > 0 ? ('S/ ' + res.oneTime.toLocaleString()) : ('S/ ' + res.monthlyFee.toLocaleString() + '/m');
+            if(listEl) {
+                listEl.innerHTML = res.items.map(it => 
+                    `<div class="flex items-center justify-between py-3 px-4 rounded-xl bg-white/5 border border-white/5 text-sm">
+                        <span class="text-white font-medium">${it.title}</span>
+                        <span class="font-bold text-custom-accent shrink-0">${it.price}</span>
+                    </div>`
+                ).join('');
+            }
+            document.getElementById(ctx + 'OneTime').innerText = 'S/ ' + res.oneTime.toLocaleString();
+            document.getElementById(ctx + 'MonthlyFee').innerText = 'S/ ' + res.monthlyFee.toLocaleString() + ' / mes';
+            document.getElementById(ctx + 'AdSpend').innerText = 'S/ ' + res.adSpend.toLocaleString() + ' / mes';
+        }
+
+        window.submitQuoter = async function(e, ctx) {
+            e.preventDefault();
+            const btn = document.getElementById(ctx + '-submit-btn');
+            const name = document.getElementById(ctx + '-name').value.trim();
+            const biz = document.getElementById(ctx + '-biz').value.trim();
+            const phone = document.getElementById(ctx + '-phone').value.trim();
+            const email = document.getElementById(ctx + '-email').value.trim();
+
+            const inst = quoterInstances[ctx];
+            const totals = computeQuoter(ctx);
+            const discountTag = ctx === 'dash' ? '[SOCIO -10% OFF] ' : (inst.couponApplied ? '[CUPÓN FAMILIA -25% OFF] ' : '');
+            const itemsSummaryText = discountTag + totals.items.map(i => i.title + ' (' + i.price + ')').join(' + ');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
+
+            const quoteRecord = { id: 'quote_' + Date.now(), createdAt: new Date().toISOString(), name, business: biz, phone, email, summary: itemsSummaryText, oneTime: totals.oneTime, monthlyFee: totals.monthlyFee, adSpend: totals.adSpend };
+
+            const localQuotes = JSON.parse(localStorage.getItem('mlt_quotes_sb') || '[]');
+            localQuotes.unshift(quoteRecord);
+            localStorage.setItem('mlt_quotes_sb', JSON.stringify(localQuotes));
+
+            const templateParams = { to_email: email, client_name: name, business_name: biz, phone: phone, summary: itemsSummaryText, one_time: 'S/ ' + totals.oneTime.toLocaleString(), monthly_fee: 'S/ ' + totals.monthlyFee.toLocaleString() + ' / mes', ad_spend: 'S/ ' + totals.adSpend.toLocaleString() + ' / mes' };
+
+            try {
+                await emailjs.send('service_n562kvk', 'template_jibyoq2', templateParams, { publicKey: 'Mc6HPTQHfE-zcEDzm' });
+                window.showToast('Cotización enviada', 'Revisa tu bandeja de entrada o spam.', 'fa-check-circle', 'text-custom-accent');
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Enviado exitosamente';
+            } catch(err) {
+                window.showToast('Error de red', 'Generando WhatsApp directo.', 'fa-triangle-exclamation', 'text-custom-accent');
+                btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Reintentar envío';
+            }
+
+            const wpText = encodeURIComponent(`Hola Matías, acabo de generar mi cotización para *${biz}* (${name}):\n\n• ${itemsSummaryText}\n• Setup: *S/ ${totals.oneTime.toLocaleString()}*\n• Fee mensual: *S/ ${totals.monthlyFee.toLocaleString()}/m*\n• Correo: ${email}`);
+            setTimeout(() => { window.open('https://wa.link/umhrbw?text=' + wpText, '_blank'); }, 600);
+        };
+
+        // Lógica residual necesaria para el correcto funcionamiento sin errores de consola
+        window.slideCaseStudies = function(dir) { const c = document.getElementById('caseStudiesCarousel'); if(c) c.scrollBy({ left: dir * 420, behavior: 'smooth' }); };
+        window.filterCaseStudies = function(cat) {
+            document.querySelectorAll('.case-filter-btn').forEach(btn => {
+                btn.className = btn.dataset.filter === cat ? 'case-filter-btn active px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-custom-accent text-custom-black' : 'case-filter-btn px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-white/10 text-white';
+            });
+            document.querySelectorAll('.case-card').forEach(card => {
+                if(cat === 'todos' || card.dataset.category === cat) { card.classList.remove('hidden'); card.classList.add('flex'); }
+                else { card.classList.add('hidden'); card.classList.remove('flex'); }
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderQuoter('public', 'step_sector');
+            updateQuoterSummary('public');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+            }, { threshold: 0.12 });
+            document.querySelectorAll('.section-transition').forEach(sec => observer.observe(sec));
+        });
+    </script>
+</body>
+</html>
+
             <div class="w-full h-2 bg-white/10 rounded-full overflow-hidden mb-8">
                 <div id="publicProgressBar" class="h-full bg-custom-accent transition-all duration-500 shadow-neon" style="width: 25%"></div>
             </div>
